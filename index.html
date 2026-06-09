@@ -45,6 +45,18 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
 #login{position:fixed;inset:0;background:#fff;display:flex;align-items:center;justify-content:center;z-index:1000}
 .lbox{width:340px;border:1px solid var(--line);border-radius:16px;box-shadow:var(--sh);padding:30px 28px}.lbox .logo{font-size:34px;display:block;margin-bottom:4px}.lbox h1{font-family:Fraunces;font-weight:600;font-size:20px;margin:6px 0 2px}.lbox p{font-size:12.5px;color:var(--muted);margin-bottom:18px}.lbox input{width:100%;padding:11px 13px;border:1px solid var(--lineS);border-radius:9px;font:inherit;margin-bottom:10px}.lbox button{width:100%;padding:11px;border:0;border-radius:9px;background:var(--forest);color:#fff;font:inherit;font-weight:600;cursor:pointer}.lbox .err{color:var(--cost);font-size:12px;min-height:18px;margin-top:6px}
 .muted{color:var(--muted)}.hidden{display:none!important}#loading{text-align:center;padding:60px;color:var(--muted);font-family:Fraunces;font-style:italic;font-size:18px}
+.adminbtn{font-size:12.5px;font-weight:600;padding:7px 12px;border-radius:9px;border:1px solid var(--forest);background:#fff;color:var(--forest);cursor:pointer;margin-right:10px}.adminbtn:hover{background:var(--forest);color:#fff}
+.adminwrap{position:fixed;inset:0;background:rgba(26,36,31,.45);display:flex;align-items:flex-start;justify-content:center;z-index:900;padding:40px 16px;overflow:auto}
+.adminbox{width:680px;max-width:100%;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 20px 60px rgba(26,36,31,.3)}
+.adminhd{display:flex;align-items:flex-start;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--line)}
+.admintitle{font-family:Fraunces;font-weight:600;font-size:22px}.adminsub{font-size:12.5px;color:var(--muted);margin-top:2px}
+.adminx{border:0;background:var(--s2);width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:14px;color:var(--soft)}.adminx:hover{background:var(--line)}
+.adminsec{padding:20px 24px}.adminsech{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:12px}
+.inviterow{display:flex;gap:8px;margin-bottom:10px}.inviterow input{flex:1;padding:9px 12px;border:1px solid var(--lineS);border-radius:9px;font:inherit}.inviterow select{padding:9px 10px;border:1px solid var(--lineS);border-radius:9px;font:inherit;background:#fff}
+.inviterow button{padding:9px 16px;border:0;border-radius:9px;background:var(--forest);color:#fff;font:inherit;font-weight:600;cursor:pointer;white-space:nowrap}.inviterow button:disabled{opacity:.6;cursor:default}
+.invmsg{font-size:13px;margin-bottom:14px;line-height:1.5}.invmsg .ok{color:var(--profit);font-weight:600}.invmsg .err{color:var(--cost);font-weight:600}.invmsg code{background:var(--s2);padding:2px 7px;border-radius:5px;font-size:12.5px}
+.utable{width:100%;border-collapse:collapse}.utable th{font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700;text-align:left;padding:8px 10px;background:var(--s2)}.utable td{padding:9px 10px;border-top:1px solid var(--line);font-size:13px;vertical-align:middle}.utable .rolepill{font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;text-transform:uppercase}.utable .rolepill.admin{background:rgba(31,107,79,.1);color:var(--forest)}.utable .rolepill.viewer{background:var(--s2);color:var(--soft)}
+.urm{border:1px solid var(--lineS);background:#fff;color:var(--cost);border-radius:7px;padding:4px 10px;font:inherit;font-size:12px;cursor:pointer}.urm:hover{background:var(--cost);color:#fff;border-color:var(--cost)}
 </style></head>
 <body>
 <div id="login"><div class="lbox"><span class="logo" style="font-family:Fraunces;color:#16513b">Max<span style="color:#B8456B">✿</span></span>
@@ -63,7 +75,7 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
       <span class="dlink soon" title="Coming soon">PMax + Shopping<i>soon</i></span>
       <span class="dlink soon" title="Coming soon">Action<i>soon</i></span>
     </nav></div>
-    <div class="badges"><span class="badge">● Live · read-only</span><span id="who"></span></div></header>
+    <div class="badges"><button class="adminbtn hidden" id="adminbtn" title="Admin settings">⚙ Admin settings</button><span class="badge">● Live · read-only</span><span id="who"></span></div></header>
   <nav class="nav">
     <div class="grp"><div class="acctzone">
       <button class="acctbtn" id="acctbtn"><span id="acctlabel">All accounts</span><span style="font-size:10px">▾</span></button>
@@ -90,6 +102,21 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
       <table><thead><tr><th class="l">#</th><th class="l">Keyword</th><th class="l">Match</th><th>Cost · %tot</th><th>Sales · %tot</th><th>Profit · %tot</th></tr></thead><tbody id="worst"></tbody><tfoot id="worstf"></tfoot></table></div>
   </div>
   <footer><b>Source:</b> Google Ads warehouse — top totals from campaign_metrics (all campaign types, matches Max email); keyword detail from keyword_metrics · margin 40% (profit = estimate) · EUR · Europe/Madrid · <span id="freshness"></span><br><b>Max is read-only.</b> Data refreshes daily after the 06:00 import.</footer>
+  <div id="adminpanel" class="adminwrap hidden">
+    <div class="adminbox">
+      <div class="adminhd"><div><div class="admintitle">Admin settings</div><div class="adminsub">Manage who can access the Max dashboard</div></div><button class="adminx" id="adminclose" title="Close">✕</button></div>
+      <div class="adminsec">
+        <div class="adminsech">User management</div>
+        <div class="inviterow">
+          <input id="invemail" type="email" placeholder="name@floraqueen.com" autocomplete="off">
+          <select id="invrole"><option value="viewer">Viewer</option><option value="admin">Admin</option></select>
+          <button id="invbtn">Send invite</button>
+        </div>
+        <div id="invmsg" class="invmsg"></div>
+        <table class="utable"><thead><tr><th>Email</th><th>Role</th><th>Status</th><th>Added</th><th></th></tr></thead><tbody id="ulist"></tbody></table>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -134,6 +161,7 @@ function lbl(){return sel.size===0?"All accounts · "+DATA.accounts.length:sel.s
 
 function render(){
   document.getElementById("cmptxt").textContent=VS[tf];
+  document.getElementById("adminbtn").classList.toggle("hidden",!DATA.isAdmin);
   document.getElementById("freshness").textContent="data through "+DATA.maxDate+(DATA.curRange?" · "+DATA.curRange[0]+"→"+DATA.curRange[1]:"");
   renderDD();renderTop3();renderMoney();renderAmap();renderKW();narrative();
 }
@@ -221,5 +249,30 @@ document.getElementById("cmp").onclick=function(){cmp=!cmp;this.classList.toggle
 document.querySelectorAll(".pctbtn").forEach(b=>b.onclick=()=>{const p=document.getElementById(b.dataset.p);const hide=p.classList.toggle("nopct");b.classList.toggle("on",!hide);});
 document.getElementById("wtfsel").addEventListener("change",e=>{wtf=e.target.value;renderWorst();});
 document.getElementById("dlworst").addEventListener("click",dl_worst);
+async function adminApi(action,body){const r=await fetch(FN+"?api=admin&action="+action,{method:body?"POST":"GET",headers:Object.assign({Authorization:"Bearer "+tok},body?{"Content-Type":"application/json"}:{}),body:body?JSON.stringify(body):undefined});const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||("HTTP "+r.status));return j;}
+function openAdmin(){document.getElementById("adminpanel").classList.remove("hidden");document.getElementById("invmsg").innerHTML="";loadUsers();}
+function closeAdmin(){document.getElementById("adminpanel").classList.add("hidden");}
+async function loadUsers(){const tb=document.getElementById("ulist");tb.innerHTML='<tr><td colspan="5" style="color:#8C8B80">Loading…</td></tr>';
+  try{const j=await adminApi("list");const me=j.me;
+    tb.innerHTML=(j.users||[]).map(function(u){var d=(u.created_at||"").slice(0,10);var rm=u.email!=="alon@floraqueen.com"&&u.email!==me;
+      return '<tr><td>'+u.email+'</td><td><span class="rolepill '+u.role+'">'+u.role+'</span></td><td>'+u.status+'</td><td>'+d+'</td><td>'+(rm?'<button class="urm" data-rm="'+u.email+'">Remove</button>':'<span style="color:#8C8B80;font-size:11px">—</span>')+'</td></tr>';}).join('')||'<tr><td colspan="5" style="color:#8C8B80">No users yet.</td></tr>';
+  }catch(e){tb.innerHTML='<tr><td colspan="5" style="color:#C0392B">'+e.message+'</td></tr>';}}
+async function doInvite(){var em=document.getElementById("invemail").value.trim();var role=document.getElementById("invrole").value;var b=document.getElementById("invbtn");var msg=document.getElementById("invmsg");
+  if(!em){msg.innerHTML='<span class="err">Enter an email address.</span>';return;}
+  b.disabled=true;b.textContent="Sending…";msg.innerHTML="";
+  try{var j=await adminApi("invite",{email:em,role:role});
+    var m='<span class="ok">✓ '+j.email+' added as '+j.role+'.</span> ';
+    if(j.emailed)m+='Invite email sent.';
+    else{m+=(j.created&&j.tempPassword)?('Email not sent — share manually → email: <code>'+j.email+'</code> &nbsp;temporary password: <code>'+j.tempPassword+'</code>'):'They already have an account — ask them to sign in.';if(j.emailNote)m+='<br><span style="color:#8C8B80;font-size:12px">'+j.emailNote+'</span>';}
+    msg.innerHTML=m;document.getElementById("invemail").value="";loadUsers();
+  }catch(e){msg.innerHTML='<span class="err">'+e.message+'</span>';}
+  b.disabled=false;b.textContent="Send invite";}
+async function doRemove(em){if(!confirm("Remove dashboard access for "+em+"?"))return;try{await adminApi("remove",{email:em});loadUsers();}catch(e){document.getElementById("invmsg").innerHTML='<span class="err">'+e.message+'</span>';}}
+document.getElementById("adminbtn").addEventListener("click",openAdmin);
+document.getElementById("adminclose").addEventListener("click",closeAdmin);
+document.getElementById("adminpanel").addEventListener("click",function(e){if(e.target.id==="adminpanel")closeAdmin();});
+document.getElementById("invbtn").addEventListener("click",doInvite);
+document.getElementById("invemail").addEventListener("keydown",function(e){if(e.key==="Enter")doInvite();});
+document.getElementById("ulist").addEventListener("click",function(e){var r=e.target.closest("[data-rm]");if(r)doRemove(r.dataset.rm);});
 if(tok)start();
 </script></body></html>
