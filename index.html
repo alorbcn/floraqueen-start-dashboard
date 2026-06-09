@@ -30,7 +30,8 @@ header.top{display:flex;align-items:center;justify-content:space-between;padding
 .sec{display:flex;align-items:baseline;gap:14px;margin:32px 2px 14px}.sec h2{font-family:Fraunces;font-weight:600;font-size:22px}.sec .ctx{font-family:Fraunces;font-style:italic;font-size:22px;color:var(--soft)}.sec .rule{flex:1;height:1px;background:var(--line)}
 .summary{margin-top:16px;background:linear-gradient(180deg,#fff,var(--s2));border:1px solid var(--line);border-left:3px solid var(--forest);border-radius:14px;padding:18px 22px;box-shadow:var(--sh);position:relative}
 .summary .tag{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--forest);font-weight:700;margin-bottom:8px}.summary p{font-family:Fraunces;font-size:17px;line-height:1.5}.summary .pos{color:var(--profit);font-weight:600}.summary .neg{color:var(--cost);font-weight:600}.summary .rec{display:block;margin-top:9px;font-family:Archivo;font-size:13.5px;color:var(--soft)}.summary .rec b{color:var(--forest)}.summary .wc{position:absolute;right:16px;bottom:10px;font-size:10.5px;color:var(--muted)}
-.cards{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px 16px;box-shadow:var(--sh);display:flex;flex-direction:column;gap:9px;min-height:114px}.card .k{font-size:13px;font-weight:600;color:var(--soft)}.card .v{font-family:Fraunces;font-weight:600;font-size:23px}.card .dr{display:flex;gap:7px;align-items:center;margin-top:auto;font-size:13px}.card .chg{font-weight:600}.card .chg.up{color:var(--profit)}.card .chg.down{color:var(--cost)}.card .vs{color:var(--muted)}.card.feat{background:linear-gradient(160deg,var(--forest2),var(--forest));color:#fff}.card.feat .k{color:rgba(255,255,255,.78)}.card.feat .v{color:#fff}.card.feat .chg.up{color:#9be8c4}.card.feat .chg.down{color:#ffcf9e}.card.feat .vs{color:rgba(255,255,255,.6)}
+.mmcap{display:flex;align-items:center;gap:9px;margin:18px 2px 8px;font-size:11px;letter-spacing:.04em;font-weight:700;color:var(--soft)}.mmcap.first{margin-top:10px}.mmcap i{font-style:normal;font-weight:500;letter-spacing:0;font-size:11px;color:var(--muted)}.mmcap .dotc{width:9px;height:9px;border-radius:50%;flex:none}.mmcap .dotc.all{background:var(--forest)}.mmcap .dotc.kw{background:var(--lineS)}
+.cards{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px 13px;box-shadow:var(--sh);display:flex;flex-direction:column;gap:5px;min-height:0}.card .k{font-size:13px;font-weight:600;color:var(--soft)}.card .v{font-family:Fraunces;font-weight:600;font-size:23px}.card .dr{display:flex;gap:7px;align-items:center;margin-top:2px;font-size:13px}.card .chg{font-weight:600}.card .chg.up{color:var(--profit)}.card .chg.down{color:var(--cost)}.card .vs{color:var(--muted)}.card.feat{background:linear-gradient(160deg,var(--forest2),var(--forest));color:#fff}.card.feat .k{color:rgba(255,255,255,.78)}.card.feat .v{color:#fff}.card.feat .chg.up{color:#9be8c4}.card.feat .chg.down{color:#ffcf9e}.card.feat .vs{color:rgba(255,255,255,.6)}
 .amh,.arow{display:grid;grid-template-columns:120px 1fr 92px 92px 100px;gap:14px;align-items:center}.amap{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--sh);padding:6px 20px 18px}.amh{padding:12px 0 8px;border-bottom:1px solid var(--lineS)}.amh .h{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700;text-align:right}.amh .h.l{text-align:left}.amh .h.cost{color:var(--cost)}.amh .h.sales{color:var(--sales)}.amh .h.profit{color:var(--profit)}
 .arow{padding:8px 0;border-top:1px solid var(--line)}.arow:first-child{border-top:0}.arow .name{font-weight:600;font-size:13px}.arow .bar{height:15px;border-radius:4px;background:var(--s2);position:relative;overflow:hidden}.arow .sb{position:absolute;inset:0;background:rgba(12,16,13,.82);border-radius:4px}.arow .cb{position:absolute;left:0;top:0;bottom:0;background:var(--cost);opacity:.9;border-radius:4px}.arow .num{text-align:right;font-size:12.5px;font-variant-numeric:tabular-nums}.arow .num.cost{color:var(--cost)}.arow .num.sales{color:var(--sales);font-weight:600}.arow .num.profit{font-weight:700}
 .legend{display:flex;gap:18px;margin-top:13px;font-size:11px;color:var(--muted)}.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:-1px}
@@ -73,7 +74,10 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
   </nav>
   <div class="summary"><div class="tag">✿ Max reads the room</div><p id="summary-text"></p><span class="wc" id="wc"></span></div>
   <div class="sec"><h2>Money map</h2><span class="ctx" id="mmctx"></span><span class="rule"></span></div>
+  <div class="mmcap first"><span class="dotc all"></span>All campaigns + keywords<i>all campaign types · matches Max daily email</i></div>
   <div class="cards" id="cards"></div>
+  <div class="mmcap"><span class="dotc kw"></span>Search keywords only<i>tracked keywords — a subset of the totals above</i></div>
+  <div class="cards" id="cards-kw"></div>
   <div class="sec"><h2>Where the money is</h2><span class="ctx">by account</span><span class="rule"></span></div>
   <div class="amap"><div class="amh"><div class="h l">Account</div><div class="h l">Sales vs cost</div><div class="h cost">Cost</div><div class="h sales">Sales</div><div class="h profit">Profit</div></div><div id="amap"></div>
     <div class="legend"><span><i style="background:rgba(12,16,13,.82)"></i>Sales</span><span><i style="background:var(--cost)"></i>Cost</span><span><i style="background:var(--profit)"></i>Profit</span><span><i style="background:var(--loss)"></i>Loss</span></div></div>
@@ -84,7 +88,7 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
     <div class="panel worst" id="kw-worst"><div class="ph"><div class="pt"><span class="dot"></span>Worst 20 keywords</div><button class="pctbtn on" data-p="kw-worst">%</button></div>
       <table><thead><tr><th class="l">#</th><th class="l">Keyword</th><th class="l">Match</th><th>Cost · %tot</th><th>Sales · %tot</th><th>Profit · %tot</th></tr></thead><tbody id="worst"></tbody><tfoot id="worstf"></tfoot></table></div>
   </div>
-  <footer><b>Source:</b> Google Ads warehouse (keyword_metrics) · margin 40% (profit = estimate) · EUR · Europe/Madrid · <span id="freshness"></span><br><b>Max is read-only.</b> Data refreshes daily after the 06:00 import.</footer>
+  <footer><b>Source:</b> Google Ads warehouse — top totals from campaign_metrics (all campaign types, matches Max email); keyword detail from keyword_metrics · margin 40% (profit = estimate) · EUR · Europe/Madrid · <span id="freshness"></span><br><b>Max is read-only.</b> Data refreshes daily after the 06:00 import.</footer>
 </div>
 
 <script>
@@ -116,7 +120,10 @@ async function start(){
   catch(e){ if(e.message!=="auth")document.getElementById("cards").innerHTML='<div id="loading" style="grid-column:1/-1">Error: '+e.message+'</div>'; }
 }
 const selected=()=> sel.size===0?DATA.accounts:DATA.accounts.filter(a=>sel.has(a.name));
-function totals(){let c=0,s=0,cp=0,sp=0;selected().forEach(a=>{c+=a.c;s+=a.s;cp+=a.cp;sp+=a.sp;});return{c,s,p:s*M-c,roas:c?s/c:0,poas:c?s*M/c:0,cp,sp,pp:sp*M-cp,roasp:cp?sp/cp:0};}
+const selectedAll=()=> sel.size===0?(DATA.accountsAll||[]):(DATA.accountsAll||[]).filter(a=>sel.has(a.name));
+function sumAccts(list){let c=0,s=0,cp=0,sp=0;list.forEach(a=>{c+=a.c;s+=a.s;cp+=a.cp;sp+=a.sp;});return{c,s,p:s*M-c,roas:c?s/c:0,poas:c?s*M/c:0,cp,sp,pp:sp*M-cp,roasp:cp?sp/cp:0};}
+function totals(){return sumAccts(selected());}
+function allTotals(){return sumAccts(selectedAll());}
 function lbl(){return sel.size===0?"All accounts · "+DATA.accounts.length:sel.size===1?[...sel][0]:sel.size+" accounts";}
 
 function render(){
@@ -124,13 +131,17 @@ function render(){
   document.getElementById("freshness").textContent="data through "+DATA.maxDate+(DATA.curRange?" · "+DATA.curRange[0]+"→"+DATA.curRange[1]:"");
   renderDD();renderTop3();renderMoney();renderAmap();renderKW();narrative();
 }
-function renderMoney(){const t=totals();
-  document.getElementById("mmctx").innerHTML=lbl()+" · "+LABEL[tf]+(cmp?" · "+VS[tf]:"")+(DATA.sample?'':'');
+function moneyCards(t){
   const chg=(a,b)=>{const d=b?((a-b)/b*100):0;return{d,c:d>=0?'up':'down',a:d>=0?'▲':'▼'};};
   const mk=(k,v,cur,prev,f)=>{const x=chg(cur,prev);const dr=cmp?'<div class="dr"><span class="chg '+x.c+'">'+x.a+' '+Math.abs(x.d).toFixed(0)+'%</span><span class="vs">'+VS[tf]+'</span></div>':'';
     return '<div class="card'+(f?' feat':'')+'"><div class="k">'+k+'</div><div class="v tnum">'+v+'</div>'+dr+'</div>';};
-  document.getElementById("cards").innerHTML=mk("Cost",eur(t.c),t.c,t.cp)+mk("Sales",eur(t.s),t.s,t.sp)+mk("Profit · est.",eur(t.p),t.p,t.pp,1)+mk("ROAS",t.roas.toFixed(2)+"×",t.roas,t.roasp)+
-    '<div class="card"><div class="k">POAS · est.</div><div class="v tnum">'+t.poas.toFixed(2)+'</div>'+(cmp?'<div class="dr"><span class="chg '+(t.poas>=t.roasp*M?'up':'down')+'">'+(t.poas>=t.roasp*M?'▲':'▼')+' '+Math.abs(((t.poas-t.roasp*M)/((t.roasp*M)||1))*100).toFixed(0)+'%</span><span class="vs">'+VS[tf]+'</span></div>':'')+'</div>';
+  const poas='<div class="card"><div class="k">POAS · est.</div><div class="v tnum">'+t.poas.toFixed(2)+'</div>'+(cmp?'<div class="dr"><span class="chg '+(t.poas>=t.roasp*M?'up':'down')+'">'+(t.poas>=t.roasp*M?'▲':'▼')+' '+Math.abs(((t.poas-t.roasp*M)/((t.roasp*M)||1))*100).toFixed(0)+'%</span><span class="vs">'+VS[tf]+'</span></div>':'')+'</div>';
+  return mk("Cost",eur(t.c),t.c,t.cp)+mk("Sales",eur(t.s),t.s,t.sp)+mk("Profit · est.",eur(t.p),t.p,t.pp,1)+mk("ROAS",t.roas.toFixed(2)+"×",t.roas,t.roasp)+poas;
+}
+function renderMoney(){
+  document.getElementById("mmctx").innerHTML=lbl()+" · "+LABEL[tf]+(cmp?" · "+VS[tf]:"");
+  document.getElementById("cards").innerHTML=moneyCards(allTotals());
+  document.getElementById("cards-kw").innerHTML=moneyCards(totals());
 }
 function renderAmap(){const accs=selected().map(a=>({name:a.name,c:a.c,s:a.s,p:a.s*M-a.c})).sort((a,b)=>b.s-a.s);const mx=Math.max(1,...accs.map(a=>a.s));
   document.getElementById("amap").innerHTML=accs.map(a=>'<div class="arow"><div class="name">'+a.name+'</div><div class="bar"><div class="sb" style="width:'+(a.s/mx*100).toFixed(1)+'%"></div><div class="cb" style="width:'+(a.c/mx*100).toFixed(1)+'%"></div></div><div class="num cost">'+eur(a.c)+'</div><div class="num sales">'+eur(a.s)+'</div><div class="num profit" style="color:'+(a.p>=0?'var(--profit)':'var(--loss)')+'">'+(a.p>=0?'+':'')+eur(a.p)+'</div></div>').join('');
@@ -144,7 +155,7 @@ function renderKW(){const TC=DATA.allkw.cost||1,TS=DATA.allkw.sales||1,TP=DATA.a
   document.getElementById("bestf").innerHTML=foot(DATA.best);document.getElementById("worstf").innerHTML=foot(DATA.worst);
   document.getElementById("kwctx").textContent="ranked by profit · "+LABEL[tf]+" · % of all-keyword totals";
 }
-function narrative(){const t=totals();const dS=t.sp?((t.s-t.sp)/t.sp*100):0,dP=t.pp?((t.p-t.pp)/t.pp*100):0;
+function narrative(){const t=allTotals();const dS=t.sp?((t.s-t.sp)/t.sp*100):0,dP=t.pp?((t.p-t.pp)/t.pp*100):0;
   const sp=(v,x)=>'<span class="'+(v>=0?'pos':'neg')+'">'+x+'</span>';
   const scope=sel.size===0?"All "+DATA.accounts.length+" accounts":lbl();
   let p=scope+" · "+LABEL[tf]+": spent <b>"+eur(t.c)+"</b> for <b>"+eur(t.s)+"</b> in sales (est. profit <b>"+eur(t.p)+"</b>, POAS "+t.poas.toFixed(2)+"). Sales "+sp(dS,(dS>=0?'up ':'down ')+Math.abs(dS).toFixed(0)+'%')+" and profit "+sp(dP,(dP>=0?'up ':'down ')+Math.abs(dP).toFixed(0)+'%')+" "+VS[tf]+".";
