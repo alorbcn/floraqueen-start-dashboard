@@ -57,6 +57,10 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
 .invmsg{font-size:13px;margin-bottom:14px;line-height:1.5}.invmsg .ok{color:var(--profit);font-weight:600}.invmsg .err{color:var(--cost);font-weight:600}.invmsg code{background:var(--s2);padding:2px 7px;border-radius:5px;font-size:12.5px}
 .utable{width:100%;border-collapse:collapse}.utable th{font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700;text-align:left;padding:8px 10px;background:var(--s2)}.utable td{padding:9px 10px;border-top:1px solid var(--line);font-size:13px;vertical-align:middle}.utable .rolepill{font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;text-transform:uppercase}.utable .rolepill.admin{background:rgba(31,107,79,.1);color:var(--forest)}.utable .rolepill.viewer{background:var(--s2);color:var(--soft)}
 .urm{border:1px solid var(--lineS);background:#fff;color:var(--cost);border-radius:7px;padding:4px 10px;font:inherit;font-size:12px;cursor:pointer}.urm:hover{background:var(--cost);color:#fff;border-color:var(--cost)}
+.rowchk,.selall{cursor:pointer;width:14px;height:14px;accent-color:var(--forest);vertical-align:middle}
+.kwd-card{border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:12px;background:#fff}.kwd-h{display:flex;align-items:center;gap:8px;margin-bottom:10px}.kwd-kw{font-family:Fraunces;font-weight:600;font-size:16px;color:#0C100D;word-break:break-word}
+.kwd-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.kwd-m{background:var(--s2);border-radius:9px;padding:8px 10px}.kwd-m span{display:block;font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:2px}.kwd-m b{font-family:Fraunces;font-weight:600;font-size:17px}
+.kwd-terms{margin-top:10px;font-size:12px;color:var(--muted)}@media(max-width:700px){.kwd-metrics{grid-template-columns:repeat(2,1fr)}}
 </style></head>
 <body>
 <div id="login"><div class="lbox"><span class="logo" style="font-family:Fraunces;color:#16513b">Max<span style="color:#B8456B">✿</span></span>
@@ -96,12 +100,18 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
     <div class="legend"><span><i style="background:rgba(12,16,13,.82)"></i>Sales</span><span><i style="background:var(--cost)"></i>Cost</span><span><i style="background:var(--profit)"></i>Profit</span><span><i style="background:var(--loss)"></i>Loss</span></div></div>
   <div class="sec"><h2>Keyword leaders &amp; laggards</h2><span class="ctx" id="kwctx">ranked by profit</span><span class="rule"></span></div>
   <div class="kw">
-    <div class="panel best" id="kw-best"><div class="ph"><div class="pt"><span class="dot"></span>Best 20 keywords</div><div class="phr"><select id="btfsel" class="tfsel" title="Timeframe for best keywords"><option value="1w">1 week</option><option value="2w">2 weeks</option><option value="mtd">Month to date</option><option value="30d">30 days</option><option value="60d">60 days</option><option value="90d">90 days</option></select><button class="iconbtn" id="dlbest" title="Download as Excel (.xlsx)" aria-label="Download as Excel"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11"/><path d="M7.5 10.5 12 15l4.5-4.5"/><path d="M5 20h14"/></svg></button><button class="pctbtn on" data-p="kw-best">%</button></div></div>
-      <table><thead><tr><th class="l">#</th><th class="l">Keyword</th><th class="l">Match</th><th>Cost · %tot</th><th>Sales · %tot</th><th>Profit · %tot</th></tr></thead><tbody id="best"></tbody><tfoot id="bestf"></tfoot></table></div>
-    <div class="panel worst" id="kw-worst"><div class="ph"><div class="pt"><span class="dot"></span>Worst 20 keywords</div><div class="phr"><select id="wtfsel" class="tfsel" title="Timeframe for worst keywords"><option value="1w">1 week</option><option value="2w">2 weeks</option><option value="mtd">Month to date</option><option value="30d">30 days</option><option value="60d">60 days</option><option value="90d">90 days</option></select><button class="iconbtn" id="dlworst" title="Download as Excel (.xlsx)" aria-label="Download as Excel"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11"/><path d="M7.5 10.5 12 15l4.5-4.5"/><path d="M5 20h14"/></svg></button><button class="pctbtn on" data-p="kw-worst">%</button></div></div>
-      <table><thead><tr><th class="l">#</th><th class="l">Keyword</th><th class="l">Match</th><th>Cost · %tot</th><th>Sales · %tot</th><th>Profit · %tot</th></tr></thead><tbody id="worst"></tbody><tfoot id="worstf"></tfoot></table></div>
+    <div class="panel best" id="kw-best"><div class="ph"><div class="pt"><span class="dot"></span>Best 20 keywords</div><div class="phr"><select id="btfsel" class="tfsel" title="Timeframe for best keywords"><option value="1w">1 week</option><option value="2w">2 weeks</option><option value="mtd">Month to date</option><option value="30d">30 days</option><option value="60d">60 days</option><option value="90d">90 days</option></select><button class="iconbtn" id="dlbest" title="Download as Excel (.xlsx)" aria-label="Download as Excel"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11"/><path d="M7.5 10.5 12 15l4.5-4.5"/><path d="M5 20h14"/></svg></button><button class="iconbtn" id="eyebest" title="View detail for selected keywords" aria-label="View keyword detail"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path><circle cx="12" cy="12" r="3"></circle></svg></button><button class="pctbtn on" data-p="kw-best">%</button></div></div>
+      <table><thead><tr><th class="l"><input type="checkbox" class="selall" data-tb="best" title="Select all"></th><th class="l">Keyword</th><th class="l">Match</th><th>Cost · %tot</th><th>Sales · %tot</th><th>Profit · %tot</th></tr></thead><tbody id="best"></tbody><tfoot id="bestf"></tfoot></table></div>
+    <div class="panel worst" id="kw-worst"><div class="ph"><div class="pt"><span class="dot"></span>Worst 20 keywords</div><div class="phr"><select id="wtfsel" class="tfsel" title="Timeframe for worst keywords"><option value="1w">1 week</option><option value="2w">2 weeks</option><option value="mtd">Month to date</option><option value="30d">30 days</option><option value="60d">60 days</option><option value="90d">90 days</option></select><button class="iconbtn" id="dlworst" title="Download as Excel (.xlsx)" aria-label="Download as Excel"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11"/><path d="M7.5 10.5 12 15l4.5-4.5"/><path d="M5 20h14"/></svg></button><button class="iconbtn" id="eyeworst" title="View detail for selected keywords" aria-label="View keyword detail"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path><circle cx="12" cy="12" r="3"></circle></svg></button><button class="pctbtn on" data-p="kw-worst">%</button></div></div>
+      <table><thead><tr><th class="l"><input type="checkbox" class="selall" data-tb="worst" title="Select all"></th><th class="l">Keyword</th><th class="l">Match</th><th>Cost · %tot</th><th>Sales · %tot</th><th>Profit · %tot</th></tr></thead><tbody id="worst"></tbody><tfoot id="worstf"></tfoot></table></div>
   </div>
   <footer><b>Source:</b> Google Ads warehouse — top totals from campaign_metrics (all campaign types, matches Max email); keyword detail from keyword_metrics · margin 40% (profit = estimate) · EUR · Europe/Madrid · <span id="freshness"></span><br><b>Max is read-only.</b> Data refreshes daily after the 06:00 import.</footer>
+  <div id="kwdetail" class="adminwrap hidden">
+    <div class="adminbox" style="width:880px">
+      <div class="adminhd"><div><div class="admintitle" id="kwd-title">Keyword detail</div><div class="adminsub" id="kwd-sub"></div></div><button class="adminx" id="kwd-close" title="Close">✕</button></div>
+      <div class="adminsec"><div id="kwd-body"></div></div>
+    </div>
+  </div>
   <div id="adminpanel" class="adminwrap hidden">
     <div class="adminbox">
       <div class="adminhd"><div><div class="admintitle">Admin settings</div><div class="adminsub">Manage who can access the Max dashboard</div></div><button class="adminx" id="adminclose" title="Close">✕</button></div>
@@ -180,12 +190,12 @@ function renderMoney(){
 function renderAmap(){const accs=selected().map(a=>({name:a.name,c:a.c,s:a.s,p:a.s*M-a.c})).sort((a,b)=>b.s-a.s);const mx=Math.max(1,...accs.map(a=>a.s));
   document.getElementById("amap").innerHTML=accs.map(a=>'<div class="arow"><div class="name">'+a.name+'</div><div class="bar"><div class="sb" style="width:'+(a.s/mx*100).toFixed(1)+'%"></div><div class="cb" style="width:'+(a.c/mx*100).toFixed(1)+'%"></div></div><div class="num cost">'+eur(a.c)+'</div><div class="num sales">'+eur(a.s)+'</div><div class="num profit" style="color:'+(a.p>=0?'var(--profit)':'var(--loss)')+'">'+(a.p>=0?'+':'')+eur(a.p)+'</div></div>').join('');
 }
-function fillKW(rows,totals,bodyId,footId){const TC=totals.cost||1,TS=totals.sales||1,TP=totals.ppool||1;
+function fillKW(rows,totals,bodyId,footId){const TC=totals.cost||1,TS=totals.sales||1,TP=totals.ppool||1;const ae=x=>String(x).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
   const mt=m=>'<span class="mt '+m+'">'+m[0].toUpperCase()+m.slice(1)+'</span>';
   const cell=(cl,v,tot,p)=>{const c=p?(v>=0?'pos':'neg'):'';return '<td class="cell '+cl+'"><span class="m '+c+'">'+(p&&v>=0?'+':'')+eur(v)+'</span><span class="sep">/</span><span class="pct">'+(v/tot*100).toFixed(1)+'%</span></td>';};
-  const body=d=>d.map((r,i)=>{const[k,m,c,s]=r;const p=s*M-c;return '<tr><td class="l rank">'+(i+1)+'</td><td class="l kwn" title="'+k+'">'+k+'</td><td class="l">'+mt(m)+'</td>'+cell('cost',c,TC)+cell('sales',s,TS)+cell('prof',p,TP,1)+'</tr>';}).join('');
+  const body=d=>d.map((r,i)=>{const[k,m,c,s]=r;const p=s*M-c;return '<tr><td class="l"><input type="checkbox" class="rowchk" data-k="'+ae(k)+'|'+m+'"></td><td class="l kwn" title="'+ae(k)+'">'+k+'</td><td class="l">'+mt(m)+'</td>'+cell('cost',c,TC)+cell('sales',s,TS)+cell('prof',p,TP,1)+'</tr>';}).join('');
   const foot=d=>{const c=d.reduce((x,r)=>x+r[2],0),s=d.reduce((x,r)=>x+r[3],0),p=s*M-c;return '<tr><td class="l" colspan="3">Top 20 total</td><td>'+eur(c)+'<span class="sep">/</span><span class="pct">'+(c/TC*100).toFixed(1)+'%</span></td><td>'+eur(s)+'<span class="sep">/</span><span class="pct">'+(s/TS*100).toFixed(1)+'%</span></td><td class="'+(p>=0?'pos':'neg')+'">'+(p>=0?'+':'')+eur(p)+'<span class="sep">/</span><span class="pct">'+(p/TP*100).toFixed(1)+'%</span></td></tr>';};
-  document.getElementById(bodyId).innerHTML=body(rows);document.getElementById(footId).innerHTML=foot(rows);}
+  document.getElementById(bodyId).innerHTML=body(rows);document.getElementById(footId).innerHTML=foot(rows);const sa=document.querySelector('.selall[data-tb="'+bodyId+'"]');if(sa)sa.checked=false;}
 function renderKW(){document.getElementById("kwctx").textContent="active keywords only · ranked by profit · % of active-keyword totals";renderBest();renderWorst();}
 function renderBest(){const B=wcache[btf];
   if(!B){document.getElementById("best").innerHTML='<tr><td class="l" colspan="6" style="padding:14px;color:var(--muted)">Loading '+WLABEL[btf]+'…</td></tr>';document.getElementById("bestf").innerHTML='';
@@ -238,6 +248,29 @@ function dl_best(){const B=wcache[btf];if(!B||!B.best||!B.best.length)return;
   const tc=B.best.reduce((x,r)=>x+r[2],0),ts=B.best.reduce((x,r)=>x+r[3],0),tp=Math.round(ts*M-tc);
   rows.push(["","Top 20 total","",tc,+(tc/TC*100).toFixed(1),ts,+(ts/TS*100).toFixed(1),tp,+(tp/TP*100).toFixed(1)]);
   xlsxDownload(rows,"best-20-keywords-"+btf+"-"+(DATA?DATA.maxDate:"")+".xlsx","Best 20 ("+(WLABEL[btf]||btf)+")");}
+function selectedKeys(panel){return [...document.getElementById(panel).querySelectorAll(".rowchk:checked")].map(c=>c.dataset.k);}
+async function openKwDetail(panel){
+  const tf=panel==="best"?btf:wtf; const keys=selectedKeys(panel);
+  if(!keys.length){alert("Select one or more keywords first (tick the checkboxes), then click the eye.");return;}
+  document.getElementById("kwd-title").textContent=(panel==="best"?"Best":"Worst")+" keywords — detail";
+  document.getElementById("kwd-sub").textContent=keys.length+" selected · "+(WLABEL[tf]||tf)+" · loading…";
+  document.getElementById("kwd-body").innerHTML='<div style="color:#8C8B80;padding:24px;text-align:center">Loading…</div>';
+  document.getElementById("kwdetail").classList.remove("hidden");
+  try{
+    const r=await fetch(FN+"?api=kwdetail&tf="+tf,{method:"POST",headers:{Authorization:"Bearer "+tok,"Content-Type":"application/json"},body:JSON.stringify({keys})});
+    const j=await r.json(); if(!r.ok)throw new Error(j.error||"error");
+    const by={};(j.detail||[]).forEach(d=>by[d.keyword+"|"+d.match]=d);
+    document.getElementById("kwd-sub").textContent=keys.length+" keyword"+(keys.length>1?"s":"")+" · "+(WLABEL[tf]||tf)+(j.range?" · "+j.range[0]+"→"+j.range[1]:"");
+    const num=n=>(+n).toLocaleString("en-US");
+    document.getElementById("kwd-body").innerHTML=keys.map(key=>{const parts=key.split("|");const m=parts.pop();const kw=parts.join("|");const d=by[key];
+      const head='<div class="kwd-h"><span class="kwd-kw">'+kw+'</span> <span class="mt '+m+'">'+(m?m[0].toUpperCase()+m.slice(1):'')+'</span></div>';
+      if(!d)return '<div class="kwd-card">'+head+'<div style="color:#8C8B80;font-size:13px">No data for this keyword in the selected window.</div></div>';
+      const prof=Math.round(d.sales*M-d.cost),poas=d.cost?(d.sales*M/d.cost):0;
+      const met=(l,v)=>'<div class="kwd-m"><span>'+l+'</span><b>'+v+'</b></div>';
+      return '<div class="kwd-card">'+head+'<div class="kwd-metrics">'+met("Impressions",num(d.impressions))+met("Clicks",num(d.clicks))+met("CTR",d.ctr+"%")+met("Cost",eur(d.cost))+met("Sales",eur(d.sales))+met("Conv.",d.conv)+met("Profit · est.",(prof>=0?"+":"")+eur(prof))+met("POAS · est.",poas.toFixed(2))+'</div><div class="kwd-terms">↳ Real search terms &amp; negative-keyword ideas — coming in the next update</div></div>';
+    }).join('');
+  }catch(e){if(e.message!=="auth")document.getElementById("kwd-body").innerHTML='<div style="color:#C0392B;padding:24px">'+e.message+'</div>';}
+}
 function narrative(){const t=allTotals();const dS=t.sp?((t.s-t.sp)/t.sp*100):0,dP=t.pp?((t.p-t.pp)/t.pp*100):0;
   const sp=(v,x)=>'<span class="'+(v>=0?'pos':'neg')+'">'+x+'</span>';
   const scope=sel.size===0?"All "+DATA.accounts.length+" accounts":lbl();
@@ -262,6 +295,11 @@ document.getElementById("wtfsel").addEventListener("change",e=>{wtf=e.target.val
 document.getElementById("dlworst").addEventListener("click",dl_worst);
 document.getElementById("btfsel").addEventListener("change",e=>{btf=e.target.value;renderBest();});
 document.getElementById("dlbest").addEventListener("click",dl_best);
+document.getElementById("eyebest").addEventListener("click",()=>openKwDetail("best"));
+document.getElementById("eyeworst").addEventListener("click",()=>openKwDetail("worst"));
+document.getElementById("kwd-close").addEventListener("click",()=>document.getElementById("kwdetail").classList.add("hidden"));
+document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id==="kwdetail")document.getElementById("kwdetail").classList.add("hidden");});
+document.querySelectorAll(".selall").forEach(sa=>sa.addEventListener("change",function(){var tb=this.dataset.tb,ck=this.checked;document.getElementById(tb).querySelectorAll(".rowchk").forEach(c=>c.checked=ck);}));
 async function adminApi(action,body){const r=await fetch(FN+"?api=admin&action="+action,{method:body?"POST":"GET",headers:Object.assign({Authorization:"Bearer "+tok},body?{"Content-Type":"application/json"}:{}),body:body?JSON.stringify(body):undefined});const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||("HTTP "+r.status));return j;}
 function openAdmin(){document.getElementById("adminpanel").classList.remove("hidden");document.getElementById("invmsg").innerHTML="";loadUsers();}
 function closeAdmin(){document.getElementById("adminpanel").classList.add("hidden");}
