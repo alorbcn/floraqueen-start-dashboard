@@ -96,7 +96,7 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
     <div class="legend"><span><i style="background:rgba(12,16,13,.82)"></i>Sales</span><span><i style="background:var(--cost)"></i>Cost</span><span><i style="background:var(--profit)"></i>Profit</span><span><i style="background:var(--loss)"></i>Loss</span></div></div>
   <div class="sec"><h2>Keyword leaders &amp; laggards</h2><span class="ctx" id="kwctx">ranked by profit</span><span class="rule"></span></div>
   <div class="kw">
-    <div class="panel best" id="kw-best"><div class="ph"><div class="pt"><span class="dot"></span>Best 20 keywords</div><button class="pctbtn on" data-p="kw-best">%</button></div>
+    <div class="panel best" id="kw-best"><div class="ph"><div class="pt"><span class="dot"></span>Best 20 keywords</div><div class="phr"><select id="btfsel" class="tfsel" title="Timeframe for best keywords"><option value="1w">1 week</option><option value="2w">2 weeks</option><option value="mtd">Month to date</option><option value="30d">30 days</option><option value="60d">60 days</option><option value="90d">90 days</option></select><button class="iconbtn" id="dlbest" title="Download as Excel (.xlsx)" aria-label="Download as Excel"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11"/><path d="M7.5 10.5 12 15l4.5-4.5"/><path d="M5 20h14"/></svg></button><button class="pctbtn on" data-p="kw-best">%</button></div></div>
       <table><thead><tr><th class="l">#</th><th class="l">Keyword</th><th class="l">Match</th><th>Cost · %tot</th><th>Sales · %tot</th><th>Profit · %tot</th></tr></thead><tbody id="best"></tbody><tfoot id="bestf"></tfoot></table></div>
     <div class="panel worst" id="kw-worst"><div class="ph"><div class="pt"><span class="dot"></span>Worst 20 keywords</div><div class="phr"><select id="wtfsel" class="tfsel" title="Timeframe for worst keywords"><option value="1w">1 week</option><option value="2w">2 weeks</option><option value="mtd">Month to date</option><option value="30d">30 days</option><option value="60d">60 days</option><option value="90d">90 days</option></select><button class="iconbtn" id="dlworst" title="Download as Excel (.xlsx)" aria-label="Download as Excel"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11"/><path d="M7.5 10.5 12 15l4.5-4.5"/><path d="M5 20h14"/></svg></button><button class="pctbtn on" data-p="kw-worst">%</button></div></div>
       <table><thead><tr><th class="l">#</th><th class="l">Keyword</th><th class="l">Match</th><th>Cost · %tot</th><th>Sales · %tot</th><th>Profit · %tot</th></tr></thead><tbody id="worst"></tbody><tfoot id="worstf"></tfoot></table></div>
@@ -125,7 +125,7 @@ const eur=n=>"€"+Math.round(n).toLocaleString("en-US");
 const LABEL={yd:"Yesterday",["1w"]:"1 week",["2w"]:"2 weeks",mtd:"Month to date",pm:"Past month"};
 const VS={yd:"vs day before",["1w"]:"vs previous week",["2w"]:"vs prior 2 weeks",mtd:"vs same period last month",pm:"vs previous month"};
 let tok=localStorage.getItem("max_tok")||"",tf="1w",cmp=true,sel=new Set(),cache={},DATA=null;
-let wtf="1w",wcache={};const WLABEL={["1w"]:"1 week",["2w"]:"2 weeks",mtd:"Month to date",["30d"]:"30 days",["60d"]:"60 days",["90d"]:"90 days"};
+let wtf="1w",btf="1w",wcache={};const WLABEL={["1w"]:"1 week",["2w"]:"2 weeks",mtd:"Month to date",["30d"]:"30 days",["60d"]:"60 days",["90d"]:"90 days"};
 
 async function login(){const b=document.getElementById("loginbtn");const e=document.getElementById("email").value.trim(),p=document.getElementById("pw").value;
   document.getElementById("lerr").textContent="";b.disabled=true;b.textContent="Signing in…";
@@ -140,8 +140,8 @@ document.getElementById("pw").addEventListener("keydown",e=>{if(e.key==="Enter")
 async function fetchTF(t){ if(cache[t])return cache[t];
   const r=await fetch(FN+"?api=data&tf="+t,{headers:{Authorization:"Bearer "+tok}});
   if(r.status===401){localStorage.removeItem("max_tok");tok="";document.getElementById("login").classList.remove("hidden");document.getElementById("app").classList.add("hidden");throw new Error("auth");}
-  const j=await r.json(); if(!r.ok)throw new Error(j.error||"error"); cache[t]=j; if(j.worst&&j.allkw&&WLABEL[j.tf]&&!wcache[j.tf])wcache[j.tf]={tf:j.tf,worst:j.worst,allkw:j.allkw}; return j; }
-async function fetchWorst(t){ if(wcache[t])return wcache[t];
+  const j=await r.json(); if(!r.ok)throw new Error(j.error||"error"); cache[t]=j; if(j.worst&&j.allkw&&WLABEL[j.tf]&&!wcache[j.tf])wcache[j.tf]={tf:j.tf,best:j.best,worst:j.worst,allkw:j.allkw}; return j; }
+async function fetchKwext(t){ if(wcache[t])return wcache[t];
   const r=await fetch(FN+"?api=worstkw&tf="+t,{headers:{Authorization:"Bearer "+tok}});
   if(r.status===401){localStorage.removeItem("max_tok");tok="";document.getElementById("login").classList.remove("hidden");document.getElementById("app").classList.add("hidden");throw new Error("auth");}
   const j=await r.json(); if(!r.ok)throw new Error(j.error||"error"); wcache[t]=j; return j; }
@@ -186,10 +186,14 @@ function fillKW(rows,totals,bodyId,footId){const TC=totals.cost||1,TS=totals.sal
   const body=d=>d.map((r,i)=>{const[k,m,c,s]=r;const p=s*M-c;return '<tr><td class="l rank">'+(i+1)+'</td><td class="l kwn" title="'+k+'">'+k+'</td><td class="l">'+mt(m)+'</td>'+cell('cost',c,TC)+cell('sales',s,TS)+cell('prof',p,TP,1)+'</tr>';}).join('');
   const foot=d=>{const c=d.reduce((x,r)=>x+r[2],0),s=d.reduce((x,r)=>x+r[3],0),p=s*M-c;return '<tr><td class="l" colspan="3">Top 20 total</td><td>'+eur(c)+'<span class="sep">/</span><span class="pct">'+(c/TC*100).toFixed(1)+'%</span></td><td>'+eur(s)+'<span class="sep">/</span><span class="pct">'+(s/TS*100).toFixed(1)+'%</span></td><td class="'+(p>=0?'pos':'neg')+'">'+(p>=0?'+':'')+eur(p)+'<span class="sep">/</span><span class="pct">'+(p/TP*100).toFixed(1)+'%</span></td></tr>';};
   document.getElementById(bodyId).innerHTML=body(rows);document.getElementById(footId).innerHTML=foot(rows);}
-function renderKW(){fillKW(DATA.best,DATA.allkw,"best","bestf");document.getElementById("kwctx").textContent="active keywords only · ranked by profit · % of active-keyword totals";renderWorst();}
+function renderKW(){document.getElementById("kwctx").textContent="active keywords only · ranked by profit · % of active-keyword totals";renderBest();renderWorst();}
+function renderBest(){const B=wcache[btf];
+  if(!B){document.getElementById("best").innerHTML='<tr><td class="l" colspan="6" style="padding:14px;color:var(--muted)">Loading '+WLABEL[btf]+'…</td></tr>';document.getElementById("bestf").innerHTML='';
+    fetchKwext(btf).then(()=>{if(wcache[btf])renderBest();}).catch(e=>{if(e.message!=="auth")document.getElementById("best").innerHTML='<tr><td class="l" colspan="6" style="padding:14px;color:var(--cost)">Error loading best keywords</td></tr>';});return;}
+  fillKW(B.best,B.allkw,"best","bestf");}
 function renderWorst(){const W=wcache[wtf];
   if(!W){document.getElementById("worst").innerHTML='<tr><td class="l" colspan="6" style="padding:14px;color:var(--muted)">Loading '+WLABEL[wtf]+'…</td></tr>';document.getElementById("worstf").innerHTML='';
-    fetchWorst(wtf).then(()=>{if(wcache[wtf])renderWorst();}).catch(e=>{if(e.message!=="auth")document.getElementById("worst").innerHTML='<tr><td class="l" colspan="6" style="padding:14px;color:var(--cost)">Error loading worst keywords</td></tr>';});return;}
+    fetchKwext(wtf).then(()=>{if(wcache[wtf])renderWorst();}).catch(e=>{if(e.message!=="auth")document.getElementById("worst").innerHTML='<tr><td class="l" colspan="6" style="padding:14px;color:var(--cost)">Error loading worst keywords</td></tr>';});return;}
   fillKW(W.worst,W.allkw,"worst","worstf");}
 function zipStore(files){const enc=new TextEncoder();
   const t=zipStore._t||(zipStore._t=(()=>{const a=[];for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;a[n]=c>>>0;}return a;})());
@@ -227,6 +231,13 @@ function dl_worst(){const W=wcache[wtf];if(!W||!W.worst||!W.worst.length)return;
   const tc=W.worst.reduce((x,r)=>x+r[2],0),ts=W.worst.reduce((x,r)=>x+r[3],0),tp=Math.round(ts*M-tc);
   rows.push(["","Top 20 total","",tc,+(tc/TC*100).toFixed(1),ts,+(ts/TS*100).toFixed(1),tp,+(tp/TP*100).toFixed(1)]);
   xlsxDownload(rows,"worst-20-keywords-"+wtf+"-"+(DATA?DATA.maxDate:"")+".xlsx","Worst 20 ("+(WLABEL[wtf]||wtf)+")");}
+function dl_best(){const B=wcache[btf];if(!B||!B.best||!B.best.length)return;
+  const TC=B.allkw.cost||1,TS=B.allkw.sales||1,TP=B.allkw.ppool||1;
+  const rows=[["#","Keyword","Match","Cost (EUR)","Cost % of total","Sales (EUR)","Sales % of total","Profit (EUR)","Profit % of total"]];
+  B.best.forEach((r,i)=>{const[k,m,c,s]=r;const p=Math.round(s*M-c);rows.push([i+1,k,m[0].toUpperCase()+m.slice(1),c,+(c/TC*100).toFixed(1),s,+(s/TS*100).toFixed(1),p,+(p/TP*100).toFixed(1)]);});
+  const tc=B.best.reduce((x,r)=>x+r[2],0),ts=B.best.reduce((x,r)=>x+r[3],0),tp=Math.round(ts*M-tc);
+  rows.push(["","Top 20 total","",tc,+(tc/TC*100).toFixed(1),ts,+(ts/TS*100).toFixed(1),tp,+(tp/TP*100).toFixed(1)]);
+  xlsxDownload(rows,"best-20-keywords-"+btf+"-"+(DATA?DATA.maxDate:"")+".xlsx","Best 20 ("+(WLABEL[btf]||btf)+")");}
 function narrative(){const t=allTotals();const dS=t.sp?((t.s-t.sp)/t.sp*100):0,dP=t.pp?((t.p-t.pp)/t.pp*100):0;
   const sp=(v,x)=>'<span class="'+(v>=0?'pos':'neg')+'">'+x+'</span>';
   const scope=sel.size===0?"All "+DATA.accounts.length+" accounts":lbl();
@@ -249,6 +260,8 @@ document.getElementById("cmp").onclick=function(){cmp=!cmp;this.classList.toggle
 document.querySelectorAll(".pctbtn").forEach(b=>b.onclick=()=>{const p=document.getElementById(b.dataset.p);const hide=p.classList.toggle("nopct");b.classList.toggle("on",!hide);});
 document.getElementById("wtfsel").addEventListener("change",e=>{wtf=e.target.value;renderWorst();});
 document.getElementById("dlworst").addEventListener("click",dl_worst);
+document.getElementById("btfsel").addEventListener("change",e=>{btf=e.target.value;renderBest();});
+document.getElementById("dlbest").addEventListener("click",dl_best);
 async function adminApi(action,body){const r=await fetch(FN+"?api=admin&action="+action,{method:body?"POST":"GET",headers:Object.assign({Authorization:"Bearer "+tok},body?{"Content-Type":"application/json"}:{}),body:body?JSON.stringify(body):undefined});const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||("HTTP "+r.status));return j;}
 function openAdmin(){document.getElementById("adminpanel").classList.remove("hidden");document.getElementById("invmsg").innerHTML="";loadUsers();}
 function closeAdmin(){document.getElementById("adminpanel").classList.add("hidden");}
