@@ -38,7 +38,7 @@ header.top{display:flex;align-items:center;justify-content:space-between;padding
 .kw{display:grid;grid-template-columns:1fr 1fr;gap:20px}.panel{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--sh);overflow:hidden}.ph{padding:12px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}.pt{font-family:Fraunces;font-weight:700;font-size:16px;color:#0C100D}.pt .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:8px}.best .dot{background:var(--profit)}.worst .dot{background:var(--loss)}.panel.best .ph{background:linear-gradient(90deg,rgba(31,107,79,.08),transparent)}.panel.worst .ph{background:linear-gradient(90deg,rgba(217,131,36,.1),transparent)}
 .phr{display:flex;align-items:center;gap:8px}.tfsel{font:inherit;font-size:12px;font-weight:600;color:var(--soft);background:var(--s2);border:1px solid var(--lineS);border-radius:8px;padding:5px 8px;cursor:pointer}.tfsel:hover{border-color:var(--forest);color:var(--forest)}.tfsel:focus{outline:none;border-color:var(--forest)}.iconbtn{display:inline-flex;align-items:center;justify-content:center;font:inherit;border:1px solid var(--lineS);background:var(--s2);color:var(--muted);width:30px;height:26px;border-radius:8px;cursor:pointer;padding:0}.iconbtn:hover{border-color:var(--forest);color:var(--forest)}
 .pctbtn{font:inherit;font-size:12px;font-weight:700;border:1px solid var(--lineS);background:var(--s2);color:var(--muted);width:30px;height:26px;border-radius:8px;cursor:pointer}.pctbtn.on{background:rgba(31,107,79,.1);border-color:var(--forest);color:var(--forest)}.panel.nopct .pct,.panel.nopct .sep{display:none}
-table{width:100%;border-collapse:collapse}thead th{font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700;text-align:right;padding:9px 10px;background:var(--s2)}thead th.l{text-align:left}tbody td{padding:7px 10px;border-top:1px solid var(--line);font-size:12px;font-variant-numeric:tabular-nums;text-align:right}tbody td.l{text-align:left}tbody tr:hover{background:var(--s2)}.rank{color:var(--muted);font-size:10.5px}.kwn{font-weight:600;font-size:13px;color:#0C100D;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.mt{font-size:9.5px;font-weight:700;padding:2px 6px;border-radius:6px;border:1px solid}.mt.broad{color:var(--rose);border-color:rgba(184,69,107,.3);background:rgba(184,69,107,.07)}.mt.phrase{color:var(--forest);border-color:rgba(31,107,79,.3);background:rgba(31,107,79,.06)}.mt.exact{color:var(--soft);border-color:var(--lineS);background:var(--s2)}
+table{width:100%;border-collapse:collapse}thead th{font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700;text-align:right;padding:9px 10px;background:var(--s2)}thead th.l{text-align:left}tbody td{padding:7px 10px;border-top:1px solid var(--line);font-size:12px;font-variant-numeric:tabular-nums;text-align:right}tbody td.l{text-align:left}tbody tr:hover{background:var(--s2)}.rank{color:var(--muted);font-size:10.5px}.kwn{font-weight:600;font-size:13px;color:#0C100D;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.mt{font-size:9.5px;font-weight:700;padding:2px 6px;border-radius:6px;border:1px solid}.mt.broad{color:var(--rose);border-color:rgba(184,69,107,.3);background:rgba(184,69,107,.07)}.mt.phrase{color:var(--forest);border-color:rgba(31,107,79,.3);background:rgba(31,107,79,.06)}.mt.exact{color:var(--soft);border-color:var(--lineS);background:var(--s2)}.mt.search{color:var(--forest);border-color:rgba(31,107,79,.3);background:rgba(31,107,79,.06)}.mt.pmax{color:var(--rose);border-color:rgba(184,69,107,.3);background:rgba(184,69,107,.07)}.mt.shopping{color:var(--loss);border-color:rgba(217,131,36,.35);background:rgba(217,131,36,.08)}.mt.other{color:var(--soft);border-color:var(--lineS);background:var(--s2)}.cmpnm{font-weight:500;font-size:12px;color:var(--soft);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block;vertical-align:middle}
 .cell{white-space:nowrap}.cell .m{font-weight:600}.cell .sep{color:var(--lineS);margin:0 4px}.cell .pct{font-size:11px;color:var(--muted)}.cell.cost .m{color:var(--cost)}.cell.sales .m{color:var(--sales)}.cell.prof .m.pos{color:var(--profit)}.cell.prof .m.neg{color:var(--loss)}
 tfoot td{padding:10px;border-top:2px solid var(--lineS);background:var(--s2);font-size:11.5px;font-weight:700;text-align:right}tfoot td.l{text-align:left;text-transform:uppercase;font-size:10px;color:var(--soft)}tfoot .sep{color:var(--lineS);margin:0 4px}tfoot .pct{font-size:10.5px;color:var(--muted)}tfoot .pos{color:var(--profit)}tfoot .neg{color:var(--loss)}
 footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-size:11px;color:var(--muted);line-height:1.7}
@@ -77,8 +77,9 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
     <div class="brand"><span class="logo">Max<span class="l">✿</span></span></div>
     <span class="hdiv"></span>
     <nav class="dashnav">
-      <a class="dlink active" title="Keyword performance — current">Keywords</a>
-      <span class="dlink soon" title="Coming soon">Ads Insights<i>soon</i></span>
+      <a class="dlink active" data-level="keyword" title="Keyword performance">Keywords</a>
+      <a class="dlink" data-level="campaign" title="Campaign performance">Campaigns</a>
+      <a class="dlink" data-level="adgroup" title="Ad-group performance">Ad groups</a>
       <span class="dlink soon" title="Coming soon">PMax + Shopping<i>soon</i></span>
       <span class="dlink soon" title="Coming soon">Action<i>soon</i></span>
     </nav></div>
@@ -94,19 +95,19 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
   </nav>
   <div class="summary"><div class="tag">✿ Max reads the room</div><p id="summary-text"></p><span class="wc" id="wc"></span></div>
   <div class="sec"><h2>Money map</h2><span class="ctx" id="mmctx"></span><span class="rule"></span></div>
-  <div class="mmcap first"><span class="dotc all"></span>All campaigns + keywords<i>all campaign types · matches Max daily email</i></div>
+  <div class="mmcap first"><span class="dotc all"></span><span id="mm-all-lbl">All campaigns + keywords</span><i id="mm-all-sub">all campaign types · matches Max daily email</i></div>
   <div class="cards" id="cards"></div>
-  <div class="mmcap"><span class="dotc kw"></span>Search keywords only<i>active (enabled) keywords — a subset of the totals above</i></div>
+  <div class="mmcap"><span class="dotc kw"></span><span id="mm-sub-lbl">Search keywords only</span><i id="mm-sub-sub">active (enabled) keywords — a subset of the totals above</i></div>
   <div class="cards" id="cards-kw"></div>
-  <div class="sec"><h2>Where the money is</h2><span class="ctx">active keywords · by account</span><span class="rule"></span></div>
+  <div class="sec"><h2>Where the money is</h2><span class="ctx" id="amctx">active keywords · by account</span><span class="rule"></span></div>
   <div class="amap"><div class="amh"><div class="h l">Account</div><div class="h l">Sales vs cost</div><div class="h cost">Cost</div><div class="h sales">Sales</div><div class="h profit">Profit</div></div><div id="amap"></div>
     <div class="legend"><span><i style="background:rgba(12,16,13,.82)"></i>Sales</span><span><i style="background:var(--cost)"></i>Cost</span><span><i style="background:var(--profit)"></i>Profit</span><span><i style="background:var(--loss)"></i>Loss</span></div></div>
-  <div class="sec"><h2>Keyword leaders &amp; laggards</h2><span class="ctx" id="kwctx">ranked by profit</span><span class="rule"></span></div>
+  <div class="sec"><h2 id="kwsec">Keyword leaders &amp; laggards</h2><span class="ctx" id="kwctx">ranked by profit</span><span class="rule"></span></div>
   <div class="kw">
-    <div class="panel best" id="kw-best"><div class="ph"><div class="pt"><span class="dot"></span>Best 20 keywords</div><div class="phr"><select id="btfsel" class="tfsel" title="Timeframe for best keywords"><option value="1w">1 week</option><option value="2w">2 weeks</option><option value="mtd">Month to date</option><option value="30d">30 days</option><option value="60d">60 days</option><option value="90d">90 days</option></select><button class="iconbtn" id="dlbest" title="Download as Excel (.xlsx)" aria-label="Download as Excel"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11"/><path d="M7.5 10.5 12 15l4.5-4.5"/><path d="M5 20h14"/></svg></button><button class="iconbtn" id="eyebest" title="View detail for selected keywords" aria-label="View keyword detail"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path><circle cx="12" cy="12" r="3"></circle></svg></button><button class="pctbtn on" data-p="kw-best">%</button></div></div>
-      <table><thead><tr><th class="l"><input type="checkbox" class="selall" data-tb="best" title="Select all"></th><th class="l">Keyword</th><th class="l">Match</th><th>Cost · %tot</th><th>Sales · %tot</th><th>Profit · %tot</th></tr></thead><tbody id="best"></tbody><tfoot id="bestf"></tfoot></table></div>
-    <div class="panel worst" id="kw-worst"><div class="ph"><div class="pt"><span class="dot"></span>Worst 20 keywords</div><div class="phr"><select id="wtfsel" class="tfsel" title="Timeframe for worst keywords"><option value="1w">1 week</option><option value="2w">2 weeks</option><option value="mtd">Month to date</option><option value="30d">30 days</option><option value="60d">60 days</option><option value="90d">90 days</option></select><button class="iconbtn" id="dlworst" title="Download as Excel (.xlsx)" aria-label="Download as Excel"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11"/><path d="M7.5 10.5 12 15l4.5-4.5"/><path d="M5 20h14"/></svg></button><button class="iconbtn" id="eyeworst" title="View detail for selected keywords" aria-label="View keyword detail"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path><circle cx="12" cy="12" r="3"></circle></svg></button><button class="pctbtn on" data-p="kw-worst">%</button></div></div>
-      <table><thead><tr><th class="l"><input type="checkbox" class="selall" data-tb="worst" title="Select all"></th><th class="l">Keyword</th><th class="l">Match</th><th>Cost · %tot</th><th>Sales · %tot</th><th>Profit · %tot</th></tr></thead><tbody id="worst"></tbody><tfoot id="worstf"></tfoot></table></div>
+    <div class="panel best" id="kw-best"><div class="ph"><div class="pt"><span class="dot"></span><span id="besttitle">Best 20 keywords</span></div><div class="phr"><select id="btfsel" class="tfsel" title="Timeframe for best keywords"><option value="1w">1 week</option><option value="2w">2 weeks</option><option value="mtd">Month to date</option><option value="30d">30 days</option><option value="60d">60 days</option><option value="90d">90 days</option></select><button class="iconbtn" id="dlbest" title="Download as Excel (.xlsx)" aria-label="Download as Excel"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11"/><path d="M7.5 10.5 12 15l4.5-4.5"/><path d="M5 20h14"/></svg></button><button class="iconbtn" id="eyebest" title="View detail for selected keywords" aria-label="View keyword detail"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path><circle cx="12" cy="12" r="3"></circle></svg></button><button class="pctbtn on" data-p="kw-best">%</button></div></div>
+      <table><thead><tr><th class="l"><input type="checkbox" class="selall" data-tb="best" title="Select all"></th><th class="l" id="best-h1">Keyword</th><th class="l" id="best-h2">Match</th><th>Cost · %tot</th><th>Sales · %tot</th><th>Profit · %tot</th></tr></thead><tbody id="best"></tbody><tfoot id="bestf"></tfoot></table></div>
+    <div class="panel worst" id="kw-worst"><div class="ph"><div class="pt"><span class="dot"></span><span id="worsttitle">Worst 20 keywords</span></div><div class="phr"><select id="wtfsel" class="tfsel" title="Timeframe for worst keywords"><option value="1w">1 week</option><option value="2w">2 weeks</option><option value="mtd">Month to date</option><option value="30d">30 days</option><option value="60d">60 days</option><option value="90d">90 days</option></select><button class="iconbtn" id="dlworst" title="Download as Excel (.xlsx)" aria-label="Download as Excel"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v11"/><path d="M7.5 10.5 12 15l4.5-4.5"/><path d="M5 20h14"/></svg></button><button class="iconbtn" id="eyeworst" title="View detail for selected keywords" aria-label="View keyword detail"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path><circle cx="12" cy="12" r="3"></circle></svg></button><button class="pctbtn on" data-p="kw-worst">%</button></div></div>
+      <table><thead><tr><th class="l"><input type="checkbox" class="selall" data-tb="worst" title="Select all"></th><th class="l" id="worst-h1">Keyword</th><th class="l" id="worst-h2">Match</th><th>Cost · %tot</th><th>Sales · %tot</th><th>Profit · %tot</th></tr></thead><tbody id="worst"></tbody><tfoot id="worstf"></tfoot></table></div>
   </div>
   <footer><b>Source:</b> Google Ads warehouse — top totals from campaign_metrics (all campaign types, matches Max email); keyword detail from keyword_metrics · margin 40% (profit = estimate) · EUR · Europe/Madrid · <span id="freshness"></span><br><b>Max is read-only.</b> Data refreshes daily after the 06:00 import.</footer>
   <div id="kwdetail" class="adminwrap hidden">
@@ -137,8 +138,14 @@ const SB="https://fzjakqgouwarfazopxip.supabase.co",ANON="sb_publishable_dIt5bwx
 const eur=n=>"€"+Math.round(n).toLocaleString("en-US");
 const LABEL={yd:"Yesterday",["1w"]:"1 week",["2w"]:"2 weeks",mtd:"Month to date",pm:"Past month"};
 const VS={yd:"vs day before",["1w"]:"vs previous week",["2w"]:"vs prior 2 weeks",mtd:"vs same period last month",pm:"vs previous month"};
-let tok=localStorage.getItem("max_tok")||"",tf="1w",cmp=true,sel=new Set(),cache={},DATA=null;
-let wtf="1w",btf="1w",wcache={};const WLABEL={["1w"]:"1 week",["2w"]:"2 weeks",mtd:"Month to date",["30d"]:"30 days",["60d"]:"60 days",["90d"]:"90 days"};
+let tok=localStorage.getItem("max_tok")||"",tf="1w",cmp=true,sel=new Set(),DATA=null,level="keyword";
+let wtf="1w",btf="1w";const WLABEL={["1w"]:"1 week",["2w"]:"2 weeks",mtd:"Month to date",["30d"]:"30 days",["60d"]:"60 days",["90d"]:"90 days"};
+const cacheL={keyword:{},campaign:{},adgroup:{}},wcacheL={keyword:{},campaign:{},adgroup:{}};
+const LV={
+ keyword:{noun:"keyword",nounP:"keywords",col1:"Keyword",col2:"Match",allLbl:"All campaigns + keywords",allSub:"all campaign types · matches Max daily email",subLbl:"Search keywords only",subSub:"active (enabled) keywords — a subset of the totals above",amctx:"active keywords · by account",sec:"Keyword leaders & laggards",kwctx:"active keywords only · ranked by profit · % of active-keyword totals",best:"Best 20 keywords",worst:"Worst 20 keywords",dlname:"keywords"},
+ campaign:{noun:"campaign",nounP:"campaigns",col1:"Campaign",col2:"Type",allLbl:"All campaigns",allSub:"all campaign types incl. PMax & Shopping · matches Max daily email",subLbl:"Active (enabled) campaigns",subSub:"currently-enabled campaigns — a subset of the totals above",amctx:"enabled campaigns · by account",sec:"Campaign leaders & laggards",kwctx:"enabled campaigns · ranked by profit · % of enabled-campaign totals",best:"Best 20 campaigns",worst:"Worst 20 campaigns",dlname:"campaigns"},
+ adgroup:{noun:"ad group",nounP:"ad groups",col1:"Ad group",col2:"Campaign",allLbl:"All ad groups",allSub:"Search + Shopping ad groups · PMax excluded (no ad groups)",subLbl:"Active (enabled) ad groups",subSub:"currently-enabled ad groups — a subset of the totals above",amctx:"enabled ad groups · by account",sec:"Ad-group leaders & laggards",kwctx:"enabled ad groups · ranked by profit · % of enabled-ad-group totals",best:"Best 20 ad groups",worst:"Worst 20 ad groups",dlname:"ad-groups"}
+};
 
 async function login(){const b=document.getElementById("loginbtn");const e=document.getElementById("email").value.trim(),p=document.getElementById("pw").value;
   document.getElementById("lerr").textContent="";b.disabled=true;b.textContent="Signing in…";
@@ -150,14 +157,15 @@ async function login(){const b=document.getElementById("loginbtn");const e=docum
 document.getElementById("loginbtn").onclick=login;
 document.getElementById("pw").addEventListener("keydown",e=>{if(e.key==="Enter")login();});
 
-async function fetchTF(t){ if(cache[t])return cache[t];
-  const r=await fetch(FN+"?api=data&tf="+t,{headers:{Authorization:"Bearer "+tok}});
+async function fetchTF(t){ const C=cacheL[level]; if(C[t])return C[t];
+  const r=await fetch(FN+"?api=data&level="+level+"&tf="+t,{headers:{Authorization:"Bearer "+tok}});
   if(r.status===401){localStorage.removeItem("max_tok");tok="";document.getElementById("login").classList.remove("hidden");document.getElementById("app").classList.add("hidden");throw new Error("auth");}
-  const j=await r.json(); if(!r.ok)throw new Error(j.error||"error"); cache[t]=j; if(j.worst&&j.allkw&&WLABEL[j.tf]&&!wcache[j.tf])wcache[j.tf]={tf:j.tf,best:j.best,worst:j.worst,allkw:j.allkw}; return j; }
-async function fetchKwext(t){ if(wcache[t])return wcache[t];
-  const r=await fetch(FN+"?api=worstkw&tf="+t,{headers:{Authorization:"Bearer "+tok}});
+  const j=await r.json(); if(!r.ok)throw new Error(j.error||"error"); C[t]=j; if(j.best&&j.allkw&&WLABEL[j.tf]&&!wcacheL[level][j.tf])wcacheL[level][j.tf]={tf:j.tf,best:j.best,worst:j.worst,allkw:j.allkw}; return j; }
+async function fetchKwext(t){ const W=wcacheL[level]; if(W[t])return W[t];
+  const api=level==="keyword"?"worstkw":"ext";
+  const r=await fetch(FN+"?api="+api+"&level="+level+"&tf="+t,{headers:{Authorization:"Bearer "+tok}});
   if(r.status===401){localStorage.removeItem("max_tok");tok="";document.getElementById("login").classList.remove("hidden");document.getElementById("app").classList.add("hidden");throw new Error("auth");}
-  const j=await r.json(); if(!r.ok)throw new Error(j.error||"error"); wcache[t]=j; return j; }
+  const j=await r.json(); if(!r.ok)throw new Error(j.error||"error"); W[t]=j; return j; }
 
 async function start(){
   document.getElementById("login").classList.add("hidden");document.getElementById("app").classList.remove("hidden");
@@ -172,7 +180,12 @@ function totals(){return sumAccts(selected());}
 function allTotals(){return sumAccts(selectedAll());}
 function lbl(){return sel.size===0?"All accounts · "+DATA.accounts.length:sel.size===1?[...sel][0]:sel.size+" accounts";}
 
+function applyLabels(){const L=LV[level];const set=(id,t)=>{const el=document.getElementById(id);if(el)el.textContent=t;};
+  set("mm-all-lbl",L.allLbl);set("mm-all-sub",L.allSub);set("mm-sub-lbl",L.subLbl);set("mm-sub-sub",L.subSub);
+  set("amctx",L.amctx);set("kwsec",L.sec);set("besttitle",L.best);set("worsttitle",L.worst);
+  set("best-h1",L.col1);set("worst-h1",L.col1);set("best-h2",L.col2);set("worst-h2",L.col2);}
 function render(){
+  applyLabels();
   document.getElementById("cmptxt").textContent=VS[tf];
   document.getElementById("adminbtn").classList.toggle("hidden",!DATA.isAdmin);
   document.getElementById("freshness").textContent="data through "+DATA.maxDate+(DATA.curRange?" · "+DATA.curRange[0]+"→"+DATA.curRange[1]:"");
@@ -194,19 +207,23 @@ function renderAmap(){const accs=selected().map(a=>({name:a.name,c:a.c,s:a.s,p:a
   document.getElementById("amap").innerHTML=accs.map(a=>'<div class="arow"><div class="name">'+a.name+'</div><div class="bar"><div class="sb" style="width:'+(a.s/mx*100).toFixed(1)+'%"></div><div class="cb" style="width:'+(a.c/mx*100).toFixed(1)+'%"></div></div><div class="num cost">'+eur(a.c)+'</div><div class="num sales">'+eur(a.s)+'</div><div class="num profit" style="color:'+(a.p>=0?'var(--profit)':'var(--loss)')+'">'+(a.p>=0?'+':'')+eur(a.p)+'</div></div>').join('');
 }
 function fillKW(rows,totals,bodyId,footId){const TC=totals.cost||1,TS=totals.sales||1,TP=totals.ppool||1;const ae=x=>String(x).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
-  const mt=m=>'<span class="mt '+m+'">'+m[0].toUpperCase()+m.slice(1)+'</span>';
+  const chL={search:"Search",pmax:"PMax",shopping:"Shopping"};
+  const col2=r=>{if(level==="keyword"){const m=r[1];return '<span class="mt '+m+'">'+m[0].toUpperCase()+m.slice(1)+'</span>';}
+    if(level==="campaign"){const ch=r[1],cls=["search","pmax","shopping"].includes(ch)?ch:"other";return '<span class="mt '+cls+'">'+(chL[ch]||(ch?ch[0].toUpperCase()+ch.slice(1):"—"))+'</span>';}
+    return '<span class="cmpnm" title="'+ae(r[1])+'">'+r[1]+'</span>';};
+  const keyOf=r=>level==="keyword"?(r[0]+"|"+r[1]):String(r[4]);
   const cell=(cl,v,tot,p)=>{const c=p?(v>=0?'pos':'neg'):'';return '<td class="cell '+cl+'"><span class="m '+c+'">'+(p&&v>=0?'+':'')+eur(v)+'</span><span class="sep">/</span><span class="pct">'+(v/tot*100).toFixed(1)+'%</span></td>';};
-  const body=d=>d.map((r,i)=>{const[k,m,c,s]=r;const p=s*M-c;return '<tr><td class="l"><input type="checkbox" class="rowchk" data-k="'+ae(k)+'|'+m+'"></td><td class="l kwn" title="'+ae(k)+'">'+k+'</td><td class="l">'+mt(m)+'</td>'+cell('cost',c,TC)+cell('sales',s,TS)+cell('prof',p,TP,1)+'</tr>';}).join('');
+  const body=d=>d.map((r,i)=>{const k=r[0],c=r[2],s=r[3];const p=s*M-c;return '<tr><td class="l"><input type="checkbox" class="rowchk" data-k="'+ae(keyOf(r))+'"></td><td class="l kwn" title="'+ae(k)+'">'+k+'</td><td class="l">'+col2(r)+'</td>'+cell('cost',c,TC)+cell('sales',s,TS)+cell('prof',p,TP,1)+'</tr>';}).join('');
   const foot=d=>{const c=d.reduce((x,r)=>x+r[2],0),s=d.reduce((x,r)=>x+r[3],0),p=s*M-c;return '<tr><td class="l" colspan="3">Top 20 total</td><td>'+eur(c)+'<span class="sep">/</span><span class="pct">'+(c/TC*100).toFixed(1)+'%</span></td><td>'+eur(s)+'<span class="sep">/</span><span class="pct">'+(s/TS*100).toFixed(1)+'%</span></td><td class="'+(p>=0?'pos':'neg')+'">'+(p>=0?'+':'')+eur(p)+'<span class="sep">/</span><span class="pct">'+(p/TP*100).toFixed(1)+'%</span></td></tr>';};
   document.getElementById(bodyId).innerHTML=body(rows);document.getElementById(footId).innerHTML=foot(rows);const sa=document.querySelector('.selall[data-tb="'+bodyId+'"]');if(sa)sa.checked=false;}
-function renderKW(){document.getElementById("kwctx").textContent="active keywords only · ranked by profit · % of active-keyword totals";renderBest();renderWorst();}
-function renderBest(){const B=wcache[btf];
+function renderKW(){document.getElementById("kwctx").textContent=LV[level].kwctx;renderBest();renderWorst();}
+function renderBest(){const B=wcacheL[level][btf];
   if(!B){document.getElementById("best").innerHTML='<tr><td class="l" colspan="6" style="padding:14px;color:var(--muted)">Loading '+WLABEL[btf]+'…</td></tr>';document.getElementById("bestf").innerHTML='';
-    fetchKwext(btf).then(()=>{if(wcache[btf])renderBest();}).catch(e=>{if(e.message!=="auth")document.getElementById("best").innerHTML='<tr><td class="l" colspan="6" style="padding:14px;color:var(--cost)">Error loading best keywords</td></tr>';});return;}
+    fetchKwext(btf).then(()=>{if(wcacheL[level][btf])renderBest();}).catch(e=>{if(e.message!=="auth")document.getElementById("best").innerHTML='<tr><td class="l" colspan="6" style="padding:14px;color:var(--cost)">Error loading best '+LV[level].nounP+'</td></tr>';});return;}
   fillKW(B.best,B.allkw,"best","bestf");}
-function renderWorst(){const W=wcache[wtf];
+function renderWorst(){const W=wcacheL[level][wtf];
   if(!W){document.getElementById("worst").innerHTML='<tr><td class="l" colspan="6" style="padding:14px;color:var(--muted)">Loading '+WLABEL[wtf]+'…</td></tr>';document.getElementById("worstf").innerHTML='';
-    fetchKwext(wtf).then(()=>{if(wcache[wtf])renderWorst();}).catch(e=>{if(e.message!=="auth")document.getElementById("worst").innerHTML='<tr><td class="l" colspan="6" style="padding:14px;color:var(--cost)">Error loading worst keywords</td></tr>';});return;}
+    fetchKwext(wtf).then(()=>{if(wcacheL[level][wtf])renderWorst();}).catch(e=>{if(e.message!=="auth")document.getElementById("worst").innerHTML='<tr><td class="l" colspan="6" style="padding:14px;color:var(--cost)">Error loading worst '+LV[level].nounP+'</td></tr>';});return;}
   fillKW(W.worst,W.allkw,"worst","worstf");}
 function zipStore(files){const enc=new TextEncoder();
   const t=zipStore._t||(zipStore._t=(()=>{const a=[];for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;a[n]=c>>>0;}return a;})());
@@ -228,29 +245,30 @@ function xlsxDownload(rows,filename,sheet){
     if(typeof val==="number"&&isFinite(val))cells+='<c r="'+ref+'"><v>'+val+'</v></c>';
     else cells+='<c r="'+ref+'" t="inlineStr"><is><t xml:space="preserve">'+esc(val==null?"":val)+'</t></is></c>';});
     sd+='<row r="'+(ri+1)+'">'+cells+'</row>';});
-  const sheetXml='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>'+sd+'</sheetData></worksheet>';
+  const sheetXml='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>'+sd+'</sheetData></worksheet>';
   const files=[
-    {name:"[Content_Types].xml",data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/></Types>'},
-    {name:"_rels/.rels",data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>'},
-    {name:"xl/workbook.xml",data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="'+esc(sheet||"Sheet1")+'" sheetId="1" r:id="rId1"/></sheets></workbook>'},
-    {name:"xl/_rels/workbook.xml.rels",data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/></Relationships>'},
+    {name:"[Content_Types].xml",data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/></Types>'},
+    {name:"_rels/.rels",data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>'},
+    {name:"xl/workbook.xml",data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="'+esc(sheet||"Sheet1")+'" sheetId="1" r:id="rId1"/></sheets></workbook>'},
+    {name:"xl/_rels/workbook.xml.rels",data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/></Relationships>'},
     {name:"xl/worksheets/sheet1.xml",data:sheetXml},
   ];
   const url=URL.createObjectURL(zipStore(files));const a=document.createElement("a");a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);}
-function dl_worst(){const W=wcache[wtf];if(!W||!W.worst||!W.worst.length)return;
+function dlCol2(r){return level==="adgroup"?r[1]:(r[1]?r[1][0].toUpperCase()+r[1].slice(1):"");}
+function dl_worst(){const W=wcacheL[level][wtf];if(!W||!W.worst||!W.worst.length)return;const L=LV[level];
   const TC=W.allkw.cost||1,TS=W.allkw.sales||1,TP=W.allkw.ppool||1;
-  const rows=[["#","Keyword","Match","Cost (EUR)","Cost % of total","Sales (EUR)","Sales % of total","Profit (EUR)","Profit % of total"]];
-  W.worst.forEach((r,i)=>{const[k,m,c,s]=r;const p=Math.round(s*M-c);rows.push([i+1,k,m[0].toUpperCase()+m.slice(1),c,+(c/TC*100).toFixed(1),s,+(s/TS*100).toFixed(1),p,+(p/TP*100).toFixed(1)]);});
+  const rows=[["#",L.col1,L.col2,"Cost (EUR)","Cost % of total","Sales (EUR)","Sales % of total","Profit (EUR)","Profit % of total"]];
+  W.worst.forEach((r,i)=>{const k=r[0],c=r[2],s=r[3];const p=Math.round(s*M-c);rows.push([i+1,k,dlCol2(r),c,+(c/TC*100).toFixed(1),s,+(s/TS*100).toFixed(1),p,+(p/TP*100).toFixed(1)]);});
   const tc=W.worst.reduce((x,r)=>x+r[2],0),ts=W.worst.reduce((x,r)=>x+r[3],0),tp=Math.round(ts*M-tc);
   rows.push(["","Top 20 total","",tc,+(tc/TC*100).toFixed(1),ts,+(ts/TS*100).toFixed(1),tp,+(tp/TP*100).toFixed(1)]);
-  xlsxDownload(rows,"worst-20-keywords-"+wtf+"-"+(DATA?DATA.maxDate:"")+".xlsx","Worst 20 ("+(WLABEL[wtf]||wtf)+")");}
-function dl_best(){const B=wcache[btf];if(!B||!B.best||!B.best.length)return;
+  xlsxDownload(rows,"worst-20-"+L.dlname+"-"+wtf+"-"+(DATA?DATA.maxDate:"")+".xlsx","Worst 20 ("+(WLABEL[wtf]||wtf)+")");}
+function dl_best(){const B=wcacheL[level][btf];if(!B||!B.best||!B.best.length)return;const L=LV[level];
   const TC=B.allkw.cost||1,TS=B.allkw.sales||1,TP=B.allkw.ppool||1;
-  const rows=[["#","Keyword","Match","Cost (EUR)","Cost % of total","Sales (EUR)","Sales % of total","Profit (EUR)","Profit % of total"]];
-  B.best.forEach((r,i)=>{const[k,m,c,s]=r;const p=Math.round(s*M-c);rows.push([i+1,k,m[0].toUpperCase()+m.slice(1),c,+(c/TC*100).toFixed(1),s,+(s/TS*100).toFixed(1),p,+(p/TP*100).toFixed(1)]);});
+  const rows=[["#",L.col1,L.col2,"Cost (EUR)","Cost % of total","Sales (EUR)","Sales % of total","Profit (EUR)","Profit % of total"]];
+  B.best.forEach((r,i)=>{const k=r[0],c=r[2],s=r[3];const p=Math.round(s*M-c);rows.push([i+1,k,dlCol2(r),c,+(c/TC*100).toFixed(1),s,+(s/TS*100).toFixed(1),p,+(p/TP*100).toFixed(1)]);});
   const tc=B.best.reduce((x,r)=>x+r[2],0),ts=B.best.reduce((x,r)=>x+r[3],0),tp=Math.round(ts*M-tc);
   rows.push(["","Top 20 total","",tc,+(tc/TC*100).toFixed(1),ts,+(ts/TS*100).toFixed(1),tp,+(tp/TP*100).toFixed(1)]);
-  xlsxDownload(rows,"best-20-keywords-"+btf+"-"+(DATA?DATA.maxDate:"")+".xlsx","Best 20 ("+(WLABEL[btf]||btf)+")");}
+  xlsxDownload(rows,"best-20-"+L.dlname+"-"+btf+"-"+(DATA?DATA.maxDate:"")+".xlsx","Best 20 ("+(WLABEL[btf]||btf)+")");}
 function selectedKeys(panel){return [...document.getElementById(panel).querySelectorAll(".rowchk:checked")].map(c=>c.dataset.k);}
 async function openKwDetail(panel){
   const tf=panel==="best"?btf:wtf; const keys=selectedKeys(panel);
@@ -273,6 +291,35 @@ async function openKwDetail(panel){
       return '<div class="kwd-card">'+head+'<div class="kwd-metrics">'+met("Impressions",num(d.impressions))+met("Clicks",num(d.clicks))+met("CTR",d.ctr+"%")+met("Cost",eur(d.cost))+met("Sales",eur(d.sales))+met("Conv.",d.conv)+met("Profit · est.",(prof>=0?"+":"")+eur(prof))+met("POAS · est.",poas.toFixed(2))+'</div><div class="kwd-terms">Loading real search terms…</div></div>';
     }).join('');
     loadKwTerms(keys,tf);
+  }catch(e){if(e.message!=="auth")document.getElementById("kwd-body").innerHTML='<div style="color:#C0392B;padding:24px">'+e.message+'</div>';}
+}
+function openDetail(panel){return level==="keyword"?openKwDetail(panel):openLevelDetail(panel);}
+async function openLevelDetail(panel){
+  const tfp=panel==="best"?btf:wtf; const ids=selectedKeys(panel); const L=LV[level];
+  if(!ids.length){alert("Select one or more rows first (tick the checkboxes), then click the eye.");return;}
+  document.getElementById("kwd-title").textContent=(panel==="best"?"Best":"Worst")+" "+L.nounP+" — detail";
+  document.getElementById("kwd-sub").textContent=ids.length+" selected · "+(WLABEL[tfp]||tfp)+" · loading…";
+  document.getElementById("kwd-body").innerHTML='<div style="color:#8C8B80;padding:24px;text-align:center">Loading…</div>';
+  document.getElementById("kwdetail").classList.remove("hidden");
+  try{
+    const r=await fetch(FN+"?api=detail&level="+level+"&tf="+tfp,{method:"POST",headers:{Authorization:"Bearer "+tok,"Content-Type":"application/json"},body:JSON.stringify({ids})});
+    const j=await r.json(); if(!r.ok)throw new Error(j.error||"error");
+    const by={};(j.detail||[]).forEach(d=>by[String(d.id)]=d);
+    document.getElementById("kwd-sub").textContent=ids.length+" "+(ids.length>1?L.nounP:L.noun)+" · "+(WLABEL[tfp]||tfp)+(j.range?" · "+j.range[0]+"→"+j.range[1]:"");
+    const num=n=>(+n).toLocaleString("en-US"); const chL={search:"Search",pmax:"PMax",shopping:"Shopping"};
+    document.getElementById("kwd-body").innerHTML=ids.map(function(id){const d=by[String(id)];
+      if(!d)return '<div class="kwd-card"><div class="kwd-h"><span class="kwd-kw">'+htmlEsc(String(id))+'</span></div><div style="color:#8C8B80;font-size:13px">No data in the selected window.</div></div>';
+      const ctr=d.impr?(d.clicks/d.impr*100):0,prof=Math.round(d.sales*M-d.cost),poas=d.cost?(d.sales*M/d.cost):0;
+      const tag=level==="campaign"?'<span class="mt '+(["search","pmax","shopping"].includes(d.tag)?d.tag:"other")+'">'+(chL[d.tag]||d.tag)+'</span>':(d.tag?'<span class="cmpnm" title="'+htmlEsc(d.tag)+'">'+htmlEsc(d.tag)+'</span>':'');
+      const head='<div class="kwd-h"><span class="kwd-kw">'+htmlEsc(d.name||"")+'</span> '+tag+'</div>';
+      const met=(l,v)=>'<div class="kwd-m"><span>'+l+'</span><b>'+v+'</b></div>';
+      const metrics='<div class="kwd-metrics">'+met("Impressions",num(d.impr))+met("Clicks",num(d.clicks))+met("CTR",ctr.toFixed(2)+"%")+met("Cost",eur(d.cost))+met("Sales",eur(d.sales))+met("Conv.",d.conv)+met("Profit · est.",(prof>=0?"+":"")+eur(prof))+met("POAS · est.",poas.toFixed(2))+'</div>';
+      const childN=level==="campaign"?"ad groups":"keywords",childOne=level==="campaign"?"Ad group":"Keyword"; const kids=d.children||[];
+      let h='<div class="kwd-sec">Top '+childN+' <span class="kwd-cnt">'+kids.length+'</span></div>';
+      if(!kids.length) h+='<div class="kwd-empty">'+(level==="campaign"&&d.tag==="pmax"?"PMax has no ad groups (asset groups only).":"No child rows in this window.")+'</div>';
+      else h+='<table class="kwt"><thead><tr><th class="l">'+childOne+'</th><th>Cost</th><th>Sales</th><th>Profit</th><th>POAS</th></tr></thead><tbody>'+kids.map(function(ch){const cp=Math.round(ch.sales*M-ch.cost),cpo=ch.cost?(ch.sales*M/ch.cost):0;return '<tr><td class="l">'+htmlEsc(ch.name||"")+(ch.match?' <span class="kwn-m">'+htmlEsc(ch.match)+'</span>':'')+'</td><td>'+eur(ch.cost)+'</td><td>'+eur(ch.sales)+'</td><td style="color:'+(cp>=0?"var(--profit)":"var(--loss)")+'">'+(cp>=0?"+":"")+eur(cp)+'</td><td>'+cpo.toFixed(2)+'</td></tr>';}).join('')+'</tbody></table>';
+      return '<div class="kwd-card">'+head+metrics+h+'</div>';
+    }).join('');
   }catch(e){if(e.message!=="auth")document.getElementById("kwd-body").innerHTML='<div style="color:#C0392B;padding:24px">'+e.message+'</div>';}
 }
 function htmlEsc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
@@ -317,8 +364,18 @@ document.getElementById("wtfsel").addEventListener("change",e=>{wtf=e.target.val
 document.getElementById("dlworst").addEventListener("click",dl_worst);
 document.getElementById("btfsel").addEventListener("change",e=>{btf=e.target.value;renderBest();});
 document.getElementById("dlbest").addEventListener("click",dl_best);
-document.getElementById("eyebest").addEventListener("click",()=>openKwDetail("best"));
-document.getElementById("eyeworst").addEventListener("click",()=>openKwDetail("worst"));
+document.getElementById("eyebest").addEventListener("click",()=>openDetail("best"));
+document.getElementById("eyeworst").addEventListener("click",()=>openDetail("worst"));
+document.querySelectorAll('.dashnav .dlink[data-level]').forEach(function(t){t.addEventListener("click",async function(){
+  const lv=t.dataset.level; if(lv===level)return;
+  level=lv; sel.clear();
+  document.querySelectorAll('.dashnav .dlink').forEach(x=>x.classList.remove("active")); t.classList.add("active");
+  applyLabels();
+  document.getElementById("cards").innerHTML='<div id="loading" style="grid-column:1/-1">Loading '+LV[level].nounP+'…</div>';
+  document.getElementById("cards-kw").innerHTML='';document.getElementById("amap").innerHTML='';
+  document.getElementById("best").innerHTML='';document.getElementById("worst").innerHTML='';
+  try{ DATA=await fetchTF(tf); render(); }catch(e){ if(e.message!=="auth")document.getElementById("cards").innerHTML='<div id="loading" style="grid-column:1/-1">Error: '+e.message+'</div>'; }
+});});
 document.getElementById("kwd-close").addEventListener("click",()=>document.getElementById("kwdetail").classList.add("hidden"));
 document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id==="kwdetail")document.getElementById("kwdetail").classList.add("hidden");});
 document.querySelectorAll(".selall").forEach(sa=>sa.addEventListener("change",function(){var tb=this.dataset.tb,ck=this.checked;document.getElementById(tb).querySelectorAll(".rowchk").forEach(c=>c.checked=ck);}));
