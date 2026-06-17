@@ -161,12 +161,12 @@ document.getElementById("pw").addEventListener("keydown",e=>{if(e.key==="Enter")
 async function fetchTF(t){ const C=cacheL[level]; if(C[t])return C[t];
   const r=await fetch(FN+"?api=data&level="+level+"&tf="+t,{headers:{Authorization:"Bearer "+tok}});
   if(r.status===401){localStorage.removeItem("max_tok");tok="";document.getElementById("login").classList.remove("hidden");document.getElementById("app").classList.add("hidden");throw new Error("auth");}
-  const j=await r.json(); if(!r.ok)throw new Error(j.error||"error"); C[t]=j; if(j.best&&j.allkw&&WLABEL[j.tf]&&!wcacheL[level][j.tf])wcacheL[level][j.tf]={tf:j.tf,best:j.best,worst:j.worst,allkw:j.allkw}; return j; }
-async function fetchKwext(t){ const W=wcacheL[level]; if(W[t])return W[t];
+  const j=await r.json(); if(!r.ok)throw new Error(j.error||"error"); C[t]=j; if(j.best&&j.allkw&&WLABEL[j.tf]&&sel.size===0&&!wcacheL[level][wk(j.tf)])wcacheL[level][wk(j.tf)]={tf:j.tf,best:j.best,worst:j.worst,allkw:j.allkw}; return j; }
+async function fetchKwext(t){ const W=wcacheL[level]; const K=wk(t); if(W[K])return W[K];
   const api=level==="keyword"?"worstkw":"ext";
-  const r=await fetch(FN+"?api="+api+"&level="+level+"&tf="+t,{headers:{Authorization:"Bearer "+tok}});
+  const r=await fetch(FN+"?api="+api+"&level="+level+"&tf="+t+acctsQS(),{headers:{Authorization:"Bearer "+tok}});
   if(r.status===401){localStorage.removeItem("max_tok");tok="";document.getElementById("login").classList.remove("hidden");document.getElementById("app").classList.add("hidden");throw new Error("auth");}
-  const j=await r.json(); if(!r.ok)throw new Error(j.error||"error"); W[t]=j; return j; }
+  const j=await r.json(); if(!r.ok)throw new Error(j.error||"error"); W[K]=j; return j; }
 
 async function start(){
   document.getElementById("login").classList.add("hidden");document.getElementById("app").classList.remove("hidden");
@@ -176,6 +176,7 @@ async function start(){
 }
 const selected=()=> sel.size===0?DATA.accounts:DATA.accounts.filter(a=>sel.has(a.name));
 const selectedAll=()=> sel.size===0?(DATA.accountsAll||[]):(DATA.accountsAll||[]).filter(a=>sel.has(a.name));
+const selArr=()=>[...sel].sort();const wk=t=>t+"|"+JSON.stringify(selArr());const acctsQS=()=>sel.size?"&accts="+encodeURIComponent(JSON.stringify(selArr())):"";
 function sumAccts(list){let c=0,s=0,cp=0,sp=0;list.forEach(a=>{c+=a.c;s+=a.s;cp+=a.cp;sp+=a.sp;});return{c,s,p:s*M-c,roas:c?s/c:0,poas:c?s*M/c:0,cp,sp,pp:sp*M-cp,roasp:cp?sp/cp:0};}
 function totals(){return sumAccts(selected());}
 function allTotals(){return sumAccts(selectedAll());}
@@ -225,13 +226,13 @@ function fillKW(rows,totals,bodyId,footId){const TC=totals.cost||1,TS=totals.sal
   document.getElementById(bodyId).innerHTML=body(srows);document.getElementById(footId).innerHTML=foot(rows);const sa=document.querySelector('.selall[data-tb="'+bodyId+'"]');if(sa)sa.checked=false;markSort(bodyId);}
 function markSort(panel){const st=sortState[panel];if(!st)return;document.querySelectorAll('th.sortable[data-tb="'+panel+'"]').forEach(function(th){const ar=th.querySelector(".sarr");const on=st.col===th.dataset.sort;th.classList.toggle("soncol",on);if(ar){ar.textContent=on?(st.dir<0?"▼":"▲"):"⇅";ar.style.opacity=on?"1":".35";}});}
 function renderKW(){document.getElementById("kwctx").textContent=LV[level].kwctx;renderBest();renderWorst();}
-function renderBest(){const B=wcacheL[level][btf];
+function renderBest(){const B=wcacheL[level][wk(btf)];
   if(!B){document.getElementById("best").innerHTML='<tr><td class="l" colspan="7" style="padding:14px;color:var(--muted)">Loading '+WLABEL[btf]+'…</td></tr>';document.getElementById("bestf").innerHTML='';
-    fetchKwext(btf).then(()=>{if(wcacheL[level][btf])renderBest();}).catch(e=>{if(e.message!=="auth")document.getElementById("best").innerHTML='<tr><td class="l" colspan="7" style="padding:14px;color:var(--cost)">Error loading best '+LV[level].nounP+'</td></tr>';});return;}
+    fetchKwext(btf).then(()=>{if(wcacheL[level][wk(btf)])renderBest();}).catch(e=>{if(e.message!=="auth")document.getElementById("best").innerHTML='<tr><td class="l" colspan="7" style="padding:14px;color:var(--cost)">Error loading best '+LV[level].nounP+'</td></tr>';});return;}
   fillKW(B.best,B.allkw,"best","bestf");}
-function renderWorst(){const W=wcacheL[level][wtf];
+function renderWorst(){const W=wcacheL[level][wk(wtf)];
   if(!W){document.getElementById("worst").innerHTML='<tr><td class="l" colspan="7" style="padding:14px;color:var(--muted)">Loading '+WLABEL[wtf]+'…</td></tr>';document.getElementById("worstf").innerHTML='';
-    fetchKwext(wtf).then(()=>{if(wcacheL[level][wtf])renderWorst();}).catch(e=>{if(e.message!=="auth")document.getElementById("worst").innerHTML='<tr><td class="l" colspan="7" style="padding:14px;color:var(--cost)">Error loading worst '+LV[level].nounP+'</td></tr>';});return;}
+    fetchKwext(wtf).then(()=>{if(wcacheL[level][wk(wtf)])renderWorst();}).catch(e=>{if(e.message!=="auth")document.getElementById("worst").innerHTML='<tr><td class="l" colspan="7" style="padding:14px;color:var(--cost)">Error loading worst '+LV[level].nounP+'</td></tr>';});return;}
   fillKW(W.worst,W.allkw,"worst","worstf");}
 function zipStore(files){const enc=new TextEncoder();
   const t=zipStore._t||(zipStore._t=(()=>{const a=[];for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;a[n]=c>>>0;}return a;})());
@@ -263,14 +264,14 @@ function xlsxDownload(rows,filename,sheet){
   ];
   const url=URL.createObjectURL(zipStore(files));const a=document.createElement("a");a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);}
 function dlCol2(r){return level==="adgroup"?r[1]:(r[1]?r[1][0].toUpperCase()+r[1].slice(1):"");}
-function dl_worst(){const W=wcacheL[level][wtf];if(!W||!W.worst||!W.worst.length)return;const L=LV[level];
+function dl_worst(){const W=wcacheL[level][wk(wtf)];if(!W||!W.worst||!W.worst.length)return;const L=LV[level];
   const TC=W.allkw.cost||1,TS=W.allkw.sales||1,TP=W.allkw.ppool||1;
   const rows=[["#",L.col1,L.col2,"Cost (EUR)","Cost % of total","Sales (EUR)","Sales % of total","Profit (EUR)","Profit % of total","Cost/Sales ratio"]];
   W.worst.forEach((r,i)=>{const k=r[0],c=r[2],s=r[3];const pr=s*M-c;const p=Math.round(pr);const rt=(s!==0&&isFinite((c/TC)/(s/TS)))?+((c/TC)/(s/TS)).toFixed(2):"";rows.push([i+1,k,dlCol2(r),c,+(c/TC*100).toFixed(1),s,+(s/TS*100).toFixed(1),p,+(p/TP*100).toFixed(1),rt]);});
   const tc=W.worst.reduce((x,r)=>x+r[2],0),ts=W.worst.reduce((x,r)=>x+r[3],0),tpr=ts*M-tc,tp=Math.round(tpr);const trt=(ts!==0&&isFinite((tc/TC)/(ts/TS)))?+((tc/TC)/(ts/TS)).toFixed(2):"";
   rows.push(["","Top 20 total","",tc,+(tc/TC*100).toFixed(1),ts,+(ts/TS*100).toFixed(1),tp,+(tp/TP*100).toFixed(1),trt]);
   xlsxDownload(rows,"worst-20-"+L.dlname+"-"+wtf+"-"+(DATA?DATA.maxDate:"")+".xlsx","Worst 20 ("+(WLABEL[wtf]||wtf)+")");}
-function dl_best(){const B=wcacheL[level][btf];if(!B||!B.best||!B.best.length)return;const L=LV[level];
+function dl_best(){const B=wcacheL[level][wk(btf)];if(!B||!B.best||!B.best.length)return;const L=LV[level];
   const TC=B.allkw.cost||1,TS=B.allkw.sales||1,TP=B.allkw.ppool||1;
   const rows=[["#",L.col1,L.col2,"Cost (EUR)","Cost % of total","Sales (EUR)","Sales % of total","Profit (EUR)","Profit % of total","Cost/Sales ratio"]];
   B.best.forEach((r,i)=>{const k=r[0],c=r[2],s=r[3];const pr=s*M-c;const p=Math.round(pr);const rt=(s!==0&&isFinite((c/TC)/(s/TS)))?+((c/TC)/(s/TS)).toFixed(2):"";rows.push([i+1,k,dlCol2(r),c,+(c/TC*100).toFixed(1),s,+(s/TS*100).toFixed(1),p,+(p/TP*100).toFixed(1),rt]);});
