@@ -477,8 +477,8 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
    $('wb-camplabel').textContent=lab(selCamp,'All campaigns',META.campaigns,'campaign_id','campaigns');
    $('wb-aglabel').textContent=lab(selAg,'All ad groups',META.adgroups,'ad_group_id','ad groups');
    $('wb-dd').innerHTML=ddOptions(META.accounts,function(a){return a.id;},function(a){return a.name;},selAcc,'acc','All accounts');
-   $('wb-campdd').innerHTML=ddOptions(campList(),function(c){return c.campaign_id;},function(c){return c.name;},selCamp,'camp','All campaigns');
-   $('wb-agdd').innerHTML=ddOptions(agList(),function(a){return a.ad_group_id;},function(a){return a.name;},selAg,'ag','All ad groups');
+   $('wb-campdd').innerHTML=ddOptions(campList(),function(c){return c.campaign_id;},function(c){return c.account_name+' · '+c.name;},selCamp,'camp','All campaigns');
+   $('wb-agdd').innerHTML=ddOptions(agList(),function(a){return a.ad_group_id;},function(a){return a.account_name+' · '+nameOf(META.campaigns,'campaign_id',a.campaign_id)+' · '+a.name;},selAg,'ag','All ad groups');
    var l=levelOf();$('wb-hint').textContent=l==='all'?'all accounts':('filtered · '+l+' level');
  }
  function der(c,s,gr){return {pf:s*WM-c,ro:c?s/c:0,po:c?(s*WM-c)/c:0,gpf:gr*WM-c,gro:c?gr/c:0,gpo:c?(gr*WM-c)/c:0};}
