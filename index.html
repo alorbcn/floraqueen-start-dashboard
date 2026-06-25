@@ -141,7 +141,6 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
     <div class="grp"><div class="seg" id="seg">
       <button data-tf="yd">Yesterday</button><button class="on" data-tf="1w">1 week</button><button data-tf="2w">2 weeks</button><button data-tf="mtd">Month to date</button><button data-tf="pm">Past month</button></div></div>
     <div class="spacer"></div>
-    <div class="grp"><div class="toggle on" id="cmp"><span class="switch"></span><span class="t" id="cmptxt">vs previous week</span></div></div>
   </nav>
   <div class="sec"><h2>Money map</h2><span class="ctx" id="mmctx"></span><span class="rule"></span></div>
   <div class="mmcap first"><span class="dotc all"></span><span id="mm-all-lbl">All campaigns + keywords</span><i id="mm-all-sub">all campaign types · matches Max daily email</i></div>
@@ -252,7 +251,6 @@ function applyLabels(){const L=LV[level];const set=(id,t)=>{const el=document.ge
   var g=document.getElementById("kwgrid");if(g)g.classList.toggle("stack",level==="adgroup");}
 function render(){
   applyLabels();
-  document.getElementById("cmptxt").textContent=VS[tf];
   document.getElementById("adminbtn").classList.toggle("hidden",!DATA.isAdmin);
   document.getElementById("freshness").textContent="data through "+DATA.maxDate+(DATA.curRange?" · "+DATA.curRange[0]+"→"+DATA.curRange[1]:"");
   renderDD();renderTop3();renderMoney();renderAmap();renderKW();
@@ -426,7 +424,6 @@ document.addEventListener("click",e=>{const dd=document.getElementById("dd");if(
 document.getElementById("dd").addEventListener("click",e=>{const all=e.target.closest("[data-all]"),acc=e.target.closest("[data-acc]");if(all){sel.clear();}else if(acc){const n=acc.dataset.acc;sel.has(n)?sel.delete(n):sel.add(n);}else return;render();});
 document.getElementById("top3").addEventListener("click",e=>{const c=e.target.closest("[data-acc]");if(!c)return;const n=c.dataset.acc;sel.has(n)?sel.delete(n):sel.add(n);render();});
 document.querySelectorAll("#seg button").forEach(b=>b.onclick=async()=>{document.querySelectorAll("#seg button").forEach(x=>x.classList.remove("on"));b.classList.add("on");tf=b.dataset.tf;document.getElementById("cards").innerHTML='<div id="loading" style="grid-column:1/-1">Loading '+LABEL[tf]+'…</div>';try{DATA=await fetchTF(tf);render();}catch(e){}});
-document.getElementById("cmp").onclick=function(){cmp=!cmp;this.classList.toggle("on",cmp);renderMoney();};
 document.querySelectorAll(".pctbtn").forEach(b=>b.onclick=()=>{const p=document.getElementById(b.dataset.p);const hide=p.classList.toggle("nopct");b.classList.toggle("on",!hide);});
 document.getElementById("wtfsel").addEventListener("change",e=>{wtf=e.target.value;renderWorst();});
 document.getElementById("dlworst").addEventListener("click",dl_worst);
