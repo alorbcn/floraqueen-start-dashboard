@@ -157,6 +157,19 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
 #actionview td.rank{color:var(--muted);font-size:10.5px}
 #actionview td.r{text-align:right}
 #actionview td.pos{color:var(--profit);font-weight:600}#actionview td.neg{color:var(--loss);font-weight:600}
+.optkpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px}
+.optwork{border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;height:300px}
+.optlog{flex:1;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:8px;background:var(--s2)}
+.optmsg{font-size:13px;line-height:1.5;padding:9px 12px;border-radius:10px;max-width:88%}
+.optmsg.max{background:#fff;border:1px solid var(--line);color:var(--ink);align-self:flex-start}
+.optmsg.user{background:var(--forest);color:#fff;align-self:flex-end}
+.optbar{display:flex;gap:8px;align-items:flex-end;padding:10px;border-top:1px solid var(--line);background:#fff}
+.optbar textarea{flex:1;resize:none;border:1px solid var(--lineS);border-radius:9px;padding:9px 11px;font:inherit;font-size:13px}
+.optbtns{display:flex;flex-direction:column;gap:6px}
+.optsend{padding:9px 14px;border:0;border-radius:9px;background:var(--rose);color:#fff;font:inherit;font-weight:700;cursor:pointer;white-space:nowrap}
+.optsend:hover{background:#a23a5d}
+.optcopy{padding:7px 12px;border:1px solid var(--lineS);border-radius:9px;background:#fff;color:var(--soft);font:inherit;font-weight:600;cursor:pointer;white-space:nowrap;font-size:12px}
+.optcopy:hover{border-color:var(--rose);color:var(--rose)}
 </style></head>
 <body>
 <div id="login"><div class="lbox"><span class="logo" style="font-family:Fraunces;color:#16513b">Max<span style="color:#B8456B">✿</span></span>
@@ -585,13 +598,21 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
     var single=ACTLV[actLvl].n.replace(/s$/,"");
     document.getElementById("opt-title").textContent="Optimize: "+name;
     document.getElementById("opt-sub").textContent=single+" · last 30 days";
+    var roas=c?(s/c):0, poas=roas*0.40;
     function kpi(k,v,col){return '<div><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">'+k+'</div><div style="font-family:Fraunces;font-size:20px'+(col?';color:'+col:'')+'">'+v+'</div></div>';}
     document.getElementById("opt-body").innerHTML=
-      '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px">'+
-      kpi("Cost",eur(c))+kpi("Sales",eur(s))+kpi("Profit (est)",(p>=0?'+':'')+eur(p),(p>=0?'var(--profit)':'var(--loss)'))+kpi("ROAS",(c?(s/c).toFixed(2):"-")+"×")+
-      '</div>'+
-      '<div style="background:var(--s2);border:1px dashed var(--lineS);border-radius:10px;padding:16px;color:var(--soft);font-size:13px;line-height:1.6">'+
-      '<b>🛠️ Optimization workspace — coming next.</b><br>Here we will pull this '+single+'’s search terms, suggest negative keywords, flag wasted spend, and recommend bid / tROAS moves (POAS-aware, 40% margin). For now this is the zoom-in entry point.</div>';
+      '<div class="optkpis">'+kpi("Cost",eur(c))+kpi("Sales",eur(s))+kpi("Profit (est)",(p>=0?'+':'')+eur(p),(p>=0?'var(--profit)':'var(--loss)'))+kpi("ROAS",(c?roas.toFixed(2):"-")+"×")+kpi("POAS",poas.toFixed(2),(poas>=1?'var(--profit)':'var(--loss)'))+'</div>'+
+      '<div class="optwork"><div class="optlog" id="opt-log"><div class="optmsg max">Optimizing <b>'+esc(name)+'</b> ('+single+', last 30 days). I run the playbook in three phases — <b>Intent → Search terms → Verdict</b> — pausing for your ⛔ approval at each gate. Search terms, negatives and QS components are pulled live from Google Ads at run time. Add context below and <b>Send</b>, or <b>Copy brief</b> to hand me the data in chat.</div></div>'+
+      '<div class="optbar"><textarea id="opt-text" rows="2" placeholder="Add context, approve intent, edit rows…"></textarea><div class="optbtns"><button class="optsend" id="opt-send">Send ▸</button><button class="optcopy" id="opt-copy">⧉ Copy brief</button></div></div></div>';
+    var brief="Optimize this keyword — Max Keyword Optimization Playbook.
+KEYWORD: "+name+" | "+single+" | last 30 days
+METRICS: Cost EUR "+Math.round(c)+" | Conv value EUR "+Math.round(s)+" | ROAS "+roas.toFixed(2)+"x | POAS "+poas.toFixed(2)+" | Profit EUR "+Math.round(p)+"
+Run Phase 1 (intent) -> Phase 2 (search terms, live pull) -> Phase 3 (verdict), pausing at each approval gate.";
+    var log=document.getElementById("opt-log"),txt=document.getElementById("opt-text");
+    function add(cls,html){var d=document.createElement("div");d.className="optmsg "+cls;d.innerHTML=html;log.appendChild(d);log.scrollTop=log.scrollHeight;}
+    document.getElementById("opt-send").onclick=function(){var v=(txt.value||"").trim();if(!v)return;add("user",esc(v));txt.value="";setTimeout(function(){add("max","Noted. The live phased optimization (Intent → Search terms → Verdict, with the live Google Ads pull) connects next — for now use <b>Copy brief</b> to run it with Max in chat.");},150);};
+    txt.addEventListener("keydown",function(e){if(e.key==="Enter"&&(e.metaKey||e.ctrlKey))document.getElementById("opt-send").click();});
+    document.getElementById("opt-copy").onclick=function(){var b=this;try{navigator.clipboard.writeText(brief);b.textContent="✓ Copied";setTimeout(function(){b.innerHTML="⧉ Copy brief";},1500);}catch(e){add("max","Brief: "+esc(brief));}};
     document.getElementById("optmodal").classList.remove("hidden");
   });
   document.getElementById("opt-close").onclick=function(){document.getElementById("optmodal").classList.add("hidden");};
@@ -659,7 +680,7 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
    $('wb-agdd').innerHTML=ddOptions(agList(),function(a){return a.ad_group_id;},function(a){return a.account_name+' · '+nameOf(META.campaigns,'campaign_id',a.campaign_id)+' · '+a.name;},selAg,'ag','All ad groups');
    var l=levelOf();$('wb-hint').textContent=l==='all'?'all accounts':('filtered · '+l+' level');
  }
- function der(c,s,gr){return {pf:s*WM-c,ro:c?s/c:0,po:c?(s*WM-c)/c:0,gpf:gr*WM-c,gro:c?gr/c:0,gpo:c?(gr*WM-c)/c:0};}
+ function der(c,s,gr){return {pf:s*WM-c,ro:c?s/c:0,po:c?s*WM/c:0,gpf:gr*WM-c,gro:c?gr/c:0,gpo:c?gr*WM/c:0};}
  function outg(c,cv,gt,hasG){return c>2000&&cv<100&&(!hasG||gt<100);}
  function span(a){return (new Date(a.week_end)-new Date(a.week_start))/86400000+1;}
  function renderChart(asc,hasG){
@@ -667,9 +688,9 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
    var mx=Math.max.apply(null,asc.map(function(a){return Math.max(a.s,hasG?a.gr:0);}).concat([1]));
    var n=asc.length,gw=pw/n,bw=Math.min(15,gw*0.32);
    var xc=function(i){return pl+gw*(i+0.5);},bh=function(v){return v/mx*ph;};
-   var p0=-1.05,p1=1.15,yp=function(p){return pt+(1-((p-p0)/(p1-p0)))*ph;};
+   var p0=-0.05,p1=2.15,yp=function(p){return pt+(1-((p-p0)/(p1-p0)))*ph;};
    var sv='<svg viewBox="0 0 '+CW+' '+CH+'" width="100%" preserveAspectRatio="xMidYMid meet" font-family="Archivo">';
-   var yz=yp(0);sv+='<line x1="'+pl+'" y1="'+yz.toFixed(1)+'" x2="'+(CW-pr)+'" y2="'+yz.toFixed(1)+'" stroke="#D98324" stroke-dasharray="4 4" stroke-width="1"/>';
+   var yz=yp(1);sv+='<line x1="'+pl+'" y1="'+yz.toFixed(1)+'" x2="'+(CW-pr)+'" y2="'+yz.toFixed(1)+'" stroke="#D98324" stroke-dasharray="4 4" stroke-width="1"/>';
    sv+='<text x="'+(CW-pr)+'" y="'+(yz-4).toFixed(1)+'" text-anchor="end" font-size="9" fill="#D98324">POAS break-even</text>';
    asc.forEach(function(a,i){var cx=xc(i),sh=bh(a.s),ch=bh(a.c);
      sv+='<rect x="'+(cx-bw-1).toFixed(1)+'" y="'+(pt+ph-sh).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+sh.toFixed(1)+'" fill="#0C100D" rx="1"/>';
@@ -704,14 +725,14 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
    $('wb-tbody').innerHTML=rows.slice().sort(function(a,b){return b.iso_week-a.iso_week;}).map(function(r){var d=der(r.c,r.s,r.gr);
      var bd=r.p?' <span class="wbbdg part">partial</span>':(outg(r.c,r.cv,r.gt,hasG)?' <span class="wbbdg warn" title="Both Google Ads and GA4 ~zero conversions on real spend.">⚠ tracking outage</span>':'');
      var rc=r.p?'part':(outg(r.c,r.cv,r.gt,hasG)?'anom':'');
-     var pc=function(v){return v>=0?'pos':'neg';},rl=function(v){return v>=2.33?'':'neg';};
+     var pc=function(v){return v>=0?'pos':'neg';},rl=function(v){return v>=2.5?'':'neg';},poasC=function(v){return v>=1?'pos':'neg';};
      function td(t,cl){return '<td class="r '+(cl||'')+'">'+t+'</td>';}
      function gg(t){return hasG?t:'—';}
      return '<tr class="'+rc+'"><td class="wk"><b>W'+r.iso_week+'</b> <span class="dts">'+md(r.week_start)+'–'+md(r.week_end)+'</span>'+bd+'</td>'+
        td(weur(r.c),'cost grp2')+td(gg(weur(r.c)),'g4c')+td(weur(r.s),'sales grp2')+td(gg(weur(r.gr)),'g4c')+
        '<td class="r grp2"><span class="'+pc(d.pf)+'">'+weur(d.pf)+'</span></td><td class="r g4c">'+(hasG?'<span class="'+pc(d.gpf)+'">'+weur(d.gpf)+'</span>':'—')+'</td>'+
        '<td class="r grp2"><span class="'+rl(d.ro)+'">'+f2(d.ro)+'</span></td><td class="r g4c">'+(hasG?'<span class="'+rl(d.gro)+'">'+f2(d.gro)+'</span>':'—')+'</td>'+
-       '<td class="r grp2"><span class="'+pc(d.po)+'">'+f2(d.po)+'</span></td><td class="r g4c">'+(hasG?'<span class="'+pc(d.gpo)+'">'+f2(d.gpo)+'</span>':'—')+'</td>'+
+       '<td class="r grp2"><span class="'+poasC(d.po)+'">'+f2(d.po)+'</span></td><td class="r g4c">'+(hasG?'<span class="'+poasC(d.gpo)+'">'+f2(d.gpo)+'</span>':'—')+'</td>'+
        td(inum(r.cv),'grp2')+td(gg(inum(r.gt)),'g4c')+'</tr>';}).join('');
  }
  function fetchSeries(){
