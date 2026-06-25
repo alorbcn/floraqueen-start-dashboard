@@ -142,6 +142,21 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
 .card .k{text-align:center}
 .card .v{text-align:center}
 .card .dr{justify-content:center}
+.acttabwrap{position:relative;display:inline-block}
+.dlink.acttab{background:var(--rose);border-color:var(--rose);color:#fff}
+.dlink.acttab:hover{background:#a23a5d;border-color:#a23a5d;color:#fff}
+.dlink.acttab.on{background:#8f3252;border-color:#8f3252}
+.actdd{position:absolute;top:40px;left:0;width:215px;background:#fff;border:1px solid var(--lineS);border-radius:11px;box-shadow:0 12px 40px rgba(0,0,0,.18);padding:6px;display:none;z-index:400}
+.actdd.open{display:block}
+.actopt{padding:9px 11px;border-radius:8px;font-size:13px;font-weight:600;color:var(--soft);cursor:pointer}
+.actopt:hover{background:rgba(184,69,107,.1);color:var(--rose)}
+.optbtn{font:inherit;font-size:11px;font-weight:700;padding:4px 9px;border-radius:7px;border:1px solid var(--rose);background:#fff;color:var(--rose);cursor:pointer;white-space:nowrap}
+.optbtn:hover{background:var(--rose);color:#fff}
+#actionview .panel.best .ph{background:linear-gradient(90deg,rgba(31,107,79,.08),transparent)}
+#actionview .panel.worst .ph{background:linear-gradient(90deg,rgba(217,131,36,.1),transparent)}
+#actionview td.rank{color:var(--muted);font-size:10.5px}
+#actionview td.r{text-align:right}
+#actionview td.pos{color:var(--profit);font-weight:600}#actionview td.neg{color:var(--loss);font-weight:600}
 </style></head>
 <body>
 <div id="login"><div class="lbox"><span class="logo" style="font-family:Fraunces;color:#16513b">Max<span style="color:#B8456B">✿</span></span>
@@ -160,7 +175,7 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
       <a class="dlink" data-level="campaign" title="Campaign performance">Campaigns</a>
       <a class="dlink" data-level="adgroup" title="Ad-group performance">Ad groups</a>
       <span class="dlink soon" title="Coming soon">PMax + Shopping<i>soon</i></span>
-      <span class="dlink soon" title="Coming soon">Action<i>soon</i></span>
+      <span class="acttabwrap"><a class="dlink acttab" id="acttab">Action <span style="font-size:10px">▾</span></a><div class="actdd" id="actdd"><div class="actopt" data-lvl="campaign">Optimize campaigns</div><div class="actopt" data-lvl="adgroup">Optimize ad groups</div><div class="actopt" data-lvl="keyword">Optimize keywords</div></div></span>
     </nav></div>
     <div class="badges"><button class="adminbtn hidden" id="adminbtn" title="Admin settings">⚙ Admin settings</button><span class="badge">● Live · read-only</span><span id="who"></span></div></header>
   <div id="kwview">
@@ -212,6 +227,21 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
     <div class="wbsec"><h2>All weeks</h2><span class="ctx">newest on top · Google Ads vs GA4</span><span class="rule"></span></div>
     <table class="wbtable"><thead><tr><th class="l" rowspan="2">Week</th><th class="grp2" colspan="2">Investment</th><th class="grp2" colspan="2">Sales</th><th class="grp2" colspan="2">Profit · est</th><th class="grp2" colspan="2">Real ROAS</th><th class="grp2" colspan="2">POAS · est</th><th class="grp2" colspan="2">Conversions</th></tr><tr><th class="sub grp2">GAds</th><th class="sub g4">GA4</th><th class="sub grp2">GAds</th><th class="sub g4">GA4</th><th class="sub grp2">GAds</th><th class="sub g4">GA4</th><th class="sub grp2">GAds</th><th class="sub g4">GA4</th><th class="sub grp2">GAds</th><th class="sub g4">GA4</th><th class="sub grp2">GAds</th><th class="sub g4">GA4</th></tr></thead><tbody id="wb-tbody"></tbody></table>
     <div class="wbfoot"><b>Sources:</b> Google Ads = weekly_metrics_account (all channels, per account); GA4 = google/cpc split by Google Ads account · margin 40% (profit estimate; cost basis = Google Ads) · EUR · Madrid. <b>Refresh:</b> Mon/Tue/Wed 08:00 (GA4 column one-time pull for now). Select accounts above to filter. <b>Max is read-only.</b></div>
+  </div>
+  <div id="actionview" class="hidden">
+    <div class="sec"><h2 id="act-sec">Optimize</h2><span class="ctx" id="act-ctx"></span><span class="rule"></span></div>
+    <div class="kw" id="actgrid">
+      <div class="panel best"><div class="ph"><div class="pt"><span class="dot"></span><span id="act-besttitle">Best 20</span></div></div>
+        <table><thead><tr><th class="l">#</th><th class="l">Name</th><th class="l">Type</th><th>Cost</th><th>Sales</th><th>Profit</th><th></th></tr></thead><tbody id="act-best"></tbody></table></div>
+      <div class="panel worst"><div class="ph"><div class="pt"><span class="dot"></span><span id="act-worsttitle">Worst 20</span></div></div>
+        <table><thead><tr><th class="l">#</th><th class="l">Name</th><th class="l">Type</th><th>Cost</th><th>Sales</th><th>Profit</th><th></th></tr></thead><tbody id="act-worst"></tbody></table></div>
+    </div>
+  </div>
+  <div id="optmodal" class="adminwrap hidden">
+    <div class="adminbox" style="width:680px">
+      <div class="adminhd"><div><div class="admintitle" id="opt-title">Optimize</div><div class="adminsub" id="opt-sub"></div></div><button class="adminx" id="opt-close" title="Close">✕</button></div>
+      <div class="adminsec"><div id="opt-body"></div></div>
+    </div>
   </div>
   <div id="kwdetail" class="adminwrap hidden">
     <div class="adminbox" style="width:880px">
@@ -500,6 +530,73 @@ document.querySelectorAll('.dashnav .dlink[data-level]').forEach(function(t){t.a
 });});
 document.getElementById("kwd-close").addEventListener("click",()=>document.getElementById("kwdetail").classList.add("hidden"));
 document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id==="kwdetail")document.getElementById("kwdetail").classList.add("hidden");});
+/* ===== Action / Optimize tab ===== */
+(function(){
+  var tab=document.getElementById("acttab"),dd=document.getElementById("actdd");
+  if(!tab||!dd) return;
+  var ACTLV={campaign:{n:"campaigns",api:"ext&level=campaign",sec:"Optimize campaigns"},adgroup:{n:"ad groups",api:"ext&level=adgroup",sec:"Optimize ad groups"},keyword:{n:"keywords",api:"worstkw",sec:"Optimize keywords"}};
+  var TF="30d", actLvl=null, cache={};
+  var esc=function(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');};
+  var chL={search:"Search",pmax:"PMax",shopping:"Shopping"};
+  function typeCell(lvl,t){
+    if(lvl==="keyword"){var m=String(t||"");return '<span class="mt '+m+'">'+(m?m[0].toUpperCase()+m.slice(1):"-")+'</span>';}
+    if(lvl==="campaign"){var ch=String(t||""),cls=["search","pmax","shopping"].indexOf(ch)>=0?ch:"other";return '<span class="mt '+cls+'">'+(chL[ch]||(ch?ch[0].toUpperCase()+ch.slice(1):"-"))+'</span>';}
+    return '<span class="cmpnm" title="'+esc(t)+'">'+esc(t)+'</span>';
+  }
+  function rowHtml(lvl,r,i){
+    var name=r[0],type=r[1],c=r[2],s=r[3],p=s*0.40-c;
+    return '<tr><td class="l rank">'+(i+1)+'</td><td class="l kwn" title="'+esc(name)+'">'+esc(name)+'</td><td class="l">'+typeCell(lvl,type)+'</td><td class="r">'+eur(c)+'</td><td class="r">'+eur(s)+'</td><td class="r '+(p>=0?'pos':'neg')+'">'+(p>=0?'+':'')+eur(p)+'</td><td class="r"><button class="optbtn" data-name="'+esc(name)+'" data-type="'+esc(type)+'" data-c="'+Math.round(c)+'" data-s="'+Math.round(s)+'">⚙ Optimize</button></td></tr>';
+  }
+  function fill(lvl,d){
+    document.getElementById("act-best").innerHTML=(d.best||[]).map(function(r,i){return rowHtml(lvl,r,i);}).join('')||'<tr><td colspan="7" style="padding:14px;color:var(--muted)">No data.</td></tr>';
+    document.getElementById("act-worst").innerHTML=(d.worst||[]).map(function(r,i){return rowHtml(lvl,r,i);}).join('')||'<tr><td colspan="7" style="padding:14px;color:var(--muted)">No data.</td></tr>';
+  }
+  function loadList(lvl){
+    document.getElementById("act-besttitle").textContent="Best 20 "+ACTLV[lvl].n;
+    document.getElementById("act-worsttitle").textContent="Worst 20 "+ACTLV[lvl].n;
+    document.getElementById("act-sec").textContent=ACTLV[lvl].sec;
+    document.getElementById("act-ctx").textContent="last 30 days · ranked by profit · click ⚙ to optimize one";
+    if(cache[lvl]){fill(lvl,cache[lvl]);return;}
+    document.getElementById("act-best").innerHTML='<tr><td class="l" colspan="7" style="padding:14px;color:var(--muted)">Loading…</td></tr>';
+    document.getElementById("act-worst").innerHTML='';
+    fetch(FN+"?api="+ACTLV[lvl].api+"&tf="+TF,{headers:{Authorization:"Bearer "+tok}}).then(function(r){return r.json();}).then(function(j){
+      if(j.error){document.getElementById("act-best").innerHTML='<tr><td class="l" colspan="7" style="padding:14px;color:var(--cost)">Error: '+j.error+'</td></tr>';return;}
+      cache[lvl]=j;fill(lvl,j);
+    }).catch(function(e){document.getElementById("act-best").innerHTML='<tr><td class="l" colspan="7" style="padding:14px;color:var(--cost)">Error: '+e.message+'</td></tr>';});
+  }
+  function showAction(lvl){
+    actLvl=lvl;
+    document.querySelectorAll('.dashnav .dlink').forEach(function(x){x.classList.remove('active','wbon');});
+    tab.classList.add('on');
+    document.getElementById("kwview").classList.add("hidden");
+    var wv=document.getElementById("weeklyview");if(wv)wv.classList.add("hidden");
+    document.getElementById("actionview").classList.remove("hidden");
+    loadList(lvl);
+  }
+  function hideAction(){tab.classList.remove('on');document.getElementById("actionview").classList.add("hidden");}
+  tab.onclick=function(e){e.stopPropagation();dd.classList.toggle("open");};
+  document.addEventListener("click",function(){dd.classList.remove("open");});
+  dd.addEventListener("click",function(e){e.stopPropagation();var o=e.target.closest("[data-lvl]");if(o){dd.classList.remove("open");showAction(o.getAttribute("data-lvl"));}});
+  document.querySelectorAll('.dashnav .dlink[data-level]').forEach(function(t){t.addEventListener('click',hideAction);});
+  var wbtab=document.querySelector('.dlink.wbtab');if(wbtab)wbtab.addEventListener('click',hideAction);
+  document.getElementById("actionview").addEventListener("click",function(e){
+    var b=e.target.closest(".optbtn");if(!b)return;
+    var name=b.getAttribute("data-name"),c=+b.getAttribute("data-c"),s=+b.getAttribute("data-s"),p=s*0.40-c;
+    var single=ACTLV[actLvl].n.replace(/s$/,"");
+    document.getElementById("opt-title").textContent="Optimize: "+name;
+    document.getElementById("opt-sub").textContent=single+" · last 30 days";
+    function kpi(k,v,col){return '<div><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">'+k+'</div><div style="font-family:Fraunces;font-size:20px'+(col?';color:'+col:'')+'">'+v+'</div></div>';}
+    document.getElementById("opt-body").innerHTML=
+      '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px">'+
+      kpi("Cost",eur(c))+kpi("Sales",eur(s))+kpi("Profit (est)",(p>=0?'+':'')+eur(p),(p>=0?'var(--profit)':'var(--loss)'))+kpi("ROAS",(c?(s/c).toFixed(2):"-")+"×")+
+      '</div>'+
+      '<div style="background:var(--s2);border:1px dashed var(--lineS);border-radius:10px;padding:16px;color:var(--soft);font-size:13px;line-height:1.6">'+
+      '<b>🛠️ Optimization workspace — coming next.</b><br>Here we will pull this '+single+'’s search terms, suggest negative keywords, flag wasted spend, and recommend bid / tROAS moves (POAS-aware, 40% margin). For now this is the zoom-in entry point.</div>';
+    document.getElementById("optmodal").classList.remove("hidden");
+  });
+  document.getElementById("opt-close").onclick=function(){document.getElementById("optmodal").classList.add("hidden");};
+  document.getElementById("optmodal").addEventListener("click",function(e){if(e.target.id==="optmodal")document.getElementById("optmodal").classList.add("hidden");});
+})();
 /* ===== Custom period comparison (A vs B) ===== */
 (function(){
   var btn=document.getElementById("cmpbtn"),panel=document.getElementById("cmppanel");
