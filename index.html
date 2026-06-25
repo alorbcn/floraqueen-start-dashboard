@@ -127,6 +127,18 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
 .cmpactions{display:flex;gap:8px;margin-top:6px}
 .cmpapply{flex:1;padding:8px;border:0;border-radius:8px;background:var(--forest);color:#fff;font:inherit;font-weight:600;cursor:pointer}
 .cmpclear{padding:8px 12px;border:1px solid var(--lineS);border-radius:8px;background:#fff;color:var(--soft);font:inherit;font-weight:600;cursor:pointer}
+.card.split{padding:10px 12px;gap:6px}
+.card.split .k{font-size:14px;font-weight:700;color:var(--soft)}
+.card.split .splitrow{display:flex;align-items:flex-start}
+.card.split .sidecol{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:1px}
+.card.split .sidecol.b{padding-left:11px}
+.card.split .vdiv{width:1px;align-self:stretch;background:var(--line);margin:1px 0}
+.card.split .sv{font-family:Fraunces;font-weight:600;font-size:18px;line-height:1.12;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card.split .sp{font-size:9px;font-weight:600;color:var(--muted);letter-spacing:.02em;white-space:nowrap}
+.card.split .dr{margin-top:3px}
+.card.split.feat .k{color:rgba(255,255,255,.82)}
+.card.split.feat .vdiv{background:rgba(255,255,255,.28)}
+.card.split.feat .sp{color:rgba(255,255,255,.72)}
 </style></head>
 <body>
 <div id="login"><div class="lbox"><span class="logo" style="font-family:Fraunces;color:#16513b">Max<span style="color:#B8456B">✿</span></span>
@@ -289,7 +301,15 @@ async function fetchData(){
   }
   return fetchTF(tf);
 }
+function shD(s){var p=String(s).split('-');return (+p[1])+'/'+(+p[2]);}
+function splitCards(t){
+  var aLab=shD(custom.a0)+'–'+shD(custom.a1), bLab=shD(custom.b0)+'–'+shD(custom.b1);
+  var chip=(a,b)=>{var d=b?((a-b)/b*100):0;return '<span class="chg '+(d>=0?'up':'down')+'">'+(d>=0?'▲':'▼')+' '+Math.abs(d).toFixed(0)+'%</span>';};
+  var card=(k,av,bv,a,b,f)=>'<div class="card split'+(f?' feat':'')+'"><div class="k">'+k+'</div><div class="splitrow"><div class="sidecol"><div class="sv tnum">'+av+'</div><div class="sp">'+aLab+'</div></div><div class="vdiv"></div><div class="sidecol b"><div class="sv tnum">'+bv+'</div><div class="sp">'+bLab+'</div></div></div><div class="dr">'+chip(a,b)+'<span class="vs">A vs B</span></div></div>';
+  return card("Cost",eur(t.c),eur(t.cp),t.c,t.cp)+card("Sales",eur(t.s),eur(t.sp),t.s,t.sp)+card("Profit · est.",eur(t.p),eur(t.pp),t.p,t.pp,1)+card("ROAS",t.roas.toFixed(2)+"×",t.roasp.toFixed(2)+"×",t.roas,t.roasp)+card("POAS · est.",t.poas.toFixed(2),(t.roasp*M).toFixed(2),t.poas,t.roasp*M);
+}
 function moneyCards(t){
+  if(custom) return splitCards(t);
   const chg=(a,b)=>{const d=b?((a-b)/b*100):0;return{d,c:d>=0?'up':'down',a:d>=0?'▲':'▼'};};
   const mk=(k,v,cur,prev,f)=>{const x=chg(cur,prev);const dr=cmp?'<div class="dr"><span class="chg '+x.c+'">'+x.a+' '+Math.abs(x.d).toFixed(0)+'%</span><span class="vs">'+vsLabel()+'</span></div>':'';
     return '<div class="card'+(f?' feat':'')+'"><div class="k">'+k+'</div><div class="v tnum">'+v+'</div>'+dr+'</div>';};
