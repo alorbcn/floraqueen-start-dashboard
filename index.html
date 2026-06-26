@@ -183,7 +183,9 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
 .optbadge{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;background:rgba(31,107,79,.12);color:var(--forest);padding:2px 7px;border-radius:999px}
 .optnote{font-size:12px;color:var(--muted)}
 .optloading{font-family:Fraunces;font-style:italic;color:var(--muted);padding:14px 0}
-.opttblwrap{max-height:340px;overflow:auto;border:1px solid var(--line);border-radius:10px;margin-top:8px}
+.opttblwrap{max-height:52vh;overflow:auto;border:1px solid var(--line);border-radius:10px;margin-top:8px}
+.optctrls{display:flex;gap:8px;align-items:center;font-size:12px;color:var(--soft);margin:6px 0 4px}
+.optctrls select{font:inherit;font-size:12px;padding:4px 7px;border:1px solid var(--lineS);border-radius:7px;background:#fff}
 .opttbl{width:100%;border-collapse:collapse;font-size:12px}
 .opttbl th{position:sticky;top:0;background:var(--s2);font-size:9.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--soft);font-weight:700;text-align:right;padding:7px 9px;border-bottom:1px solid var(--lineS)}
 .opttbl th.l{text-align:left}
@@ -277,7 +279,7 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
     </div>
   </div>
   <div id="optmodal" class="adminwrap hidden">
-    <div class="adminbox" style="width:680px">
+    <div class="adminbox" style="width:1120px;max-width:94vw">
       <div class="adminhd"><div><div class="admintitle" id="opt-title">Optimize</div><div class="adminsub" id="opt-sub"></div></div><button class="adminx" id="opt-close" title="Close">✕</button></div>
       <div class="adminsec"><div id="opt-body"></div></div>
     </div>
@@ -622,7 +624,7 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
   document.getElementById("actionview").addEventListener("click",function(e){
     var b=e.target.closest(".optbtn");if(!b)return;
     var name=b.getAttribute("data-name"),type=b.getAttribute("data-type"),c=+b.getAttribute("data-c"),s=+b.getAttribute("data-s");
-    var lvl=actLvl, single=ACTLV[actLvl].n.replace(/s$/,""), P={};
+    var lvl=actLvl, single=ACTLV[actLvl].n.replace(/s$/,""), P={days:30,clk:20};
     document.getElementById("opt-title").textContent="Optimize: "+name;
     document.getElementById("opt-sub").textContent=single+" · last 30 days";
     function kc(k,v,col){return '<div class="optkpi"><div class="kk">'+k+'</div><div class="kv"'+(col?' style="color:'+col+'"':'')+'>'+v+'</div></div>';}
@@ -644,10 +646,20 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
       }).catch(function(e){btn.disabled=false;btn.textContent="↻ Re-generate";alert("Error: "+e.message);});
     }
     function approveIntent(){document.getElementById("opt-intent").innerHTML='<div class="optsec done"><div class="optseclbl">Intent ✓ approved</div><div class="optinttext">'+esc(P.intent)+'</div></div>';loadTerms();}
+    function termControls(){
+      var dopt=[30,60,90,120].map(function(d){return '<option value="'+d+'"'+(P.days===d?' selected':'')+'>'+d+' days</option>';}).join('');
+      var copt=[10,20,30,50].map(function(k){return '<option value="'+k+'"'+(P.clk===k?' selected':'')+'>'+k+'</option>';}).join('');
+      return '<div class="optctrls">Window <select id="opt-days">'+dopt+'</select> · Min clicks for a negative <select id="opt-clk">'+copt+'</select></div>';
+    }
+    function bindCtrls(){
+      var dd=document.getElementById("opt-days"); if(dd)dd.onchange=function(){P.days=+this.value;loadTerms();};
+      var ck=document.getElementById("opt-clk"); if(ck)ck.onchange=function(){P.clk=+this.value;loadTerms();};
+    }
     function loadTerms(){
       var ph=document.getElementById("opt-phase2");
-      ph.innerHTML='<div class="optsec"><div class="optseclbl">Phase 2 — Search terms</div><div class="optloading">Pulling live search terms + existing negatives/shared lists, then classifying…</div></div>';
-      fetch(FN+"?api=optimize",{method:"POST",headers:{Authorization:"Bearer "+tok,"Content-Type":"application/json"},body:JSON.stringify({step:"terms",keyword:name,match:type,customerId:P.customerId,campaignId:P.campaignId,adGroupId:P.adGroupId,approvedIntent:P.intent})}).then(chk401).then(function(r){return r.json();}).then(function(j){
+      ph.innerHTML='<div class="optsec"><div class="optseclbl">Phase 2 — Search terms</div>'+termControls()+'<div class="optloading">Pulling live search terms + existing negatives/shared lists, then classifying…</div></div>';
+      bindCtrls();
+      fetch(FN+"?api=optimize",{method:"POST",headers:{Authorization:"Bearer "+tok,"Content-Type":"application/json"},body:JSON.stringify({step:"terms",keyword:name,match:type,customerId:P.customerId,campaignId:P.campaignId,adGroupId:P.adGroupId,approvedIntent:P.intent,days:P.days,clk:P.clk})}).then(chk401).then(function(r){return r.json();}).then(function(j){
         if(j.error){ph.innerHTML='<div class="optsec"><div class="optseclbl">Phase 2 — Search terms</div><div class="optnote" style="color:var(--cost)">'+esc(j.error)+'</div></div>';return;}
         renderTerms(j.terms||[]);
       }).catch(function(e){ph.innerHTML='<div class="optsec"><div class="optnote" style="color:var(--cost)">Error: '+esc(e.message)+'</div></div>';});
@@ -661,7 +673,8 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
         var apply=act?'<input type="checkbox" class="optapply" checked>':'<span style="color:var(--muted)">—</span>';
         return '<tr class="'+(act?'':'na')+'" data-term="'+esc(r.term)+'" data-rec="'+r.recommendation+'" data-nm="'+(r.negMatch||"")+'" data-rat="'+esc(r.rationale||"")+'"><td class="l kwn" title="'+esc(r.term)+'">'+esc(r.term)+'</td><td class="r">'+r.clicks+'</td><td class="r">'+eur(r.cost)+'</td><td class="r">'+r.conv+'</td><td class="r '+poasc+'">'+r.poas+'</td><td class="r">'+(r.intentMatch||"")+'</td><td class="r">'+esc(r.already)+'</td><td class="l">'+rec+'<div class="optrat">'+esc(r.rationale||"")+'</div></td><td class="r">'+apply+'</td></tr>';
       }).join('');
-      document.getElementById("opt-phase2").innerHTML='<div class="optsec"><div class="optseclbl">Phase 2 — Search terms <span style="color:var(--muted);font-weight:400">('+rows.length+' terms · last 30 days)</span></div><div class="opttblwrap"><table class="opttbl"><thead>'+head+'</thead><tbody>'+body+'</tbody></table></div><div class="optdonebar"><span class="optnote">Untick anything you do not want, then download the file to upload in Google Ads.</span><button class="optsend" id="opt-done">Done — download CSV</button></div></div>';
+      document.getElementById("opt-phase2").innerHTML='<div class="optsec"><div class="optseclbl">Phase 2 — Search terms <span style="color:var(--muted);font-weight:400">('+rows.length+' terms · last '+P.days+' days · negative threshold '+P.clk+' clicks)</span></div>'+termControls()+'<div class="opttblwrap"><table class="opttbl"><thead>'+head+'</thead><tbody>'+body+'</tbody></table></div><div class="optdonebar"><span class="optnote">Untick anything you do not want, then download the file to upload in Google Ads.</span><button class="optsend" id="opt-done">Done — download CSV</button></div></div>';
+      bindCtrls();
       document.getElementById("opt-done").onclick=exportCsv;
     }
     function exportCsv(){
