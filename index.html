@@ -303,6 +303,7 @@ async function login(){const b=document.getElementById("loginbtn");const e=docum
 document.getElementById("loginbtn").onclick=login;
 document.getElementById("pw").addEventListener("keydown",e=>{if(e.key==="Enter")login();});
 
+function chk401(r){if(r.status===401){localStorage.removeItem("max_tok");tok="";document.getElementById("login").classList.remove("hidden");document.getElementById("app").classList.add("hidden");throw new Error("auth");}return r;}
 async function fetchTF(t){ const C=cacheL[level]; if(C[t])return C[t];
   const r=await fetch(FN+"?api=data&level="+level+"&tf="+t,{headers:{Authorization:"Bearer "+tok}});
   if(r.status===401){localStorage.removeItem("max_tok");tok="";document.getElementById("login").classList.remove("hidden");document.getElementById("app").classList.add("hidden");throw new Error("auth");}
@@ -616,7 +617,7 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
     buildBrief();
     if(lvl==="keyword"){
       var loading=add("max","Reading intent… pulling the ad group, sibling keywords and 30-day metrics.");
-      fetch(FN+"?api=optimize",{method:"POST",headers:{Authorization:"Bearer "+tok,"Content-Type":"application/json"},body:JSON.stringify({keyword:name,match:type})}).then(function(r){return r.json();}).then(function(j){
+      fetch(FN+"?api=optimize",{method:"POST",headers:{Authorization:"Bearer "+tok,"Content-Type":"application/json"},body:JSON.stringify({keyword:name,match:type})}).then(chk401).then(function(r){return r.json();}).then(function(j){
         if(loading&&loading.parentNode)log.removeChild(loading);
         if(j.error){add("max","Couldn't load context: "+esc(j.error));return;}
         if(j.found===false){add("max","Couldn't locate this keyword's ad group in the warehouse (it may be very new). You can still <b>Copy brief</b> to run it with Max.");return;}
@@ -765,7 +766,7 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
  function fetchSeries(){
    $('wb-cards').innerHTML='<div style="grid-column:1/-1;padding:40px;text-align:center;color:#8a938e;font-family:Fraunces;font-style:italic">Loading…</div>';
    fetch(FN+'?api=weekly',{method:'POST',headers:{Authorization:'Bearer '+tok,'Content-Type':'application/json'},body:JSON.stringify({level:levelOf(),ids:idsOf()})})
-     .then(function(r){return r.json();}).then(function(j){if(j.error){$('wb-cards').innerHTML='<div style="grid-column:1/-1;padding:20px">Error: '+j.error+'</div>';return;}curRows=j.rows||[];render();})
+     .then(chk401).then(function(r){return r.json();}).then(function(j){if(j.error){$('wb-cards').innerHTML='<div style="grid-column:1/-1;padding:20px">Error: '+j.error+'</div>';return;}curRows=j.rows||[];render();})
      .catch(function(e){$('wb-cards').innerHTML='<div style="grid-column:1/-1;padding:20px">Error: '+e.message+'</div>';});
  }
  function pruneAndRefresh(){
@@ -791,7 +792,7 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
  function initWeekly(){
    if(loaded)return;loaded=true;
    $('wb-cards').innerHTML='<div style="grid-column:1/-1;padding:40px;text-align:center;color:#8a938e;font-family:Fraunces;font-style:italic">Loading…</div>';
-   fetch(FN+'?api=weekly&meta=1',{headers:{Authorization:'Bearer '+tok}}).then(function(r){return r.json();}).then(function(j){
+   fetch(FN+'?api=weekly&meta=1',{headers:{Authorization:'Bearer '+tok}}).then(chk401).then(function(r){return r.json();}).then(function(j){
      if(j.error){$('wb-cards').innerHTML='<div style="grid-column:1/-1;padding:20px">Error: '+j.error+'</div>';loaded=false;return;}
      META=j;renderSelectors();fetchSeries();
    }).catch(function(e){$('wb-cards').innerHTML='<div style="grid-column:1/-1;padding:20px">Error: '+e.message+'</div>';loaded=false;});
@@ -803,4 +804,31 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
    bindDD('wb-acctbtn','wb-dd','acc');bindDD('wb-campbtn','wb-campdd','camp');bindDD('wb-agbtn','wb-agdd','ag');
  }
 })();
+
+async function adminApi(action,body){const r=await fetch(FN+"?api=admin&action="+action,{method:body?"POST":"GET",headers:Object.assign({Authorization:"Bearer "+tok},body?{"Content-Type":"application/json"}:{}),body:body?JSON.stringify(body):undefined});const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||("HTTP "+r.status));return j;}
+function openAdmin(){document.getElementById("adminpanel").classList.remove("hidden");document.getElementById("invmsg").innerHTML="";loadUsers();}
+function closeAdmin(){document.getElementById("adminpanel").classList.add("hidden");}
+async function loadUsers(){const tb=document.getElementById("ulist");tb.innerHTML='<tr><td colspan="5" style="color:#8C8B80">Loading…</td></tr>';
+  try{const j=await adminApi("list");const me=j.me;
+    tb.innerHTML=(j.users||[]).map(function(u){var d=(u.created_at||"").slice(0,10);var rm=u.email!=="alon@floraqueen.com"&&u.email!==me;
+      return '<tr><td>'+u.email+'</td><td><span class="rolepill '+u.role+'">'+u.role+'</span></td><td>'+u.status+'</td><td>'+d+'</td><td>'+(rm?'<button class="urm" data-rm="'+u.email+'">Remove</button>':'<span style="color:#8C8B80;font-size:11px">—</span>')+'</td></tr>';}).join('')||'<tr><td colspan="5" style="color:#8C8B80">No users yet.</td></tr>';
+  }catch(e){tb.innerHTML='<tr><td colspan="5" style="color:#C0392B">'+e.message+'</td></tr>';}}
+async function doInvite(){var em=document.getElementById("invemail").value.trim();var role=document.getElementById("invrole").value;var b=document.getElementById("invbtn");var msg=document.getElementById("invmsg");
+  if(!em){msg.innerHTML='<span class="err">Enter an email address.</span>';return;}
+  b.disabled=true;b.textContent="Sending…";msg.innerHTML="";
+  try{var j=await adminApi("invite",{email:em,role:role});
+    var m='<span class="ok">✓ '+j.email+' added as '+j.role+'.</span> ';
+    if(j.emailed)m+='Invite email sent.';
+    else{m+=(j.created&&j.tempPassword)?('Email not sent — share manually → email: <code>'+j.email+'</code> &nbsp;temporary password: <code>'+j.tempPassword+'</code>'):'They already have an account — ask them to sign in.';if(j.emailNote)m+='<br><span style="color:#8C8B80;font-size:12px">'+j.emailNote+'</span>';}
+    msg.innerHTML=m;document.getElementById("invemail").value="";loadUsers();
+  }catch(e){msg.innerHTML='<span class="err">'+e.message+'</span>';}
+  b.disabled=false;b.textContent="Send invite";}
+async function doRemove(em){if(!confirm("Remove dashboard access for "+em+"?"))return;try{await adminApi("remove",{email:em});loadUsers();}catch(e){document.getElementById("invmsg").innerHTML='<span class="err">'+e.message+'</span>';}}
+document.getElementById("adminbtn").addEventListener("click",openAdmin);
+document.getElementById("adminclose").addEventListener("click",closeAdmin);
+document.getElementById("adminpanel").addEventListener("click",function(e){if(e.target.id==="adminpanel")closeAdmin();});
+document.getElementById("invbtn").addEventListener("click",doInvite);
+document.getElementById("invemail").addEventListener("keydown",function(e){if(e.key==="Enter")doInvite();});
+document.getElementById("ulist").addEventListener("click",function(e){var r=e.target.closest("[data-rm]");if(r)doRemove(r.dataset.rm);});
+if(tok)start();
 </script></body></html>
