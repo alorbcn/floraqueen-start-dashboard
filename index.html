@@ -170,6 +170,32 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
 .optsend:hover{background:#a23a5d}
 .optcopy{padding:7px 12px;border:1px solid var(--lineS);border-radius:9px;background:#fff;color:var(--soft);font:inherit;font-weight:600;cursor:pointer;white-space:nowrap;font-size:12px}
 .optcopy:hover{border-color:var(--rose);color:var(--rose)}
+.optkpis7{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-bottom:6px}
+.optkpi .kk{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700}
+.optkpi .kv{font-family:Fraunces;font-size:19px;line-height:1.1}
+.optweight{font-size:12px;color:var(--soft);margin-bottom:14px}
+.optsec{border-top:1px solid var(--line);padding-top:12px;margin-top:6px}
+.optsec.done .optinttext{color:var(--soft)}
+.optseclbl{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--rose);font-weight:700;margin-bottom:8px}
+.optinttext{font-family:Fraunces;font-size:16px;line-height:1.5;color:var(--ink)}
+.optintbar{display:flex;gap:8px;align-items:flex-end;margin-top:10px}
+.optintbar textarea{flex:1;resize:none;border:1px solid var(--lineS);border-radius:9px;padding:9px 11px;font:inherit;font-size:13px}
+.optbadge{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;background:rgba(31,107,79,.12);color:var(--forest);padding:2px 7px;border-radius:999px}
+.optnote{font-size:12px;color:var(--muted)}
+.optloading{font-family:Fraunces;font-style:italic;color:var(--muted);padding:14px 0}
+.opttblwrap{max-height:340px;overflow:auto;border:1px solid var(--line);border-radius:10px;margin-top:8px}
+.opttbl{width:100%;border-collapse:collapse;font-size:12px}
+.opttbl th{position:sticky;top:0;background:var(--s2);font-size:9.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--soft);font-weight:700;text-align:right;padding:7px 9px;border-bottom:1px solid var(--lineS)}
+.opttbl th.l{text-align:left}
+.opttbl td{padding:7px 9px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+.opttbl td.r{text-align:right}.opttbl td.l{text-align:left}
+.opttbl tr.na{opacity:.5}
+.opttbl .pos{color:var(--profit);font-weight:600}.opttbl .neg{color:var(--loss);font-weight:600}
+.opttbl .kwn{max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;color:var(--ink)}
+.recx{font-weight:700;color:var(--forest)}.recn{font-weight:700;color:var(--cost)}.reco{font-weight:600;color:var(--loss)}.recna{color:var(--muted)}
+.optrat{font-size:10.5px;color:var(--muted);max-width:280px;white-space:normal}
+.optapply{width:16px;height:16px;cursor:pointer}
+.optdonebar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px}
 </style></head>
 <body>
 <div id="login"><div class="lbox"><span class="logo" style="font-family:Fraunces;color:#16513b">Max<span style="color:#B8456B">✿</span></span>
@@ -595,52 +621,73 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
   var wbtab=document.querySelector('.dlink.wbtab');if(wbtab)wbtab.addEventListener('click',hideAction);
   document.getElementById("actionview").addEventListener("click",function(e){
     var b=e.target.closest(".optbtn");if(!b)return;
-    var name=b.getAttribute("data-name"),type=b.getAttribute("data-type"),c=+b.getAttribute("data-c"),s=+b.getAttribute("data-s"),p=s*0.40-c;
-    var single=ACTLV[actLvl].n.replace(/s$/,""), lvl=actLvl;
+    var name=b.getAttribute("data-name"),type=b.getAttribute("data-type"),c=+b.getAttribute("data-c"),s=+b.getAttribute("data-s");
+    var lvl=actLvl, single=ACTLV[actLvl].n.replace(/s$/,""), P={};
     document.getElementById("opt-title").textContent="Optimize: "+name;
     document.getElementById("opt-sub").textContent=single+" · last 30 days";
-    var roas=c?(s/c):0, poas=roas*0.40;
-    function kpi(k,v,col){return '<div><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">'+k+'</div><div style="font-family:Fraunces;font-size:20px'+(col?';color:'+col:'')+'">'+v+'</div></div>';}
-    function kpis(cc,ss,pp,rr,po){return '<div class="optkpis">'+kpi("Cost",eur(cc))+kpi("Sales",eur(ss))+kpi("Profit (est)",(pp>=0?'+':'')+eur(pp),(pp>=0?'var(--profit)':'var(--loss)'))+kpi("ROAS",(cc?rr.toFixed(2):"-")+"×")+kpi("POAS",po.toFixed(2),(po>=1?'var(--profit)':'var(--loss)'))+'</div>';}
-    document.getElementById("opt-body").innerHTML='<div id="opt-kpis">'+kpis(c,s,p,roas,poas)+'</div><div class="optwork"><div class="optlog" id="opt-log"></div><div class="optbar"><textarea id="opt-text" rows="2" placeholder="Approve the intent, or type a correction…"></textarea><div class="optbtns"><button class="optsend" id="opt-send">Send ▸</button><button class="optcopy" id="opt-copy">❐ Copy brief</button></div></div></div>';
-    var log=document.getElementById("opt-log"),txt=document.getElementById("opt-text");
-    function add(cls,html){var d=document.createElement("div");d.className="optmsg "+cls;d.innerHTML=html;log.appendChild(d);log.scrollTop=log.scrollHeight;return d;}
-    var ctx={adGroup:null,account:"",siblings:[],intent:null};
-    var brief="";
-    function buildBrief(){
-      brief="Optimize this keyword — Max Keyword Optimization Playbook (40% margin, POAS break-even 1.0).\nKEYWORD: "+name+" | "+type+(ctx.adGroup?(" | ad group: "+ctx.adGroup):"")+(ctx.account?(" | "+ctx.account):"")+"\n";
-      if(ctx.siblings&&ctx.siblings.length)brief+="SIBLINGS: "+ctx.siblings.join(", ")+"\n";
-      brief+="METRICS (30d): Cost EUR "+Math.round(c)+" | Conv value EUR "+Math.round(s)+" | ROAS "+roas.toFixed(2)+"x | POAS "+poas.toFixed(2)+" | Profit EUR "+Math.round(p)+"\n";
-      if(ctx.intent)brief+="DRAFT INTENT: "+ctx.intent+"\n";
-      brief+="Run Phase 1 (intent, approve/fix) -> Phase 2 (search terms, live pull) -> Phase 3 (verdict).";
+    function kc(k,v,col){return '<div class="optkpi"><div class="kk">'+k+'</div><div class="kv"'+(col?' style="color:'+col+'"':'')+'>'+v+'</div></div>';}
+    function kgrid(m){return '<div class="optkpis7">'+kc("Cost",eur(m.cost))+kc("Sales",eur(m.value))+kc("Profit",(m.profit>=0?'+':'')+eur(m.profit),(m.profit>=0?'var(--profit)':'var(--loss)'))+kc("ROAS",(m.roas||0)+"×")+kc("POAS",m.poas,(m.poas>=1?'var(--profit)':'var(--loss)'))+kc("CTR",(m.ctr||0)+"%")+kc("Conv rate",(m.cvr||0)+"%")+'</div><div class="optweight">Share of ad group <b>'+esc(P.adGroup||"")+'</b> — cost '+(m.wCost||0)+'% · sales '+(m.wSales||0)+'% · profit '+(m.wProfit||0)+'%</div>';}
+    document.getElementById("opt-body").innerHTML='<div id="opt-kpis"><div class="optloading">Loading 30-day data…</div></div><div id="opt-intent"></div><div id="opt-phase2"></div>';
+    if(lvl!=="keyword"){document.getElementById("opt-kpis").innerHTML='';document.getElementById("opt-intent").innerHTML='<div class="optnote">The optimization flow runs at <b>keyword</b> level. Open a keyword from <b>Optimize keywords</b> to run Intent then Search terms.</div>';document.getElementById("optmodal").classList.remove("hidden");return;}
+    function showIntent(it){
+      document.getElementById("opt-intent").innerHTML='<div class="optsec"><div class="optseclbl">Intent ⛔</div><div id="opt-int-text" class="optinttext">'+esc(it)+'</div><div class="optintbar"><textarea id="opt-fix" rows="2" placeholder="Fine-tune the intent (optional) — then Re-generate…"></textarea><div class="optbtns"><button class="optsend" id="opt-approve">✓ Approve intent</button><button class="optcopy" id="opt-regen">↻ Re-generate</button></div></div></div>';
+      document.getElementById("opt-approve").onclick=approveIntent;
+      document.getElementById("opt-regen").onclick=regen;
     }
-    buildBrief();
-    if(lvl==="keyword"){
-      var loading=add("max","Reading intent… pulling the ad group, sibling keywords and 30-day metrics.");
-      fetch(FN+"?api=optimize",{method:"POST",headers:{Authorization:"Bearer "+tok,"Content-Type":"application/json"},body:JSON.stringify({keyword:name,match:type})}).then(chk401).then(function(r){return r.json();}).then(function(j){
-        if(loading&&loading.parentNode)log.removeChild(loading);
-        if(j.error){add("max","Couldn't load context: "+esc(j.error));return;}
-        if(j.found===false){add("max","Couldn't locate this keyword's ad group in the warehouse (it may be very new). You can still <b>Copy brief</b> to run it with Max.");return;}
-        ctx.adGroup=j.adGroup;ctx.account=j.account;ctx.siblings=j.siblings||[];ctx.intent=j.intent;buildBrief();
-        var m=j.metrics||{};
-        document.getElementById("opt-kpis").innerHTML=kpis(m.cost,m.value,m.profit,m.roas||0,m.poas||0);
-        var sibs=(j.siblings&&j.siblings.length)?j.siblings.map(function(x){return esc(x);}).join(" · "):"<i>none found</i>";
-        var qs=m.qs?(m.qs+" (CTR "+(m.qsp||"–")+" / Rel "+(m.qsc||"–")+" / LP "+(m.qsl||"–")+")"):"–";
-        add("max",'<div style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--rose);font-weight:700;margin-bottom:6px">Phase 1 — Intent ⛔</div><b>KEYWORD:</b> '+esc(name)+' | '+esc(type)+'<br><b>AD GROUP:</b> '+esc(j.adGroup||"–")+' &nbsp;·&nbsp; <b>'+esc(j.account||"")+'</b><br><b>30d:</b> ROAS '+m.roas+'× · POAS '+m.poas+' · IS '+m.is+'% · lost-rank '+m.rankLost+'% · QS '+qs+'<br><b>SIBLINGS:</b> '+sibs+'<br><br><b>READ INTENT:</b> '+esc(j.intent||"")+'<br><b>FLAGS:</b> '+esc(j.flags||"")+'');
-        add("max","⛔ <b>Gate:</b> approve this intent, or type a correction (e.g. “this ad group is same-day only”). Once you confirm, we move to Phase 2 (search-term mining).");
-      }).catch(function(e){if(loading&&loading.parentNode)log.removeChild(loading);add("max","Error: "+esc(e.message));});
-    } else {
-      add("max","The optimization playbook runs at <b>keyword</b> level (Intent → Search terms → Verdict). This is a "+single+" — open a keyword from the <b>Optimize keywords</b> list to run the phased flow. Metrics above are the 30-day snapshot.");
+    function regen(){
+      var corr=(document.getElementById("opt-fix").value||"").trim();
+      var btn=document.getElementById("opt-regen"); btn.disabled=true; btn.textContent="Re-generating…";
+      fetch(FN+"?api=optimize",{method:"POST",headers:{Authorization:"Bearer "+tok,"Content-Type":"application/json"},body:JSON.stringify({step:"reintent",keyword:name,siblings:P.siblings,market:P.market,currentIntent:P.intent,correction:corr})}).then(chk401).then(function(r){return r.json();}).then(function(j){
+        btn.disabled=false; btn.textContent="↻ Re-generate";
+        if(j.error){alert("Re-generate failed: "+j.error);return;}
+        P.intent=j.intent; document.getElementById("opt-int-text").innerHTML=esc(j.intent); document.getElementById("opt-fix").value="";
+      }).catch(function(e){btn.disabled=false;btn.textContent="↻ Re-generate";alert("Error: "+e.message);});
     }
-    document.getElementById("opt-send").onclick=function(){var v=(txt.value||"").trim();if(!v)return;add("user",esc(v));txt.value="";var low=v.toLowerCase();
-      if(lvl==="keyword"&&(low.indexOf("approve")>=0||low==="ok"||low==="yes"||low.indexOf("looks good")>=0||low.indexOf("correct")>=0&&low.indexOf("not")<0)){
-        setTimeout(function(){add("max","Intent locked ✅. <b>Phase 2 — search-term mining</b> (live Google Ads pull, pre-checked against the ad group's keywords + negatives + shared lists) connects next. For now use <b>Copy brief</b> to run the full phased flow with Max in chat.");},150);
-      } else {
-        setTimeout(function(){add("max","Noted — I'll re-read the intent with that correction when the live AI step is wired. For now <b>Copy brief</b> (it carries your context) to run it with Max.");},150);
-      }
-    };
-    txt.addEventListener("keydown",function(e){if(e.key==="Enter"&&(e.metaKey||e.ctrlKey))document.getElementById("opt-send").click();});
-    document.getElementById("opt-copy").onclick=function(){var bb=this;try{navigator.clipboard.writeText(brief);bb.textContent="✓ Copied";setTimeout(function(){bb.innerHTML="❐ Copy brief";},1500);}catch(e){add("max","Brief: "+esc(brief));}};
+    function approveIntent(){document.getElementById("opt-intent").innerHTML='<div class="optsec done"><div class="optseclbl">Intent ✓ approved</div><div class="optinttext">'+esc(P.intent)+'</div></div>';loadTerms();}
+    function loadTerms(){
+      var ph=document.getElementById("opt-phase2");
+      ph.innerHTML='<div class="optsec"><div class="optseclbl">Phase 2 — Search terms</div><div class="optloading">Pulling live search terms + existing negatives/shared lists, then classifying…</div></div>';
+      fetch(FN+"?api=optimize",{method:"POST",headers:{Authorization:"Bearer "+tok,"Content-Type":"application/json"},body:JSON.stringify({step:"terms",keyword:name,match:type,customerId:P.customerId,campaignId:P.campaignId,adGroupId:P.adGroupId,approvedIntent:P.intent})}).then(chk401).then(function(r){return r.json();}).then(function(j){
+        if(j.error){ph.innerHTML='<div class="optsec"><div class="optseclbl">Phase 2 — Search terms</div><div class="optnote" style="color:var(--cost)">'+esc(j.error)+'</div></div>';return;}
+        renderTerms(j.terms||[]);
+      }).catch(function(e){ph.innerHTML='<div class="optsec"><div class="optnote" style="color:var(--cost)">Error: '+esc(e.message)+'</div></div>';});
+    }
+    function renderTerms(rows){
+      var head='<tr><th class="l">Search term</th><th>Clicks</th><th>Cost</th><th>Conv</th><th>POAS</th><th>Intent</th><th>Already?</th><th class="l">Recommendation</th><th>Apply</th></tr>';
+      var body=rows.map(function(r){
+        var act=r.recommendation==="add_exact"||r.recommendation==="add_negative";
+        var rec=r.recommendation==="add_exact"?'<span class="recx">Add Exact</span>':(r.recommendation==="add_negative"?('<span class="recn">Add Negative ('+r.negMatch+')</span>'):(r.recommendation==="observe"?'<span class="reco">Observe</span>':'<span class="recna">No action</span>'));
+        var poasc=r.poas>=1?'pos':'neg';
+        var apply=act?'<input type="checkbox" class="optapply" checked>':'<span style="color:var(--muted)">—</span>';
+        return '<tr class="'+(act?'':'na')+'" data-term="'+esc(r.term)+'" data-rec="'+r.recommendation+'" data-nm="'+(r.negMatch||"")+'" data-rat="'+esc(r.rationale||"")+'"><td class="l kwn" title="'+esc(r.term)+'">'+esc(r.term)+'</td><td class="r">'+r.clicks+'</td><td class="r">'+eur(r.cost)+'</td><td class="r">'+r.conv+'</td><td class="r '+poasc+'">'+r.poas+'</td><td class="r">'+(r.intentMatch||"")+'</td><td class="r">'+esc(r.already)+'</td><td class="l">'+rec+'<div class="optrat">'+esc(r.rationale||"")+'</div></td><td class="r">'+apply+'</td></tr>';
+      }).join('');
+      document.getElementById("opt-phase2").innerHTML='<div class="optsec"><div class="optseclbl">Phase 2 — Search terms <span style="color:var(--muted);font-weight:400">('+rows.length+' terms · last 30 days)</span></div><div class="opttblwrap"><table class="opttbl"><thead>'+head+'</thead><tbody>'+body+'</tbody></table></div><div class="optdonebar"><span class="optnote">Untick anything you do not want, then download the file to upload in Google Ads.</span><button class="optsend" id="opt-done">Done — download CSV</button></div></div>';
+      document.getElementById("opt-done").onclick=exportCsv;
+    }
+    function exportCsv(){
+      var NL=String.fromCharCode(13)+String.fromCharCode(10);
+      var lines=[["action","match_type","term","campaign","ad_group","rationale"]];
+      document.querySelectorAll('#opt-phase2 tr[data-term]').forEach(function(tr){var cb=tr.querySelector(".optapply"); if(!cb||!cb.checked)return;
+        var rec=tr.getAttribute("data-rec"),term=tr.getAttribute("data-term"),nm=tr.getAttribute("data-nm"),rat=tr.getAttribute("data-rat");
+        var action=rec==="add_exact"?"Add Exact":"Add Negative";
+        var mt=rec==="add_exact"?"Exact":(nm==="exact"?"Negative Exact":"Negative Phrase");
+        lines.push([action,mt,term,P.campaign||"",P.adGroup||"",rat]);});
+      if(lines.length<2){alert("Nothing selected to export.");return;}
+      var csv=lines.map(function(r){return r.map(function(x){return '"'+String(x).replace(/"/g,'""')+'"';}).join(",");}).join(NL);
+      var blob=new Blob([csv],{type:"text/csv;charset=utf-8"});
+      var a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="max-optimize-"+name.replace(/[^a-z0-9]+/gi,"-").slice(0,40)+".csv";
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    }
+    fetch(FN+"?api=optimize",{method:"POST",headers:{Authorization:"Bearer "+tok,"Content-Type":"application/json"},body:JSON.stringify({step:"intent",keyword:name,match:type})}).then(chk401).then(function(r){return r.json();}).then(function(j){
+      if(j.error){document.getElementById("opt-kpis").innerHTML='';document.getElementById("opt-intent").innerHTML='<div class="optnote" style="color:var(--cost)">Could not load context: '+esc(j.error)+'</div>';return;}
+      if(j.found===false){document.getElementById("opt-kpis").innerHTML='';document.getElementById("opt-intent").innerHTML='<div class="optnote">Could not locate this keyword ad group (it may be very new).</div>';return;}
+      P.customerId=j.customerId;P.campaignId=j.campaignId;P.adGroupId=j.adGroupId;P.adGroup=j.adGroup;P.campaign=j.campaign;P.market=j.account;P.siblings=j.siblings||[];P.intent=j.intent;
+      var m=j.metrics||{};
+      if(j.translation && String(j.translation).toLowerCase()!==name.toLowerCase()) document.getElementById("opt-title").textContent="Optimize: "+name+"   (EN: "+j.translation+")";
+      document.getElementById("opt-sub").innerHTML='ad group <b>'+esc(j.adGroup||"")+'</b> · <b>'+esc(j.account||"")+'</b> · <span class="optbadge">last 30 days</span>'+(j.aiMode!=="ai"?' · <span style="color:var(--loss)">heuristic intent — set ANTHROPIC_API_KEY for AI</span>':'');
+      document.getElementById("opt-kpis").innerHTML=kgrid(m);
+      showIntent(j.intent);
+    }).catch(function(e){document.getElementById("opt-kpis").innerHTML='';document.getElementById("opt-intent").innerHTML='<div class="optnote" style="color:var(--cost)">Error: '+esc(e.message)+'</div>';});
     document.getElementById("optmodal").classList.remove("hidden");
   });
   document.getElementById("opt-close").onclick=function(){document.getElementById("optmodal").classList.add("hidden");};
