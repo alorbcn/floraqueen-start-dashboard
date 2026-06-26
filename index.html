@@ -594,22 +594,52 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
   var wbtab=document.querySelector('.dlink.wbtab');if(wbtab)wbtab.addEventListener('click',hideAction);
   document.getElementById("actionview").addEventListener("click",function(e){
     var b=e.target.closest(".optbtn");if(!b)return;
-    var name=b.getAttribute("data-name"),c=+b.getAttribute("data-c"),s=+b.getAttribute("data-s"),p=s*0.40-c;
-    var single=ACTLV[actLvl].n.replace(/s$/,"");
+    var name=b.getAttribute("data-name"),type=b.getAttribute("data-type"),c=+b.getAttribute("data-c"),s=+b.getAttribute("data-s"),p=s*0.40-c;
+    var single=ACTLV[actLvl].n.replace(/s$/,""), lvl=actLvl;
     document.getElementById("opt-title").textContent="Optimize: "+name;
     document.getElementById("opt-sub").textContent=single+" · last 30 days";
     var roas=c?(s/c):0, poas=roas*0.40;
     function kpi(k,v,col){return '<div><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">'+k+'</div><div style="font-family:Fraunces;font-size:20px'+(col?';color:'+col:'')+'">'+v+'</div></div>';}
-    document.getElementById("opt-body").innerHTML=
-      '<div class="optkpis">'+kpi("Cost",eur(c))+kpi("Sales",eur(s))+kpi("Profit (est)",(p>=0?'+':'')+eur(p),(p>=0?'var(--profit)':'var(--loss)'))+kpi("ROAS",(c?roas.toFixed(2):"-")+"×")+kpi("POAS",poas.toFixed(2),(poas>=1?'var(--profit)':'var(--loss)'))+'</div>'+
-      '<div class="optwork"><div class="optlog" id="opt-log"><div class="optmsg max">Optimizing <b>'+esc(name)+'</b> ('+single+', last 30 days). I run the playbook in three phases — <b>Intent → Search terms → Verdict</b> — pausing for your ⛔ approval at each gate. Search terms, negatives and QS components are pulled live from Google Ads at run time. Add context below and <b>Send</b>, or <b>Copy brief</b> to hand me the data in chat.</div></div>'+
-      '<div class="optbar"><textarea id="opt-text" rows="2" placeholder="Add context, approve intent, edit rows…"></textarea><div class="optbtns"><button class="optsend" id="opt-send">Send ▸</button><button class="optcopy" id="opt-copy">⧉ Copy brief</button></div></div></div>';
-    var brief="Optimize this keyword — Max Keyword Optimization Playbook.\nKEYWORD: "+name+" | "+single+" | last 30 days\nMETRICS: Cost EUR "+Math.round(c)+" | Conv value EUR "+Math.round(s)+" | ROAS "+roas.toFixed(2)+"x | POAS "+poas.toFixed(2)+" | Profit EUR "+Math.round(p)+"\nRun Phase 1 (intent) -> Phase 2 (search terms, live pull) -> Phase 3 (verdict), pausing at each approval gate.";
+    function kpis(cc,ss,pp,rr,po){return '<div class="optkpis">'+kpi("Cost",eur(cc))+kpi("Sales",eur(ss))+kpi("Profit (est)",(pp>=0?'+':'')+eur(pp),(pp>=0?'var(--profit)':'var(--loss)'))+kpi("ROAS",(cc?rr.toFixed(2):"-")+"×")+kpi("POAS",po.toFixed(2),(po>=1?'var(--profit)':'var(--loss)'))+'</div>';}
+    document.getElementById("opt-body").innerHTML='<div id="opt-kpis">'+kpis(c,s,p,roas,poas)+'</div><div class="optwork"><div class="optlog" id="opt-log"></div><div class="optbar"><textarea id="opt-text" rows="2" placeholder="Approve the intent, or type a correction…"></textarea><div class="optbtns"><button class="optsend" id="opt-send">Send ▸</button><button class="optcopy" id="opt-copy">❐ Copy brief</button></div></div></div>';
     var log=document.getElementById("opt-log"),txt=document.getElementById("opt-text");
-    function add(cls,html){var d=document.createElement("div");d.className="optmsg "+cls;d.innerHTML=html;log.appendChild(d);log.scrollTop=log.scrollHeight;}
-    document.getElementById("opt-send").onclick=function(){var v=(txt.value||"").trim();if(!v)return;add("user",esc(v));txt.value="";setTimeout(function(){add("max","Noted. The live phased optimization (Intent → Search terms → Verdict, with the live Google Ads pull) connects next — for now use <b>Copy brief</b> to run it with Max in chat.");},150);};
+    function add(cls,html){var d=document.createElement("div");d.className="optmsg "+cls;d.innerHTML=html;log.appendChild(d);log.scrollTop=log.scrollHeight;return d;}
+    var ctx={adGroup:null,account:"",siblings:[],intent:null};
+    var brief="";
+    function buildBrief(){
+      brief="Optimize this keyword — Max Keyword Optimization Playbook (40% margin, POAS break-even 1.0).\nKEYWORD: "+name+" | "+type+(ctx.adGroup?(" | ad group: "+ctx.adGroup):"")+(ctx.account?(" | "+ctx.account):"")+"\n";
+      if(ctx.siblings&&ctx.siblings.length)brief+="SIBLINGS: "+ctx.siblings.join(", ")+"\n";
+      brief+="METRICS (30d): Cost EUR "+Math.round(c)+" | Conv value EUR "+Math.round(s)+" | ROAS "+roas.toFixed(2)+"x | POAS "+poas.toFixed(2)+" | Profit EUR "+Math.round(p)+"\n";
+      if(ctx.intent)brief+="DRAFT INTENT: "+ctx.intent+"\n";
+      brief+="Run Phase 1 (intent, approve/fix) -> Phase 2 (search terms, live pull) -> Phase 3 (verdict).";
+    }
+    buildBrief();
+    if(lvl==="keyword"){
+      var loading=add("max","Reading intent… pulling the ad group, sibling keywords and 30-day metrics.");
+      fetch(FN+"?api=optimize",{method:"POST",headers:{Authorization:"Bearer "+tok,"Content-Type":"application/json"},body:JSON.stringify({keyword:name,match:type})}).then(function(r){return r.json();}).then(function(j){
+        if(loading&&loading.parentNode)log.removeChild(loading);
+        if(j.error){add("max","Couldn't load context: "+esc(j.error));return;}
+        if(j.found===false){add("max","Couldn't locate this keyword's ad group in the warehouse (it may be very new). You can still <b>Copy brief</b> to run it with Max.");return;}
+        ctx.adGroup=j.adGroup;ctx.account=j.account;ctx.siblings=j.siblings||[];ctx.intent=j.intent;buildBrief();
+        var m=j.metrics||{};
+        document.getElementById("opt-kpis").innerHTML=kpis(m.cost,m.value,m.profit,m.roas||0,m.poas||0);
+        var sibs=(j.siblings&&j.siblings.length)?j.siblings.map(function(x){return esc(x);}).join(" · "):"<i>none found</i>";
+        var qs=m.qs?(m.qs+" (CTR "+(m.qsp||"–")+" / Rel "+(m.qsc||"–")+" / LP "+(m.qsl||"–")+")"):"–";
+        add("max",'<div style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--rose);font-weight:700;margin-bottom:6px">Phase 1 — Intent ⛔</div><b>KEYWORD:</b> '+esc(name)+' | '+esc(type)+'<br><b>AD GROUP:</b> '+esc(j.adGroup||"–")+' &nbsp;·&nbsp; <b>'+esc(j.account||"")+'</b><br><b>30d:</b> ROAS '+m.roas+'× · POAS '+m.poas+' · IS '+m.is+'% · lost-rank '+m.rankLost+'% · QS '+qs+'<br><b>SIBLINGS:</b> '+sibs+'<br><br><b>READ INTENT:</b> '+esc(j.intent||"")+'<br><b>FLAGS:</b> '+esc(j.flags||"")+'');
+        add("max","⛔ <b>Gate:</b> approve this intent, or type a correction (e.g. “this ad group is same-day only”). Once you confirm, we move to Phase 2 (search-term mining).");
+      }).catch(function(e){if(loading&&loading.parentNode)log.removeChild(loading);add("max","Error: "+esc(e.message));});
+    } else {
+      add("max","The optimization playbook runs at <b>keyword</b> level (Intent → Search terms → Verdict). This is a "+single+" — open a keyword from the <b>Optimize keywords</b> list to run the phased flow. Metrics above are the 30-day snapshot.");
+    }
+    document.getElementById("opt-send").onclick=function(){var v=(txt.value||"").trim();if(!v)return;add("user",esc(v));txt.value="";var low=v.toLowerCase();
+      if(lvl==="keyword"&&(low.indexOf("approve")>=0||low==="ok"||low==="yes"||low.indexOf("looks good")>=0||low.indexOf("correct")>=0&&low.indexOf("not")<0)){
+        setTimeout(function(){add("max","Intent locked ✅. <b>Phase 2 — search-term mining</b> (live Google Ads pull, pre-checked against the ad group's keywords + negatives + shared lists) connects next. For now use <b>Copy brief</b> to run the full phased flow with Max in chat.");},150);
+      } else {
+        setTimeout(function(){add("max","Noted — I'll re-read the intent with that correction when the live AI step is wired. For now <b>Copy brief</b> (it carries your context) to run it with Max.");},150);
+      }
+    };
     txt.addEventListener("keydown",function(e){if(e.key==="Enter"&&(e.metaKey||e.ctrlKey))document.getElementById("opt-send").click();});
-    document.getElementById("opt-copy").onclick=function(){var b=this;try{navigator.clipboard.writeText(brief);b.textContent="✓ Copied";setTimeout(function(){b.innerHTML="⧉ Copy brief";},1500);}catch(e){add("max","Brief: "+esc(brief));}};
+    document.getElementById("opt-copy").onclick=function(){var bb=this;try{navigator.clipboard.writeText(brief);bb.textContent="✓ Copied";setTimeout(function(){bb.innerHTML="❐ Copy brief";},1500);}catch(e){add("max","Brief: "+esc(brief));}};
     document.getElementById("optmodal").classList.remove("hidden");
   });
   document.getElementById("opt-close").onclick=function(){document.getElementById("optmodal").classList.add("hidden");};
