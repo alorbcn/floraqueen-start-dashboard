@@ -652,7 +652,7 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
     }).catch(function(e){document.getElementById("act-best").innerHTML='<tr><td class="l" colspan="7" style="padding:14px;color:var(--cost)">Error: '+e.message+'</td></tr>';});
   }
   /* ---- Scalable keyword-optimization sheet (active-only, one match type, worst-first, paginated) ---- */
-  var KW={match:"exact",order:"worst",offset:0,limit:20,total:0,rows:[],approved:{}};
+  var KW={match:"exact",order:"worst",offset:0,limit:20,total:0,rows:[],approved:{},seq:0};
   function vpill(v){var m={SCALE:"scale",HOLD:"hold",TRIM:"trim",CUT:"cut",PAUSE:"pause",MINE:"mine",OBSERVE:"obs"};return '<span class="vp '+(m[v]||"hold")+'">'+v+'</span>';}
   function actOptions(v){return ["PAUSE","CUT","TRIM","SCALE","HOLD","MINE","OBSERVE","NEGATIVIZE","HARVEST"].map(function(o){return '<option value="'+o+'"'+(o===v?' selected':'')+'>'+o+'</option>';}).join('');}
   function kwRowHtml(r,i){
@@ -681,11 +681,13 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
     document.getElementById("act-ctx").textContent="active "+KW.match+" keywords · last 30 days · worst-first · tick rows then export";
   }
   function kwLoad(){
+    var seq=++KW.seq;
     var tb=document.getElementById("kws-body");tb.innerHTML='<tr><td colspan="13" style="padding:14px;color:var(--muted)">Loading…</td></tr>';
     fetch(FN+"?api=optimize_batch&match="+KW.match+"&order="+KW.order+"&tf=30d&limit="+KW.limit+"&offset="+KW.offset,{headers:{Authorization:"Bearer "+tok}}).then(chk401).then(function(r){return r.json();}).then(function(j){
+      if(seq!==KW.seq)return;
       if(j.error){tb.innerHTML='<tr><td colspan="13" style="padding:14px;color:var(--cost)">Error: '+j.error+'</td></tr>';return;}
       KW.rows=j.rows||[];KW.total=j.total||0;kwRender();
-    }).catch(function(e){tb.innerHTML='<tr><td colspan="13" style="padding:14px;color:var(--cost)">Error: '+e.message+'</td></tr>';});
+    }).catch(function(e){if(seq!==KW.seq)return;tb.innerHTML='<tr><td colspan="13" style="padding:14px;color:var(--cost)">Error: '+e.message+'</td></tr>';});
   }
   function kwInit(){document.getElementById("act-sec").textContent="Optimize keywords at scale";kwLoad();}
   function kwRowFor(key,tr){
