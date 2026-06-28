@@ -675,11 +675,12 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
       +'<td class="r"><button class="optbtn" data-name="'+esc(r.kw)+'" data-type="'+r.match+'" data-c="'+r.cost+'" data-s="'+r.sales+'" title="Deep-dive / mine search terms">⚙</button></td>'
       +'</tr>';
   }
+  function kwUpdateProg(){var end=Math.min(KW.offset+KW.rows.length,KW.total);document.getElementById("kws-prog").textContent=(KW.total?(KW.offset+1)+"–"+end+" of "+KW.total+" active "+KW.match:"0 active "+KW.match)+" · "+Object.keys(KW.approved).length+" approved";}
   function kwRender(){
     var tb=document.getElementById("kws-body");
     tb.innerHTML=KW.rows.length?KW.rows.map(kwRowHtml).join(''):'<tr><td colspan="13" style="padding:14px;color:var(--muted)">No active '+KW.match+' keywords with activity in this window.</td></tr>';
     var end=Math.min(KW.offset+KW.rows.length,KW.total);
-    document.getElementById("kws-prog").textContent=(KW.total?(KW.offset+1)+"–"+end+" of "+KW.total+" active "+KW.match:"0 active "+KW.match)+" · "+Object.keys(KW.approved).length+" approved";
+    kwUpdateProg();
     document.getElementById("kws-prev").disabled=KW.offset<=0;
     document.getElementById("kws-next").disabled=end>=KW.total;
     document.getElementById("kws-all").checked=false;
@@ -699,16 +700,27 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
   function kwRowFor(key,tr){
     var r=KW.rows.filter(function(x){return (x.cust+"|"+x.criterionId)===key;})[0]||{};
     var sel=tr.querySelector(".kwact");
-    return {account:r.account,campaign:r.campaign,adgroup:r.adgroup,kw:r.kw,match:r.match,action:(sel?sel.value:r.verdict),poas:r.poas,cost:r.cost,sales:r.sales,is:r.is,lostRank:r.lostRank,qs:r.qs,why:r.why};
+    return {account:r.account,campaign:r.campaign,adgroup:r.adgroup,kw:r.kw,match:r.match,verdict:r.verdict,action:(sel?sel.value:r.verdict),poas:r.poas,cost:r.cost,sales:r.sales,is:r.is,lostRank:r.lostRank,qs:r.qs,why:r.why,cust:r.cust,criterionId:r.criterionId,adGroupId:r.adGroupId};
   }
   function kwExport(){
     var keys=Object.keys(KW.approved);if(!keys.length){alert("Tick the keywords you approve, then export.");return;}
-    var head=["account","campaign","ad_group","keyword","match_type","action","poas","cost_eur","sales_eur","impr_share_pct","lost_rank_pct","quality_score","rationale"];
-    var lines=[head];
-    keys.forEach(function(k){var r=KW.approved[k];lines.push([r.account,r.campaign,r.adgroup,r.kw,r.match,r.action,r.poas,r.cost,r.sales,r.is,r.lostRank,(r.qs==null?"":r.qs),r.why]);});
-    var csv=lines.map(function(row){return row.map(function(x){return '"'+String(x==null?"":x).replace(/"/g,'""')+'"';}).join(",");}).join(String.fromCharCode(13,10));
-    var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([String.fromCharCode(0xFEFF)+csv],{type:"text/csv;charset=utf-8"}));
-    a.download="max-keyword-optimize-"+KW.match+".csv";document.body.appendChild(a);a.click();a.remove();
+    var btn=document.getElementById("kws-export");var old=btn.textContent;btn.textContent="Working…";btn.disabled=true;
+    var items=keys.map(function(k){var r=KW.approved[k];return {key:k,kw:r.kw,match:r.match,verdict:r.verdict,action:r.action,cust:r.cust,criterionId:r.criterionId,adGroupId:r.adGroupId,cost:r.cost,sales:r.sales,poas:r.poas,is:r.is,lostRank:r.lostRank,qs:r.qs};});
+    fetch(FN+"?api=optimize_work",{method:"POST",headers:{Authorization:"Bearer "+tok,"Content-Type":"application/json"},body:JSON.stringify({items:items})}).then(chk401).then(function(r){return r.json();}).then(function(j){
+      if(j.error)throw new Error(j.error);
+      var work={};(j.items||[]).forEach(function(w){work[w.key]=w;});
+      var head=["account","campaign","ad_group","keyword","match","recommended_action","item_type","proposal","detail","poas","cost_eur","sales_eur","rationale"];
+      var lines=[head];
+      keys.forEach(function(k){var r=KW.approved[k];var w=work[k]||{};
+        lines.push([r.account,r.campaign,r.adgroup,r.kw,r.match,r.action,"keyword",r.action,(w.change||r.why||""),r.poas,r.cost,r.sales,r.why]);
+        (w.harvest||[]).forEach(function(h){lines.push([r.account,r.campaign,r.adgroup,r.kw,r.match,r.action,"add_exact",h.term,"conv "+h.conv+" / POAS "+h.poas,h.poas,h.cost,h.value,"harvest winning search term as Exact"]);});
+        (w.negatives||[]).forEach(function(n){lines.push([r.account,r.campaign,r.adgroup,r.kw,r.match,r.action,"add_negative",n.term,"match "+n.match+" / EUR "+n.cost+" / "+n.clicks+" clicks / 0 conv","",n.cost,"","block off-intent or wasteful term"]);});
+      });
+      var csv=lines.map(function(row){return row.map(function(x){return '"'+String(x==null?"":x).replace(/"/g,'""')+'"';}).join(",");}).join(String.fromCharCode(13,10));
+      var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([String.fromCharCode(0xFEFF)+csv],{type:"text/csv;charset=utf-8"}));
+      a.download="max-keyword-optimize-"+KW.match+".csv";document.body.appendChild(a);a.click();a.remove();
+      if(j.capped)alert("Mined "+j.minedAdGroups+" of "+j.totalAdGroups+" ad groups (cap reached). Approve the rest in a second batch to mine them.");
+    }).catch(function(e){alert("Export failed: "+e.message);}).finally(function(){btn.textContent=old;btn.disabled=false;});
   }
   (function(){
     var bar=document.querySelector(".kwsbar");if(!bar)return;
@@ -719,9 +731,9 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
     document.getElementById("kws-prev").addEventListener("click",function(){if(KW.offset>0){KW.offset=Math.max(0,KW.offset-KW.limit);kwLoad();}});
     document.getElementById("kws-next").addEventListener("click",function(){if(KW.offset+KW.limit<KW.total){KW.offset+=KW.limit;kwLoad();}});
     document.getElementById("kws-export").addEventListener("click",kwExport);
-    document.getElementById("kws-all").addEventListener("change",function(){var on=this.checked;document.querySelectorAll("#kws-body .kwchk").forEach(function(c){c.checked=on;var tr=c.closest("tr"),key=tr.getAttribute("data-key");if(on)KW.approved[key]=kwRowFor(key,tr);else delete KW.approved[key];});kwRender();});
+    document.getElementById("kws-all").addEventListener("change",function(){var on=this.checked;document.querySelectorAll("#kws-body .kwchk").forEach(function(c){c.checked=on;var tr=c.closest("tr"),key=tr.getAttribute("data-key");if(on)KW.approved[key]=kwRowFor(key,tr);else delete KW.approved[key];});kwUpdateProg();});
     document.getElementById("kws-body").addEventListener("change",function(e){var tr=e.target.closest("tr");if(!tr)return;var key=tr.getAttribute("data-key");
-      if(e.target.classList.contains("kwchk")){if(e.target.checked)KW.approved[key]=kwRowFor(key,tr);else delete KW.approved[key];kwRender();}
+      if(e.target.classList.contains("kwchk")){if(e.target.checked)KW.approved[key]=kwRowFor(key,tr);else delete KW.approved[key];kwUpdateProg();}
       else if(e.target.classList.contains("kwact")){if(KW.approved[key])KW.approved[key].action=e.target.value;}});
   })();
   function showAction(lvl){
