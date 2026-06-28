@@ -148,6 +148,27 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
 .dlink.acttab.on{background:#8f3252;border-color:#8f3252}
 .actdd{position:absolute;top:40px;left:0;width:215px;background:#fff;border:1px solid var(--lineS);border-radius:11px;box-shadow:0 12px 40px rgba(0,0,0,.18);padding:6px;display:none;z-index:400}
 .actdd.open{display:block}
+/* scalable keyword-optimization sheet */
+.kwsbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:10px}
+.kwslbl{font-size:12px;color:var(--muted);margin-right:4px}
+.mtbtn{border:1px solid var(--lineS);background:#fff;border-radius:999px;padding:6px 16px;font:inherit;font-size:13px;cursor:pointer;margin-right:6px}
+.mtbtn.on{background:var(--rose);border-color:var(--rose);color:#fff}
+#kws-order{font:inherit;font-size:13px;padding:5px 8px;border:1px solid var(--lineS);border-radius:8px;background:#fff}
+.kwsright{margin-left:auto;display:flex;align-items:center;gap:10px}
+.kwsprog{font-size:12px;color:var(--muted)}
+.pgbtn,.expbtn{border:1px solid var(--lineS);background:#fff;border-radius:9px;padding:6px 12px;font:inherit;font-size:13px;cursor:pointer}
+.pgbtn:disabled{opacity:.4;cursor:default}
+.expbtn{background:var(--rose);border-color:var(--rose);color:#fff;font-weight:600}
+.kwstable{width:100%;border-collapse:collapse}
+.kwstable th,.kwstable td{padding:8px 9px;border-bottom:1px solid var(--lineS);font-size:13px;vertical-align:top}
+.kwstable th{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.kwstable td.r,.kwstable th.r{text-align:right}
+.kwsub{font-size:11px;color:var(--muted);margin-top:2px}
+.vwhy{font-size:11px;color:var(--muted);margin-top:3px;max-width:300px;line-height:1.35}
+.kwact{font:inherit;font-size:12px;padding:4px 6px;border:1px solid var(--lineS);border-radius:7px;background:#fff}
+.vp{display:inline-block;font-size:11px;font-weight:700;border-radius:6px;padding:2px 8px;color:#fff}
+.vp.scale{background:#16a34a}.vp.hold{background:#6b7280}.vp.trim{background:#d97706}.vp.cut{background:#dc2626}.vp.pause{background:#991b1b}.vp.mine{background:#2563eb}.vp.obs{background:#9ca3af}
+.kwstable td.warn{color:#b45309}
 .actopt{padding:9px 11px;border-radius:8px;font-size:13px;font-weight:600;color:var(--soft);cursor:pointer}
 .actopt:hover{background:rgba(184,69,107,.1);color:var(--rose)}
 .optbtn{font:inherit;font-size:11px;font-weight:700;padding:4px 9px;border-radius:7px;border:1px solid var(--rose);background:#fff;color:var(--rose);cursor:pointer;white-space:nowrap}
@@ -276,6 +297,30 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
         <table><thead><tr><th class="l">#</th><th class="l">Name</th><th class="l">Type</th><th>Cost</th><th>Sales</th><th>Profit</th><th></th></tr></thead><tbody id="act-best"></tbody></table></div>
       <div class="panel worst"><div class="ph"><div class="pt"><span class="dot"></span><span id="act-worsttitle">Worst 20</span></div></div>
         <table><thead><tr><th class="l">#</th><th class="l">Name</th><th class="l">Type</th><th>Cost</th><th>Sales</th><th>Profit</th><th></th></tr></thead><tbody id="act-worst"></tbody></table></div>
+    </div>
+    <div id="kwsheet" class="hidden">
+      <div class="kwsbar">
+        <span class="kwslbl">Match type:</span>
+        <button class="mtbtn on" data-m="exact">Exact</button>
+        <button class="mtbtn" data-m="phrase">Phrase</button>
+        <button class="mtbtn" data-m="broad">Broad</button>
+        <span class="kwslbl" style="margin-left:8px">Sort:</span>
+        <select id="kws-order"><option value="worst">Worst / bleeders first</option><option value="spend">Highest spend</option><option value="best">Best / scale first</option></select>
+        <span class="kwsright">
+          <span id="kws-prog" class="kwsprog"></span>
+          <button id="kws-prev" class="pgbtn">‹ Prev</button>
+          <button id="kws-next" class="pgbtn">Next ›</button>
+          <button id="kws-export" class="expbtn">⬇ Export approved</button>
+        </span>
+      </div>
+      <div class="panel" style="margin-top:14px">
+        <table class="kwstable"><thead><tr>
+          <th class="l"><input type="checkbox" id="kws-all" title="Approve all on this page"></th>
+          <th class="l">#</th><th class="l">Keyword</th><th class="l">Match</th>
+          <th class="r">Cost</th><th class="r">Sales</th><th class="r">POAS</th><th class="r">IS%</th><th class="r">Lost rank</th><th class="r">QS</th>
+          <th class="l">Recommended</th><th class="l">Action</th><th></th>
+        </tr></thead><tbody id="kws-body"></tbody></table>
+      </div>
     </div>
   </div>
   <div id="optmodal" class="adminwrap hidden">
@@ -606,6 +651,70 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
       cache[lvl]=j;fill(lvl,j);
     }).catch(function(e){document.getElementById("act-best").innerHTML='<tr><td class="l" colspan="7" style="padding:14px;color:var(--cost)">Error: '+e.message+'</td></tr>';});
   }
+  /* ---- Scalable keyword-optimization sheet (active-only, one match type, worst-first, paginated) ---- */
+  var KW={match:"exact",order:"worst",offset:0,limit:20,total:0,rows:[],approved:{}};
+  function vpill(v){var m={SCALE:"scale",HOLD:"hold",TRIM:"trim",CUT:"cut",PAUSE:"pause",MINE:"mine",OBSERVE:"obs"};return '<span class="vp '+(m[v]||"hold")+'">'+v+'</span>';}
+  function actOptions(v){return ["PAUSE","CUT","TRIM","SCALE","HOLD","MINE","OBSERVE","NEGATIVIZE","HARVEST"].map(function(o){return '<option value="'+o+'"'+(o===v?' selected':'')+'>'+o+'</option>';}).join('');}
+  function kwRowHtml(r,i){
+    var key=r.cust+"|"+r.criterionId, p=+(r.poas||0), pcls=(p>=1.24?'pos':(p>=1?'warn':'neg')), chk=KW.approved[key]?' checked':'';
+    return '<tr data-key="'+key+'">'
+      +'<td class="l"><input type="checkbox" class="kwchk"'+chk+'></td>'
+      +'<td class="l rank">'+(KW.offset+i+1)+'</td>'
+      +'<td class="l kwn" title="'+esc(r.kw)+'">'+esc(r.kw)+'<div class="kwsub">'+esc(r.account)+' › '+esc(r.campaign)+'</div></td>'
+      +'<td class="l"><span class="mt '+r.match+'">'+(r.match.charAt(0).toUpperCase()+r.match.slice(1))+'</span></td>'
+      +'<td class="r">'+eur(r.cost)+'</td><td class="r">'+eur(r.sales)+'</td>'
+      +'<td class="r '+pcls+'">'+p.toFixed(2)+'</td>'
+      +'<td class="r">'+(r.is||0)+'%</td><td class="r">'+(r.lostRank||0)+'%</td><td class="r">'+(r.qs==null?'–':r.qs)+'</td>'
+      +'<td class="l">'+vpill(r.verdict)+'<div class="vwhy">'+esc(r.why)+'</div></td>'
+      +'<td class="l"><select class="kwact">'+actOptions(r.verdict)+'</select></td>'
+      +'<td class="r"><button class="optbtn" data-name="'+esc(r.kw)+'" data-type="'+r.match+'" data-c="'+r.cost+'" data-s="'+r.sales+'" title="Deep-dive / mine search terms">⚙</button></td>'
+      +'</tr>';
+  }
+  function kwRender(){
+    var tb=document.getElementById("kws-body");
+    tb.innerHTML=KW.rows.length?KW.rows.map(kwRowHtml).join(''):'<tr><td colspan="13" style="padding:14px;color:var(--muted)">No active '+KW.match+' keywords with activity in this window.</td></tr>';
+    var end=Math.min(KW.offset+KW.rows.length,KW.total);
+    document.getElementById("kws-prog").textContent=(KW.total?(KW.offset+1)+"–"+end+" of "+KW.total+" active "+KW.match:"0 active "+KW.match)+" · "+Object.keys(KW.approved).length+" approved";
+    document.getElementById("kws-prev").disabled=KW.offset<=0;
+    document.getElementById("kws-next").disabled=end>=KW.total;
+    document.getElementById("kws-all").checked=false;
+    document.getElementById("act-ctx").textContent="active "+KW.match+" keywords · last 30 days · worst-first · tick rows then export";
+  }
+  function kwLoad(){
+    var tb=document.getElementById("kws-body");tb.innerHTML='<tr><td colspan="13" style="padding:14px;color:var(--muted)">Loading…</td></tr>';
+    fetch(FN+"?api=optimize_batch&match="+KW.match+"&order="+KW.order+"&tf=30d&limit="+KW.limit+"&offset="+KW.offset,{headers:{Authorization:"Bearer "+tok}}).then(chk401).then(function(r){return r.json();}).then(function(j){
+      if(j.error){tb.innerHTML='<tr><td colspan="13" style="padding:14px;color:var(--cost)">Error: '+j.error+'</td></tr>';return;}
+      KW.rows=j.rows||[];KW.total=j.total||0;kwRender();
+    }).catch(function(e){tb.innerHTML='<tr><td colspan="13" style="padding:14px;color:var(--cost)">Error: '+e.message+'</td></tr>';});
+  }
+  function kwInit(){document.getElementById("act-sec").textContent="Optimize keywords at scale";kwLoad();}
+  function kwRowFor(key,tr){
+    var r=KW.rows.filter(function(x){return (x.cust+"|"+x.criterionId)===key;})[0]||{};
+    var sel=tr.querySelector(".kwact");
+    return {account:r.account,campaign:r.campaign,adgroup:r.adgroup,kw:r.kw,match:r.match,action:(sel?sel.value:r.verdict),poas:r.poas,cost:r.cost,sales:r.sales,is:r.is,lostRank:r.lostRank,qs:r.qs,why:r.why};
+  }
+  function kwExport(){
+    var keys=Object.keys(KW.approved);if(!keys.length){alert("Tick the keywords you approve, then export.");return;}
+    var head=["account","campaign","ad_group","keyword","match_type","action","poas","cost_eur","sales_eur","impr_share_pct","lost_rank_pct","quality_score","rationale"];
+    var lines=[head];
+    keys.forEach(function(k){var r=KW.approved[k];lines.push([r.account,r.campaign,r.adgroup,r.kw,r.match,r.action,r.poas,r.cost,r.sales,r.is,r.lostRank,(r.qs==null?"":r.qs),r.why]);});
+    var csv=lines.map(function(row){return row.map(function(x){return '"'+String(x==null?"":x).replace(/"/g,'""')+'"';}).join(",");}).join("
+");
+    var a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["﻿"+csv],{type:"text/csv;charset=utf-8"}));
+    a.download="max-keyword-optimize-"+KW.match+".csv";document.body.appendChild(a);a.click();a.remove();
+  }
+  (function(){
+    var bar=document.querySelector(".kwsbar");if(!bar)return;
+    bar.addEventListener("click",function(e){var mb=e.target.closest(".mtbtn");if(!mb)return;bar.querySelectorAll(".mtbtn").forEach(function(x){x.classList.remove("on");});mb.classList.add("on");KW.match=mb.getAttribute("data-m");KW.offset=0;KW.approved={};kwLoad();});
+    document.getElementById("kws-order").addEventListener("change",function(){KW.order=this.value;KW.offset=0;kwLoad();});
+    document.getElementById("kws-prev").addEventListener("click",function(){if(KW.offset>0){KW.offset=Math.max(0,KW.offset-KW.limit);kwLoad();}});
+    document.getElementById("kws-next").addEventListener("click",function(){if(KW.offset+KW.limit<KW.total){KW.offset+=KW.limit;kwLoad();}});
+    document.getElementById("kws-export").addEventListener("click",kwExport);
+    document.getElementById("kws-all").addEventListener("change",function(){var on=this.checked;document.querySelectorAll("#kws-body .kwchk").forEach(function(c){c.checked=on;var tr=c.closest("tr"),key=tr.getAttribute("data-key");if(on)KW.approved[key]=kwRowFor(key,tr);else delete KW.approved[key];});kwRender();});
+    document.getElementById("kws-body").addEventListener("change",function(e){var tr=e.target.closest("tr");if(!tr)return;var key=tr.getAttribute("data-key");
+      if(e.target.classList.contains("kwchk")){if(e.target.checked)KW.approved[key]=kwRowFor(key,tr);else delete KW.approved[key];kwRender();}
+      else if(e.target.classList.contains("kwact")){if(KW.approved[key])KW.approved[key].action=e.target.value;}});
+  })();
   function showAction(lvl){
     actLvl=lvl;
     document.querySelectorAll('.dashnav .dlink').forEach(function(x){x.classList.remove('active','wbon');});
@@ -613,7 +722,10 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
     document.getElementById("kwview").classList.add("hidden");
     var wv=document.getElementById("weeklyview");if(wv)wv.classList.add("hidden");
     document.getElementById("actionview").classList.remove("hidden");
-    loadList(lvl);
+    var isKw=(lvl==="keyword");
+    document.getElementById("actgrid").classList.toggle("hidden",isKw);
+    document.getElementById("kwsheet").classList.toggle("hidden",!isKw);
+    if(isKw){ kwInit(); } else { loadList(lvl); }
   }
   function hideAction(){tab.classList.remove('on');document.getElementById("actionview").classList.add("hidden");}
   tab.onclick=function(e){e.stopPropagation();dd.classList.toggle("open");};
