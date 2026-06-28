@@ -173,6 +173,15 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
 .kwstable th.sortable:hover{color:var(--ink)}
 .kwstable th.sortable.on{color:var(--rose)}
 .sarr{font-size:9px}
+.slotp{display:inline-block;font-size:10.5px;font-weight:700;border-radius:6px;padding:2px 7px;color:#fff}
+.slotp.star{background:#16a34a}.slotp.s1{background:#2563eb}.slotp.s2{background:#d97706}.slotp.loser{background:#dc2626}.slotp.none{background:transparent;color:var(--muted);font-weight:400}
+.vp.cal{background:#2563eb}.vp.park{background:#9ca3af}
+.kwbands{margin-top:12px}
+.kwbh{font-size:12px;color:var(--muted);margin-bottom:6px}
+.kwbtable{width:100%;border-collapse:collapse;max-width:780px}
+.kwbtable th,.kwbtable td{padding:5px 9px;border-bottom:1px solid var(--lineS);font-size:12.5px}
+.kwbtable th{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.kwbtable td.r,.kwbtable th.r{text-align:right}
 .actopt{padding:9px 11px;border-radius:8px;font-size:13px;font-weight:600;color:var(--soft);cursor:pointer}
 .actopt:hover{background:rgba(184,69,107,.1);color:var(--rose)}
 .optbtn{font:inherit;font-size:11px;font-weight:700;padding:4px 9px;border-radius:7px;border:1px solid var(--rose);background:#fff;color:var(--rose);cursor:pointer;white-space:nowrap}
@@ -317,10 +326,12 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
           <button id="kws-export" class="expbtn">⬇ Export approved</button>
         </span>
       </div>
+      <div id="kws-bands" class="kwbands"></div>
       <div class="panel" style="margin-top:14px">
         <table class="kwstable"><thead><tr>
           <th class="l"><input type="checkbox" id="kws-all" title="Approve all on this page"></th>
           <th class="l">#</th><th class="l">Keyword</th><th class="l">Match</th>
+          <th class="l sortable" data-sort="slot">Slot<span class="sarr"></span></th>
           <th class="r sortable" data-sort="cost">Cost<span class="sarr"></span></th><th class="r sortable" data-sort="sales">Sales<span class="sarr"></span></th><th class="r sortable" data-sort="poas">POAS<span class="sarr"></span></th><th class="r sortable" data-sort="is">IS%<span class="sarr"></span></th><th class="r sortable" data-sort="lostrank">Lost rank<span class="sarr"></span></th><th class="r sortable" data-sort="qs">QS<span class="sarr"></span></th>
           <th class="l sortable" data-sort="verdict">Recommended<span class="sarr"></span></th><th class="l">Action</th><th></th>
         </tr></thead><tbody id="kws-body"></tbody></table>
@@ -658,8 +669,9 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
   /* ---- Scalable keyword-optimization sheet (active-only, one match type, worst-first, paginated) ---- */
   var KW={match:"exact",sort:"profit",dir:"asc",offset:0,limit:20,total:0,rows:[],approved:{},seq:0};
   function kwSortArrows(){var ths=document.querySelectorAll(".kwstable th.sortable");for(var i=0;i<ths.length;i++){var th=ths[i],sp=th.querySelector(".sarr");if(!sp)continue;if(th.getAttribute("data-sort")===KW.sort){sp.textContent=(KW.dir==="asc"?" ▲":" ▼");th.classList.add("on");}else{sp.textContent="";th.classList.remove("on");}}}
-  function vpill(v){var m={SCALE:"scale",HOLD:"hold",TRIM:"trim",CUT:"cut",PAUSE:"pause",MINE:"mine",OBSERVE:"obs"};return '<span class="vp '+(m[v]||"hold")+'">'+v+'</span>';}
-  function actOptions(v){return ["PAUSE","CUT","TRIM","SCALE","HOLD","MINE","OBSERVE","NEGATIVIZE","HARVEST"].map(function(o){return '<option value="'+o+'"'+(o===v?' selected':'')+'>'+o+'</option>';}).join('');}
+  function vpill(v){var m={SCALE:"scale",HOLD:"hold",CALIBRATE:"cal",PAUSE:"pause",PARK:"park",MINE:"mine",OBSERVE:"obs"};return '<span class="vp '+(m[v]||"hold")+'">'+v+'</span>';}
+  function slotPill(s){if(!s)return '<span class="slotp none">–</span>';var m={Star:"star","Slot-1":"s1","Slot-2":"s2",loser:"loser"};return '<span class="slotp '+(m[s]||"none")+'">'+s+'</span>';}
+  function actOptions(v){return ["SCALE","CALIBRATE","PAUSE","PARK","OBSERVE","HOLD","MINE","NEGATIVIZE","RESTRUCTURE","HARVEST"].map(function(o){return '<option value="'+o+'"'+(o===v?' selected':'')+'>'+o+'</option>';}).join('');}
   function kwRowHtml(r,i){
     var key=r.cust+"|"+r.criterionId, p=+(r.poas||0), pcls=(p>=1.24?'pos':(p>=1?'warn':'neg')), chk=KW.approved[key]?' checked':'';
     return '<tr data-key="'+key+'">'
@@ -667,6 +679,7 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
       +'<td class="l rank">'+(KW.offset+i+1)+'</td>'
       +'<td class="l kwn" title="'+esc(r.kw)+'">'+esc(r.kw)+'<div class="kwsub">'+esc(r.account)+' › '+esc(r.campaign)+'</div></td>'
       +'<td class="l"><span class="mt '+r.match+'">'+(r.match.charAt(0).toUpperCase()+r.match.slice(1))+'</span></td>'
+      +'<td class="l">'+slotPill(r.slot)+'</td>'
       +'<td class="r">'+eur(r.cost)+'</td><td class="r">'+eur(r.sales)+'</td>'
       +'<td class="r '+pcls+'">'+p.toFixed(2)+'</td>'
       +'<td class="r">'+(r.is||0)+'%</td><td class="r">'+(r.lostRank||0)+'%</td><td class="r">'+(r.qs==null?'–':r.qs)+'</td>'
@@ -676,9 +689,14 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
       +'</tr>';
   }
   function kwUpdateProg(){var end=Math.min(KW.offset+KW.rows.length,KW.total);document.getElementById("kws-prog").textContent=(KW.total?(KW.offset+1)+"–"+end+" of "+KW.total+" active "+KW.match:"0 active "+KW.match)+" · "+Object.keys(KW.approved).length+" approved";}
+  function kwBands(bands){var el=document.getElementById("kws-bands");if(!el)return;if(!bands||!bands.length){el.innerHTML='';return;}
+    var tot=bands.reduce(function(a,b){return {c:a.c+b.count,cost:a.cost+b.cost};},{c:0,cost:0});
+    var rows=bands.map(function(b){return '<tr><td class="l">'+b.band+'</td><td class="r">'+b.clicks+'</td><td class="r">'+eur(b.cost)+'</td><td class="r">'+b.conv+'</td><td class="r">'+eur(b.value)+'</td><td class="r">'+b.poas+'</td><td class="l">'+b.rec+'</td></tr>';}).join('');
+    el.innerHTML='<div class="kwbh">Spend waste · 0-conversion '+KW.match+' keywords spending &gt; €10 (30d): <b>'+tot.c+' keywords · '+eur(tot.cost)+'</b></div><table class="kwbtable"><thead><tr><th class="l">Spend band</th><th class="r">Clicks</th><th class="r">Cost</th><th class="r">Conv</th><th class="r">Conv value</th><th class="r">POAS</th><th class="l">Recommendation</th></tr></thead><tbody>'+rows+'</tbody></table>';
+  }
   function kwRender(){
     var tb=document.getElementById("kws-body");
-    tb.innerHTML=KW.rows.length?KW.rows.map(kwRowHtml).join(''):'<tr><td colspan="13" style="padding:14px;color:var(--muted)">No active '+KW.match+' keywords with activity in this window.</td></tr>';
+    tb.innerHTML=KW.rows.length?KW.rows.map(kwRowHtml).join(''):'<tr><td colspan="14" style="padding:14px;color:var(--muted)">No active '+KW.match+' keywords with activity in this window.</td></tr>';
     var end=Math.min(KW.offset+KW.rows.length,KW.total);
     kwUpdateProg();
     document.getElementById("kws-prev").disabled=KW.offset<=0;
@@ -689,23 +707,23 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
   }
   function kwLoad(){
     var seq=++KW.seq;
-    var tb=document.getElementById("kws-body");tb.innerHTML='<tr><td colspan="13" style="padding:14px;color:var(--muted)">Loading…</td></tr>';
+    var tb=document.getElementById("kws-body");tb.innerHTML='<tr><td colspan="14" style="padding:14px;color:var(--muted)">Loading…</td></tr>';
     fetch(FN+"?api=optimize_batch&match="+KW.match+"&sort="+KW.sort+"&dir="+KW.dir+"&tf=30d&limit="+KW.limit+"&offset="+KW.offset,{headers:{Authorization:"Bearer "+tok}}).then(chk401).then(function(r){return r.json();}).then(function(j){
       if(seq!==KW.seq)return;
-      if(j.error){tb.innerHTML='<tr><td colspan="13" style="padding:14px;color:var(--cost)">Error: '+j.error+'</td></tr>';return;}
-      KW.rows=j.rows||[];KW.total=j.total||0;kwRender();
-    }).catch(function(e){if(seq!==KW.seq)return;tb.innerHTML='<tr><td colspan="13" style="padding:14px;color:var(--cost)">Error: '+e.message+'</td></tr>';});
+      if(j.error){tb.innerHTML='<tr><td colspan="14" style="padding:14px;color:var(--cost)">Error: '+j.error+'</td></tr>';return;}
+      KW.rows=j.rows||[];KW.total=j.total||0;if(j.bands)kwBands(j.bands);kwRender();
+    }).catch(function(e){if(seq!==KW.seq)return;tb.innerHTML='<tr><td colspan="14" style="padding:14px;color:var(--cost)">Error: '+e.message+'</td></tr>';});
   }
   function kwInit(){document.getElementById("act-sec").textContent="Optimize keywords at scale";kwLoad();}
   function kwRowFor(key,tr){
     var r=KW.rows.filter(function(x){return (x.cust+"|"+x.criterionId)===key;})[0]||{};
     var sel=tr.querySelector(".kwact");
-    return {account:r.account,campaign:r.campaign,adgroup:r.adgroup,kw:r.kw,match:r.match,verdict:r.verdict,action:(sel?sel.value:r.verdict),poas:r.poas,cost:r.cost,sales:r.sales,is:r.is,lostRank:r.lostRank,qs:r.qs,why:r.why,cust:r.cust,criterionId:r.criterionId,adGroupId:r.adGroupId};
+    return {account:r.account,campaign:r.campaign,adgroup:r.adgroup,kw:r.kw,match:r.match,verdict:r.verdict,action:(sel?sel.value:r.verdict),poas:r.poas,cost:r.cost,sales:r.sales,is:r.is,lostRank:r.lostRank,qs:r.qs,why:r.why,cust:r.cust,criterionId:r.criterionId,adGroupId:r.adGroupId,slot:r.slot,conv:r.conv,targetTroas:r.targetTroas,suggestedCpc:r.suggestedCpc};
   }
   function kwExport(){
     var keys=Object.keys(KW.approved);if(!keys.length){alert("Tick the keywords you approve, then export.");return;}
     var btn=document.getElementById("kws-export");var old=btn.textContent;btn.textContent="Working…";btn.disabled=true;
-    var items=keys.map(function(k){var r=KW.approved[k];return {key:k,kw:r.kw,match:r.match,verdict:r.verdict,action:r.action,cust:r.cust,criterionId:r.criterionId,adGroupId:r.adGroupId,cost:r.cost,sales:r.sales,poas:r.poas,is:r.is,lostRank:r.lostRank,qs:r.qs};});
+    var items=keys.map(function(k){var r=KW.approved[k];return {key:k,kw:r.kw,match:r.match,verdict:r.verdict,action:r.action,cust:r.cust,criterionId:r.criterionId,adGroupId:r.adGroupId,cost:r.cost,sales:r.sales,poas:r.poas,is:r.is,lostRank:r.lostRank,qs:r.qs,slot:r.slot,conv:r.conv,targetTroas:r.targetTroas,suggestedCpc:r.suggestedCpc};});
     fetch(FN+"?api=optimize_work",{method:"POST",headers:{Authorization:"Bearer "+tok,"Content-Type":"application/json"},body:JSON.stringify({items:items})}).then(chk401).then(function(r){return r.json();}).then(function(j){
       if(j.error)throw new Error(j.error);
       var work={};(j.items||[]).forEach(function(w){work[w.key]=w;});
@@ -715,6 +733,7 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
         lines.push([r.account,r.campaign,r.adgroup,r.kw,r.match,r.action,"keyword",r.action,(w.change||r.why||""),r.poas,r.cost,r.sales,r.why]);
         (w.harvest||[]).forEach(function(h){lines.push([r.account,r.campaign,r.adgroup,r.kw,r.match,r.action,"add_exact",h.term,"conv "+h.conv+" / POAS "+h.poas,h.poas,h.cost,h.value,"harvest winning search term as Exact"]);});
         (w.negatives||[]).forEach(function(n){lines.push([r.account,r.campaign,r.adgroup,r.kw,r.match,r.action,"add_negative",n.term,"match "+n.match+" / EUR "+n.cost+" / "+n.clicks+" clicks / 0 conv","",n.cost,"","block off-intent or wasteful term"]);});
+        (w.restructure||[]).forEach(function(n){lines.push([r.account,r.campaign,r.adgroup,r.kw,r.match,r.action,"restructure",n.term,"on-intent / EUR "+n.cost+" / "+n.clicks+" clicks / 0 conv","",n.cost,"","on-intent but mismatched - give it its own ad group / exact, don't just negate"]);});
       });
       var csv=lines.map(function(row){return row.map(function(x){return '"'+String(x==null?"":x).replace(/"/g,'""')+'"';}).join(",");}).join(String.fromCharCode(13,10));
       var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([String.fromCharCode(0xFEFF)+csv],{type:"text/csv;charset=utf-8"}));
