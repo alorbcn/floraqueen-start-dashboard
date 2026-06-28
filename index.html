@@ -698,9 +698,8 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
     var head=["account","campaign","ad_group","keyword","match_type","action","poas","cost_eur","sales_eur","impr_share_pct","lost_rank_pct","quality_score","rationale"];
     var lines=[head];
     keys.forEach(function(k){var r=KW.approved[k];lines.push([r.account,r.campaign,r.adgroup,r.kw,r.match,r.action,r.poas,r.cost,r.sales,r.is,r.lostRank,(r.qs==null?"":r.qs),r.why]);});
-    var csv=lines.map(function(row){return row.map(function(x){return '"'+String(x==null?"":x).replace(/"/g,'""')+'"';}).join(",");}).join("
-");
-    var a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["﻿"+csv],{type:"text/csv;charset=utf-8"}));
+    var csv=lines.map(function(row){return row.map(function(x){return '"'+String(x==null?"":x).replace(/"/g,'""')+'"';}).join(",");}).join(String.fromCharCode(13,10));
+    var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([String.fromCharCode(0xFEFF)+csv],{type:"text/csv;charset=utf-8"}));
     a.download="max-keyword-optimize-"+KW.match+".csv";document.body.appendChild(a);a.click();a.remove();
   }
   (function(){
