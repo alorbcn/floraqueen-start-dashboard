@@ -727,13 +727,11 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
     fetch(FN+"?api=optimize_work",{method:"POST",headers:{Authorization:"Bearer "+tok,"Content-Type":"application/json"},body:JSON.stringify({items:items})}).then(chk401).then(function(r){return r.json();}).then(function(j){
       if(j.error)throw new Error(j.error);
       var work={};(j.items||[]).forEach(function(w){work[w.key]=w;});
-      var head=["account","campaign","ad_group","keyword","match","recommended_action","item_type","proposal","detail","poas","cost_eur","sales_eur","rationale"];
+      var head=["account","campaign","ad_group","keyword","match","recommended_action","item_type","search_term","recommendation","neg_match","clicks","cost_eur","conv","poas","already_in_account","rationale"];
       var lines=[head];
       keys.forEach(function(k){var r=KW.approved[k];var w=work[k]||{};
-        lines.push([r.account,r.campaign,r.adgroup,r.kw,r.match,r.action,"keyword",r.action,(w.change||r.why||""),r.poas,r.cost,r.sales,r.why]);
-        (w.harvest||[]).forEach(function(h){lines.push([r.account,r.campaign,r.adgroup,r.kw,r.match,r.action,"add_exact",h.term,"conv "+h.conv+" / POAS "+h.poas,h.poas,h.cost,h.value,"harvest winning search term as Exact"]);});
-        (w.negatives||[]).forEach(function(n){lines.push([r.account,r.campaign,r.adgroup,r.kw,r.match,r.action,"add_negative",n.term,"match "+n.match+" / EUR "+n.cost+" / "+n.clicks+" clicks / 0 conv","",n.cost,"","block off-intent or wasteful term"]);});
-        (w.restructure||[]).forEach(function(n){lines.push([r.account,r.campaign,r.adgroup,r.kw,r.match,r.action,"restructure",n.term,"on-intent / EUR "+n.cost+" / "+n.clicks+" clicks / 0 conv","",n.cost,"","on-intent but mismatched - give it its own ad group / exact, don't just negate"]);});
+        lines.push([r.account,r.campaign,r.adgroup,r.kw,r.match,r.action,"keyword","",r.action,"","",r.cost,r.conv,r.poas,"",(w.change||r.why||"")]);
+        (w.terms||[]).forEach(function(t){lines.push([r.account,r.campaign,r.adgroup,r.kw,r.match,r.action,"search_term",t.term,t.recommendation,(t.recommendation==="add_negative"?t.negMatch:""),t.clicks,t.cost,t.conv,t.poas,t.already,t.rationale]);});
       });
       var csv=lines.map(function(row){return row.map(function(x){return '"'+String(x==null?"":x).replace(/"/g,'""')+'"';}).join(",");}).join(String.fromCharCode(13,10));
       var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([String.fromCharCode(0xFEFF)+csv],{type:"text/csv;charset=utf-8"}));
