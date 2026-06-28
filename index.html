@@ -169,6 +169,10 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
 .vp{display:inline-block;font-size:11px;font-weight:700;border-radius:6px;padding:2px 8px;color:#fff}
 .vp.scale{background:#16a34a}.vp.hold{background:#6b7280}.vp.trim{background:#d97706}.vp.cut{background:#dc2626}.vp.pause{background:#991b1b}.vp.mine{background:#2563eb}.vp.obs{background:#9ca3af}
 .kwstable td.warn{color:#b45309}
+.kwstable th.sortable{cursor:pointer;user-select:none}
+.kwstable th.sortable:hover{color:var(--ink)}
+.kwstable th.sortable.on{color:var(--rose)}
+.sarr{font-size:9px}
 .actopt{padding:9px 11px;border-radius:8px;font-size:13px;font-weight:600;color:var(--soft);cursor:pointer}
 .actopt:hover{background:rgba(184,69,107,.1);color:var(--rose)}
 .optbtn{font:inherit;font-size:11px;font-weight:700;padding:4px 9px;border-radius:7px;border:1px solid var(--rose);background:#fff;color:var(--rose);cursor:pointer;white-space:nowrap}
@@ -317,8 +321,8 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
         <table class="kwstable"><thead><tr>
           <th class="l"><input type="checkbox" id="kws-all" title="Approve all on this page"></th>
           <th class="l">#</th><th class="l">Keyword</th><th class="l">Match</th>
-          <th class="r">Cost</th><th class="r">Sales</th><th class="r">POAS</th><th class="r">IS%</th><th class="r">Lost rank</th><th class="r">QS</th>
-          <th class="l">Recommended</th><th class="l">Action</th><th></th>
+          <th class="r sortable" data-sort="cost">Cost<span class="sarr"></span></th><th class="r sortable" data-sort="sales">Sales<span class="sarr"></span></th><th class="r sortable" data-sort="poas">POAS<span class="sarr"></span></th><th class="r sortable" data-sort="is">IS%<span class="sarr"></span></th><th class="r sortable" data-sort="lostrank">Lost rank<span class="sarr"></span></th><th class="r sortable" data-sort="qs">QS<span class="sarr"></span></th>
+          <th class="l sortable" data-sort="verdict">Recommended<span class="sarr"></span></th><th class="l">Action</th><th></th>
         </tr></thead><tbody id="kws-body"></tbody></table>
       </div>
     </div>
@@ -652,7 +656,8 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
     }).catch(function(e){document.getElementById("act-best").innerHTML='<tr><td class="l" colspan="7" style="padding:14px;color:var(--cost)">Error: '+e.message+'</td></tr>';});
   }
   /* ---- Scalable keyword-optimization sheet (active-only, one match type, worst-first, paginated) ---- */
-  var KW={match:"exact",order:"worst",offset:0,limit:20,total:0,rows:[],approved:{},seq:0};
+  var KW={match:"exact",sort:"profit",dir:"asc",offset:0,limit:20,total:0,rows:[],approved:{},seq:0};
+  function kwSortArrows(){var ths=document.querySelectorAll(".kwstable th.sortable");for(var i=0;i<ths.length;i++){var th=ths[i],sp=th.querySelector(".sarr");if(!sp)continue;if(th.getAttribute("data-sort")===KW.sort){sp.textContent=(KW.dir==="asc"?" ▲":" ▼");th.classList.add("on");}else{sp.textContent="";th.classList.remove("on");}}}
   function vpill(v){var m={SCALE:"scale",HOLD:"hold",TRIM:"trim",CUT:"cut",PAUSE:"pause",MINE:"mine",OBSERVE:"obs"};return '<span class="vp '+(m[v]||"hold")+'">'+v+'</span>';}
   function actOptions(v){return ["PAUSE","CUT","TRIM","SCALE","HOLD","MINE","OBSERVE","NEGATIVIZE","HARVEST"].map(function(o){return '<option value="'+o+'"'+(o===v?' selected':'')+'>'+o+'</option>';}).join('');}
   function kwRowHtml(r,i){
@@ -678,12 +683,13 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
     document.getElementById("kws-prev").disabled=KW.offset<=0;
     document.getElementById("kws-next").disabled=end>=KW.total;
     document.getElementById("kws-all").checked=false;
-    document.getElementById("act-ctx").textContent="active "+KW.match+" keywords · last 30 days · worst-first · tick rows then export";
+    document.getElementById("act-ctx").textContent="active "+KW.match+" keywords · last 30 days · click a column to sort · tick rows then export";
+    kwSortArrows();
   }
   function kwLoad(){
     var seq=++KW.seq;
     var tb=document.getElementById("kws-body");tb.innerHTML='<tr><td colspan="13" style="padding:14px;color:var(--muted)">Loading…</td></tr>';
-    fetch(FN+"?api=optimize_batch&match="+KW.match+"&order="+KW.order+"&tf=30d&limit="+KW.limit+"&offset="+KW.offset,{headers:{Authorization:"Bearer "+tok}}).then(chk401).then(function(r){return r.json();}).then(function(j){
+    fetch(FN+"?api=optimize_batch&match="+KW.match+"&sort="+KW.sort+"&dir="+KW.dir+"&tf=30d&limit="+KW.limit+"&offset="+KW.offset,{headers:{Authorization:"Bearer "+tok}}).then(chk401).then(function(r){return r.json();}).then(function(j){
       if(seq!==KW.seq)return;
       if(j.error){tb.innerHTML='<tr><td colspan="13" style="padding:14px;color:var(--cost)">Error: '+j.error+'</td></tr>';return;}
       KW.rows=j.rows||[];KW.total=j.total||0;kwRender();
@@ -707,7 +713,9 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
   (function(){
     var bar=document.querySelector(".kwsbar");if(!bar)return;
     bar.addEventListener("click",function(e){var mb=e.target.closest(".mtbtn");if(!mb)return;bar.querySelectorAll(".mtbtn").forEach(function(x){x.classList.remove("on");});mb.classList.add("on");KW.match=mb.getAttribute("data-m");KW.offset=0;KW.approved={};kwLoad();});
-    document.getElementById("kws-order").addEventListener("change",function(){KW.order=this.value;KW.offset=0;kwLoad();});
+    document.getElementById("kws-order").addEventListener("change",function(){var v=this.value;KW.sort=(v==="spend"?"cost":"profit");KW.dir=(v==="best"||v==="spend"?"desc":"asc");KW.offset=0;kwLoad();});
+    var kwthead=document.querySelector(".kwstable thead");
+    if(kwthead)kwthead.addEventListener("click",function(e){var th=e.target.closest("th.sortable");if(!th)return;var col=th.getAttribute("data-sort");if(KW.sort===col){KW.dir=(KW.dir==="asc"?"desc":"asc");}else{KW.sort=col;KW.dir="desc";}KW.offset=0;var dd=document.getElementById("kws-order");if(dd)dd.selectedIndex=-1;kwLoad();});
     document.getElementById("kws-prev").addEventListener("click",function(){if(KW.offset>0){KW.offset=Math.max(0,KW.offset-KW.limit);kwLoad();}});
     document.getElementById("kws-next").addEventListener("click",function(){if(KW.offset+KW.limit<KW.total){KW.offset+=KW.limit;kwLoad();}});
     document.getElementById("kws-export").addEventListener("click",kwExport);
