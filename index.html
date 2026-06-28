@@ -176,7 +176,14 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
 .slotp{display:inline-block;font-size:10.5px;font-weight:700;border-radius:6px;padding:2px 7px;color:#fff}
 .slotp.star{background:#16a34a}.slotp.s1{background:#2563eb}.slotp.s2{background:#d97706}.slotp.loser{background:#dc2626}.slotp.none{background:transparent;color:var(--muted);font-weight:400}
 .vp.cal{background:#2563eb}.vp.park{background:#9ca3af}
-.kwbands{margin-top:12px}
+.kwtop{display:flex;gap:16px;align-items:stretch;flex-wrap:wrap;margin-top:12px}
+.kwbands{flex:1 1 480px;min-width:0}
+.kwguide{flex:1 1 320px;min-width:280px;border:1px solid var(--lineS);border-radius:12px;padding:12px 14px;background:linear-gradient(180deg,rgba(99,102,241,.05),rgba(99,102,241,0));display:flex;flex-direction:column}
+.kwgh{font-size:12.5px;font-weight:800;color:var(--ink);margin-bottom:8px;letter-spacing:.01em}
+.kwgsel{font:inherit;font-size:13px;font-weight:600;padding:7px 9px;border-radius:8px;border:1px solid var(--line);background:#fff;color:var(--ink);width:100%;cursor:pointer}
+.kwgtext{margin-top:10px;font-size:12.5px;line-height:1.5;color:var(--muted);flex:1}
+.kwgtext b{color:var(--ink)}
+.kwgtag{display:inline-block;font-size:10.5px;font-weight:800;border-radius:6px;padding:2px 8px;color:#fff;margin-bottom:7px}
 .kwbh{font-size:12px;color:var(--muted);margin-bottom:6px}
 .kwbtable{width:100%;border-collapse:collapse;max-width:780px}
 .kwbtable th,.kwbtable td{padding:5px 9px;border-bottom:1px solid var(--lineS);font-size:12.5px}
@@ -326,7 +333,14 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
           <button id="kws-export" class="expbtn">⬇ Export approved</button>
         </span>
       </div>
-      <div id="kws-bands" class="kwbands"></div>
+      <div class="kwtop">
+        <div id="kws-bands" class="kwbands"></div>
+        <div id="kws-guide" class="kwguide">
+          <div class="kwgh">📖 Action guide</div>
+          <select id="kwg-sel" class="kwgsel"></select>
+          <div id="kwg-text" class="kwgtext"></div>
+        </div>
+      </div>
       <div class="panel" style="margin-top:14px">
         <table class="kwstable"><thead><tr>
           <th class="l"><input type="checkbox" id="kws-all" title="Approve all on this page"></th>
@@ -752,6 +766,29 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
     document.getElementById("kws-body").addEventListener("change",function(e){var tr=e.target.closest("tr");if(!tr)return;var key=tr.getAttribute("data-key");
       if(e.target.classList.contains("kwchk")){if(e.target.checked)KW.approved[key]=kwRowFor(key,tr);else delete KW.approved[key];kwUpdateProg();}
       else if(e.target.classList.contains("kwact")){if(KW.approved[key])KW.approved[key].action=e.target.value;}});
+  })();
+  (function(){
+    var sel=document.getElementById("kwg-sel"), txt=document.getElementById("kwg-text");
+    if(!sel||!txt)return;
+    var G=[
+      {v:"SCALE",g:"Keyword recommendations",c:"#16a34a",t:"<b>Proven winner with room to grow.</b> A Star keyword (POAS &ge; 2.0) that is losing impression share. Raise the bid / target ROAS when you are losing share to Ad Rank (lost-to-rank &gt; 20%), or raise the budget when impression share is under 80%. Goal: win more of the demand you already convert profitably."},
+      {v:"HOLD",g:"Keyword recommendations",c:"#6b7280",t:"<b>Leave it as is.</b> Either it is at or above the profit floor (Slot-1, POAS 1.24-2.0) and already efficient, it is saturated with little headroom, or data is too thin (under 20 clicks) to act. Keep watching - do not touch bids yet."},
+      {v:"CALIBRATE",g:"Keyword recommendations",c:"#2563eb",t:"<b>Converting but below the profit floor</b> (Slot-2 or loser, POAS &lt; 1.24). Do not pause it - fix the economics: raise the target ROAS to about 310% and/or lower the max-CPC to the suggested level so the same conversions cost less. Goal: lift it to POAS 1.24, not kill it."},
+      {v:"PAUSE",g:"Keyword recommendations",c:"#dc2626",t:"<b>Real money, zero return.</b> Spent more than EUR 10 with 0 conversions - proven waste. Pause it. We never pause a keyword that has any conversions."},
+      {v:"PARK",g:"Keyword recommendations",c:"#9ca3af",t:"<b>Too little data to judge.</b> Spent under EUR 10 with 0 conversions - that is noise, not a verdict. Leave it parked and revisit once it has spent enough to evaluate."},
+      {v:"OBSERVE",g:"Keyword recommendations",c:"#7c3aed",t:"<b>Unproven.</b> It has a single or fractional conversion - one conversion is not success and not failure. Do not scale it and do not pause it; let it gather more data before deciding."},
+      {v:"MINE",g:"Keyword recommendations",c:"#2563eb",t:"<b>The action is in its search terms.</b> Broad/phrase keyword - Mine pulls every real query it triggered and splits them: convert winners to Exact, negate the wasteful / off-intent ones. Use the gear (deep-dive) or Export approved to get the full term-by-term plan."},
+      {v:"ADDEXACT",g:"Search-term actions (in export)",c:"#16a34a",l:"Add Exact (harvest)",t:"<b>Harvest a winning query.</b> A search term that converted well (at least 2 conversions, POAS &ge; 1) and is not already a keyword. Add it as its own Exact-match keyword so you can bid on it precisely - after the pre-check confirms it is not already a keyword or a negative."},
+      {v:"ADDNEG",g:"Search-term actions (in export)",c:"#dc2626",l:"Add Negative",t:"<b>Block waste.</b> An off-intent search term that spent more than EUR 10 with 0 conversions. Add it as a negative (Exact for a specific query, Phrase for a pattern) so it stops draining budget."},
+      {v:"RESTRUCTURE",g:"Search-term actions (in export)",c:"#d97706",l:"Restructure",t:"<b>On-intent but mismatched.</b> A relevant search term that still is not converting here (more than EUR 10, 0 conv). Do not just negate it - it belongs in its own ad group / landing page where it can be served better."},
+      {v:"SLOTS",g:"Classification",c:"#0ea5e9",l:"POAS Slots",t:"<b>How converting keywords are graded.</b> POAS = ROAS x 40% margin. <b>Star</b> &ge; 2.0 (scale). <b>Slot-1</b> 1.24-2.0 (hold, above floor). <b>Slot-2</b> 1.0-1.24 (calibrate to floor). <b>loser</b> &lt; 1.0 (calibrate; cut only if it cannot reach the floor). Profit floor = POAS 1.24 (ROAS 310%); break-even = POAS 1.0 (ROAS 250%). Non-converting keywords are not slotted - they are handled by Pause / Park."}
+    ];
+    var groups=[]; G.forEach(function(o){if(groups.indexOf(o.g)<0)groups.push(o.g);});
+    var html=""; groups.forEach(function(g){html+='<optgroup label="'+g+'">'; G.forEach(function(o){if(o.g===g)html+='<option value="'+o.v+'">'+(o.l||o.v)+'</option>';}); html+='</optgroup>';});
+    sel.innerHTML=html;
+    function show(v){var o=G.filter(function(x){return x.v===v;})[0]||G[0]; txt.innerHTML='<span class="kwgtag" style="background:'+o.c+'">'+(o.l||o.v)+'</span><div>'+o.t+'</div>';}
+    sel.addEventListener("change",function(){show(this.value);});
+    show("SCALE");
   })();
   function showAction(lvl){
     actLvl=lvl;
