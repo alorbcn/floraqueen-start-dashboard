@@ -91,6 +91,11 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
 .wbtable th.shopcol .shsub{display:block;font-size:8.5px;font-weight:600;color:var(--muted);text-transform:none;letter-spacing:0;margin-top:2px}
 .wbtable td.shopcol{text-align:right;border-left:2px solid var(--lineS);background:rgba(31,138,95,.05)}
 .wbtable td.shopcol b{font-weight:600}.wbtable td.shopcol .shsub2{font-size:9.5px;color:var(--muted);font-weight:400}
+.wbtable th.erscol,.wbtable td.erscol{width:66px;text-align:right;white-space:nowrap;border-left:1px solid var(--line)}
+.wbtable thead th.erscol{vertical-align:bottom;color:var(--forest)}
+.wbtable thead tr:first-child th.erscol{text-align:right}
+.wbtable td.erscol{font-weight:600}
+.wbtable th.erscol .shsub{display:block;font-size:8.5px;font-weight:600;color:var(--muted);text-transform:none;letter-spacing:0;margin-top:2px}
 .wbtable thead th{font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--soft);font-weight:700;text-align:right;padding:8px 10px;background:var(--s2)}
 .wbtable thead tr:first-child th{border-bottom:1px solid var(--lineS);text-align:center}
 .wbtable thead th.l{text-align:left;vertical-align:bottom}.wbtable thead th.sub{font-size:9.5px;border-bottom:2px solid var(--lineS);color:var(--muted)}.wbtable thead th.sub.g4{color:var(--rose)}
@@ -307,9 +312,7 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
       <div class="wbsel"><button class="wbselbtn" id="wb-agbtn"><span class="lbltxt" id="wb-aglabel">All ad groups</span><span class="ca">▾</span></button><div class="wbdd" id="wb-agdd"></div></div>
       <span class="wbhint" id="wb-hint"></span>
     </div>
-    <div class="wbcards" id="wb-cards"></div><div class="wbfeatnote" id="wb-featnote"></div>
-    <div class="wbsec"><h2>All weeks</h2><span class="ctx">newest on top · Google Ads vs GA4 · Shopify store sales</span><span class="rule"></span></div>
-    <table class="wbtable"><thead><tr><th class="l" rowspan="2">Week</th><th class="shopcol" rowspan="2">Shopify sales<div class="shsub">store total · net</div></th><th class="grp2" colspan="2">Investment</th><th class="grp2" colspan="2">Sales</th><th class="grp2" colspan="2">Profit · est</th><th class="grp2" colspan="2">Real ROAS</th><th class="grp2" colspan="2">POAS · est</th><th class="grp2" colspan="2">Conversions</th></tr><tr><th class="sub grp2">GAds</th><th class="sub g4">GA4</th><th class="sub grp2">GAds</th><th class="sub g4">GA4</th><th class="sub grp2">GAds</th><th class="sub g4">GA4</th><th class="sub grp2">GAds</th><th class="sub g4">GA4</th><th class="sub grp2">GAds</th><th class="sub g4">GA4</th><th class="sub grp2">GAds</th><th class="sub g4">GA4</th></tr></thead><tbody id="wb-tbody"></tbody></table>
+    <table class="wbtable"><thead><tr><th class="l" rowspan="2">Week</th><th class="shopcol" rowspan="2">Shopify sales<div class="shsub">store total · net</div></th><th class="erscol" rowspan="2">Global ERS<div class="shsub">ad cost ÷ store sales</div></th><th class="grp2" colspan="2">Investment</th><th class="grp2" colspan="2">Sales</th><th class="grp2" colspan="2">Profit · est</th><th class="grp2" colspan="2">Real ROAS</th><th class="grp2" colspan="2">POAS · est</th><th class="grp2" colspan="2">Conversions</th></tr><tr><th class="sub grp2">GAds</th><th class="sub g4">GA4</th><th class="sub grp2">GAds</th><th class="sub g4">GA4</th><th class="sub grp2">GAds</th><th class="sub g4">GA4</th><th class="sub grp2">GAds</th><th class="sub g4">GA4</th><th class="sub grp2">GAds</th><th class="sub g4">GA4</th><th class="sub grp2">GAds</th><th class="sub g4">GA4</th></tr></thead><tbody id="wb-tbody"></tbody></table>
     <div class="wbfoot"><b>Sources:</b> Google Ads = weekly_metrics_account (all channels, per account); GA4 = google/cpc split by Google Ads account · margin 40% (profit estimate; cost basis = Google Ads) · EUR · Madrid. <b>Refresh:</b> Mon/Tue/Wed 08:00 (GA4 column one-time pull for now). Select accounts above to filter. <b>Max is read-only.</b></div>
   </div>
   <div id="actionview" class="hidden">
@@ -983,24 +986,10 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
  function span(a){return (new Date(a.week_end)-new Date(a.week_start))/86400000+1;}
  function render(){
    var rows=curRows.slice().sort(function(a,b){return a.iso_week-b.iso_week;});
-   if(!rows.length){$('wb-cards').innerHTML='<div style="grid-column:1/-1;padding:30px;color:#8a938e">No data for this selection.</div>';$('wb-tbody').innerHTML='';$('wb-featnote').textContent='';return;}
+   if(!rows.length){$('wb-tbody').innerHTML='<tr><td colspan="15" style="padding:30px;text-align:center;color:#8a938e">No data for this selection.</td></tr>';return;}
    var hasG=rows.some(function(r){return r.ga4_revenue!==null&&r.ga4_revenue!==undefined;});
    rows.forEach(function(r){r.c=+r.cost_eur||0;r.s=+r.sales_eur||0;r.cv=+r.conversions||0;r.gr=(r.ga4_revenue==null?0:+r.ga4_revenue);r.gt=(r.ga4_transactions==null?0:+r.ga4_transactions);r.p=span(r)<7;});
-   var comp=rows.filter(function(r){return !r.p;});var f=comp.length?comp[comp.length-1]:rows[rows.length-1];
-   var pi=rows.indexOf(f)-1;var p=pi>=0?rows[pi]:null;var df=der(f.c,f.s,f.gr),dp=p?der(p.c,p.s,p.gr):null;
-   function chip(d,pct){if(d===null||d===undefined)return '';var up=d>0,a=up?'▲':'▼',s=up?'up':'down';var l=pct?(Math.abs(d)*100).toFixed(1)+'%':Math.abs(d).toFixed(2);return '<span class="wbchg '+s+'">'+a+' '+l+'</span>';}
-   function dpc(a,b){return b?((a-b)/b):null;}
-   function g4(v){return hasG?v:'—';}
-   function card(t,gv,g4v,d,ft,pct){return '<div class="wbcard'+(ft?' feat':'')+'"><div class="ctop"><span class="k">'+t+'</span>'+chip(d,pct)+'</div><div class="v">'+gv+'</div><div class="g4"><span class="d"></span>GA4 · '+g4v+'</div></div>';}
-   $('wb-cards').innerHTML=[
-     card('Investment',weur(f.c),g4(weur(f.c)),p?dpc(f.c,p.c):null,false,true),
-     card('Sales',weur(f.s),g4(weur(f.gr)),p?dpc(f.s,p.s):null,false,true),
-     card('Profit · est',weur(df.pf),g4(weur(df.gpf)),p?dpc(df.pf,dp.pf):null,true,true),
-     card('Real ROAS',f2(df.ro),g4(f2(df.gro)),p?(df.ro-dp.ro):null,false,false),
-     card('POAS · est',f2(df.po),g4(f2(df.gpo)),p?(df.po-dp.po):null,false,false),
-     card('Conversions',inum(f.cv),g4(inum(f.gt)),p?dpc(f.cv,p.cv):null,false,true)
-   ].join('');
-   $('wb-featnote').innerHTML='Latest complete week <b>W'+f.iso_week+'</b> ('+md(f.week_start)+'–'+md(f.week_end)+') vs previous week.'+(hasG?'':' <b style="color:#a85d12">GA4 columns unavailable below account level.</b>')+' Profit/POAS use 40% margin (estimate; cost basis = Google Ads).';
+   // KPI cards + featnote removed 2026-07-01 (table starts directly under the filters).
    $('wb-tbody').innerHTML=rows.slice().sort(function(a,b){return b.iso_week-a.iso_week;}).map(function(r){var d=der(r.c,r.s,r.gr);
      var bd=r.p?' <span class="wbbdg part">partial</span>':(outg(r.c,r.cv,r.gt,hasG)?' <span class="wbbdg warn" title="Both Google Ads and GA4 ~zero conversions on real spend.">⚠ tracking outage</span>':'');
      var rc=r.p?'part':(outg(r.c,r.cv,r.gt,hasG)?'anom':'');
@@ -1009,6 +998,7 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
      function gg(t){return hasG?t:'—';}
      return '<tr class="'+rc+'"><td class="wk"><b>W'+r.iso_week+'</b> <span class="dts">'+md(r.week_start)+'–'+md(r.week_end)+'</span>'+bd+'</td>'+
        '<td class="r shopcol"><b>'+weur(r.shopify_eur||0)+'</b><div class="shsub2">'+inum(r.shopify_orders||0)+' orders</div></td>'+
+       '<td class="r erscol">'+(r.ers_global==null?'—':(r.ers_global*100).toFixed(1)+'%')+'</td>'+
        td(weur(r.c),'cost grp2')+td(gg(weur(r.c)),'g4c')+td(weur(r.s),'sales grp2')+td(gg(weur(r.gr)),'g4c')+
        '<td class="r grp2"><span class="'+pc(d.pf)+'">'+weur(d.pf)+'</span></td><td class="r g4c">'+(hasG?'<span class="'+pc(d.gpf)+'">'+weur(d.gpf)+'</span>':'—')+'</td>'+
        '<td class="r grp2"><span class="'+rl(d.ro)+'">'+f2(d.ro)+'</span></td><td class="r g4c">'+(hasG?'<span class="'+rl(d.gro)+'">'+f2(d.gro)+'</span>':'—')+'</td>'+
@@ -1016,10 +1006,10 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
        td(inum(r.cv),'grp2')+td(gg(inum(r.gt)),'g4c')+'</tr>';}).join('');
  }
  function fetchSeries(){
-   $('wb-cards').innerHTML='<div style="grid-column:1/-1;padding:40px;text-align:center;color:#8a938e;font-family:Fraunces;font-style:italic">Loading…</div>';
+   $('wb-tbody').innerHTML='<tr><td colspan="15" style="padding:40px;text-align:center;color:#8a938e;font-style:italic">Loading…</td></tr>';
    fetch(FN+'?api=weekly',{method:'POST',headers:{Authorization:'Bearer '+tok,'Content-Type':'application/json'},body:JSON.stringify({level:levelOf(),ids:idsOf(),shipCountry:selShip||null,billCountry:selBill||null})})
-     .then(chk401).then(function(r){return r.json();}).then(function(j){if(j.error){$('wb-cards').innerHTML='<div style="grid-column:1/-1;padding:20px">Error: '+j.error+'</div>';return;}curRows=j.rows||[];render();})
-     .catch(function(e){$('wb-cards').innerHTML='<div style="grid-column:1/-1;padding:20px">Error: '+e.message+'</div>';});
+     .then(chk401).then(function(r){return r.json();}).then(function(j){if(j.error){$('wb-tbody').innerHTML='<tr><td colspan="15" style="padding:20px;text-align:center">Error: '+j.error+'</td></tr>';return;}curRows=j.rows||[];render();})
+     .catch(function(e){$('wb-tbody').innerHTML='<tr><td colspan="15" style="padding:20px;text-align:center">Error: '+e.message+'</td></tr>';});
  }
  function pruneAndRefresh(){
    if(selAcc.size){Array.from(selCamp).forEach(function(cid){var c=META.campaigns.filter(function(x){return x.campaign_id===cid;})[0];if(!c||!selAcc.has(c.customer_id))selCamp.delete(cid);});}
@@ -1043,11 +1033,11 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
  function showKw(){wbtab.classList.remove('wbon');$('weeklyview').classList.add('hidden');$('kwview').classList.remove('hidden');document.querySelectorAll('.dashnav .dlink[data-level]').forEach(function(x){x.classList.toggle('active',x.getAttribute('data-level')===level);});}
  function initWeekly(){
    if(loaded)return;loaded=true;
-   $('wb-cards').innerHTML='<div style="grid-column:1/-1;padding:40px;text-align:center;color:#8a938e;font-family:Fraunces;font-style:italic">Loading…</div>';
+   $('wb-tbody').innerHTML='<tr><td colspan="15" style="padding:40px;text-align:center;color:#8a938e;font-style:italic">Loading…</td></tr>';
    fetch(FN+'?api=weekly&meta=1',{headers:{Authorization:'Bearer '+tok}}).then(chk401).then(function(r){return r.json();}).then(function(j){
-     if(j.error){$('wb-cards').innerHTML='<div style="grid-column:1/-1;padding:20px">Error: '+j.error+'</div>';loaded=false;return;}
+     if(j.error){$('wb-tbody').innerHTML='<tr><td colspan="15" style="padding:20px;text-align:center">Error: '+j.error+'</td></tr>';loaded=false;return;}
      META=j;renderSelectors();fetchSeries();
-   }).catch(function(e){$('wb-cards').innerHTML='<div style="grid-column:1/-1;padding:20px">Error: '+e.message+'</div>';loaded=false;});
+   }).catch(function(e){$('wb-tbody').innerHTML='<tr><td colspan="15" style="padding:20px;text-align:center">Error: '+e.message+'</td></tr>';loaded=false;});
  }
  if(wbtab){
    wbtab.addEventListener('click',showWeekly);
