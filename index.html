@@ -108,13 +108,16 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
 .wbtable tr.anom td{background:rgba(217,131,36,.07)}.wbtable tr.part td{background:rgba(31,107,79,.04)}
 .wbbdg{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:2px 7px;border-radius:999px;margin-left:8px}.wbbdg.part{background:rgba(31,107,79,.12);color:var(--forest)}.wbbdg.warn{background:rgba(217,131,36,.16);color:#a85d12;cursor:help}
 .wbfoot{margin-top:30px;padding-top:18px;border-top:1px solid var(--line);font-size:11px;color:var(--muted);line-height:1.7}
-.wbnav{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:4px 0 8px}
+.wbnav{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:6px 0 14px}
+.wbgrp{display:flex;align-items:center;gap:8px}
+.wblbl{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);white-space:nowrap}
+.wbdiv{width:1px;align-self:stretch;min-height:26px;background:var(--lineS)}
 .wbsel{position:relative}
-.wbselbtn{font-size:12.5px;font-weight:600;padding:8px 13px;border-radius:9px;border:1px solid var(--lineS);background:#fff;color:var(--soft);cursor:pointer;display:flex;gap:8px;align-items:center;max-width:300px}
+.wbselbtn{font-size:12.5px;font-weight:600;padding:7px 12px;border-radius:9px;border:1px solid var(--line);background:#fff;color:var(--soft);cursor:pointer;display:flex;gap:8px;align-items:center;max-width:300px;transition:background .12s,border-color .12s,color .12s}
 .wbselbtn .lbltxt{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:230px}
-.wbselbtn .ca{font-size:10px;flex:none}
+.wbselbtn .ca{font-size:10px;flex:none;opacity:.8}
 .wbselbtn:hover{border-color:var(--forest);color:var(--forest)}
-#wb-acctbtn{border-color:var(--forest);background:var(--forest);color:#fff}#wb-acctbtn:hover{color:#fff}
+.wbselbtn.on{border-color:var(--forest);background:var(--forest);color:#fff}.wbselbtn.on .ca{color:#fff;opacity:1}.wbselbtn.on:hover{color:#fff;border-color:var(--forest)}
 .wbdd{width:320px}
 .wbdd .wbopt .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .wbsearch{width:100%;padding:7px 9px;border:1px solid var(--lineS);border-radius:8px;font:inherit;font-size:12.5px;margin-bottom:6px}
@@ -305,11 +308,16 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
   </div>
   <div id="weeklyview" class="hidden">
     <div class="wbnav">
-      <div class="wbsel"><button class="wbselbtn" id="wb-shipbtn"><span class="lbltxt" id="wb-shiplabel">All shipping countries</span><span class="ca">▾</span></button><div class="wbdd" id="wb-shipdd"></div></div>
-      <div class="wbsel"><button class="wbselbtn" id="wb-billbtn"><span class="lbltxt" id="wb-billlabel">All billing countries</span><span class="ca">▾</span></button><div class="wbdd" id="wb-billdd"></div></div>
-      <div class="wbsel"><button class="wbselbtn" id="wb-acctbtn"><span class="lbltxt" id="wb-acctlabel">All accounts</span><span class="ca">▾</span></button><div class="wbdd" id="wb-dd"></div></div>
-      <div class="wbsel"><button class="wbselbtn" id="wb-campbtn"><span class="lbltxt" id="wb-camplabel">All campaigns</span><span class="ca">▾</span></button><div class="wbdd" id="wb-campdd"></div></div>
-      <div class="wbsel"><button class="wbselbtn" id="wb-agbtn"><span class="lbltxt" id="wb-aglabel">All ad groups</span><span class="ca">▾</span></button><div class="wbdd" id="wb-agdd"></div></div>
+      <div class="wbgrp"><span class="wblbl">Shopify</span>
+        <div class="wbsel"><button class="wbselbtn" id="wb-shipbtn"><span class="lbltxt" id="wb-shiplabel">All shipping</span><span class="ca">▾</span></button><div class="wbdd" id="wb-shipdd"></div></div>
+        <div class="wbsel"><button class="wbselbtn" id="wb-billbtn"><span class="lbltxt" id="wb-billlabel">All billing</span><span class="ca">▾</span></button><div class="wbdd" id="wb-billdd"></div></div>
+      </div>
+      <span class="wbdiv"></span>
+      <div class="wbgrp"><span class="wblbl">Google Ads</span>
+        <div class="wbsel"><button class="wbselbtn" id="wb-acctbtn"><span class="lbltxt" id="wb-acctlabel">All accounts</span><span class="ca">▾</span></button><div class="wbdd" id="wb-dd"></div></div>
+        <div class="wbsel"><button class="wbselbtn" id="wb-campbtn"><span class="lbltxt" id="wb-camplabel">All campaigns</span><span class="ca">▾</span></button><div class="wbdd" id="wb-campdd"></div></div>
+        <div class="wbsel"><button class="wbselbtn" id="wb-agbtn"><span class="lbltxt" id="wb-aglabel">All ad groups</span><span class="ca">▾</span></button><div class="wbdd" id="wb-agdd"></div></div>
+      </div>
       <span class="wbhint" id="wb-hint"></span>
     </div>
     <table class="wbtable"><thead><tr><th class="l" rowspan="2">Week</th><th class="shopcol" rowspan="2">Shopify sales<div class="shsub">store total · net</div></th><th class="erscol" rowspan="2">Global ERS<div class="shsub">ad cost ÷ store sales</div></th><th class="grp2" colspan="2">Investment</th><th class="grp2" colspan="2">Sales</th><th class="grp2" colspan="2">Profit · est</th><th class="grp2" colspan="2">Real ROAS</th><th class="grp2" colspan="2">POAS · est</th><th class="grp2" colspan="2">Conversions</th></tr><tr><th class="sub grp2">GAds</th><th class="sub g4">GA4</th><th class="sub grp2">GAds</th><th class="sub g4">GA4</th><th class="sub grp2">GAds</th><th class="sub g4">GA4</th><th class="sub grp2">GAds</th><th class="sub g4">GA4</th><th class="sub grp2">GAds</th><th class="sub g4">GA4</th><th class="sub grp2">GAds</th><th class="sub g4">GA4</th></tr></thead><tbody id="wb-tbody"></tbody></table>
@@ -975,11 +983,16 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
    $('wb-dd').innerHTML=ddOptions(META.accounts,function(a){return a.id;},function(a){return a.name;},selAcc,'acc','All accounts');
    $('wb-campdd').innerHTML=ddOptions(campList(),function(c){return c.campaign_id;},function(c){return c.account_name+' · '+c.name;},selCamp,'camp','All campaigns');
    $('wb-agdd').innerHTML=ddOptions(agList(),function(a){return a.ad_group_id;},function(a){return a.account_name+' · '+nameOf(META.campaigns,'campaign_id',a.campaign_id)+' · '+a.name;},selAg,'ag','All ad groups');
-   var l=levelOf();$('wb-hint').textContent=l==='all'?'all accounts':('filtered · '+l+' level');
-   $('wb-shiplabel').textContent=selShip||'All shipping countries';
-   $('wb-billlabel').textContent=selBill||'All billing countries';
+   var l=levelOf();$('wb-hint').textContent=l==='all'?'':('filtered · '+l+' level');
+   $('wb-shiplabel').textContent=selShip||'All shipping';
+   $('wb-billlabel').textContent=selBill||'All billing';
    $('wb-shipdd').innerHTML=countryOptions(META.shipTop10,selShip,'ship','All shipping countries');
    $('wb-billdd').innerHTML=countryOptions(META.billTop10,selBill,'bill','All billing countries');
+   $('wb-shipbtn').classList.toggle('on',!!selShip);
+   $('wb-billbtn').classList.toggle('on',!!selBill);
+   $('wb-acctbtn').classList.toggle('on',selAcc.size>0);
+   $('wb-campbtn').classList.toggle('on',selCamp.size>0);
+   $('wb-agbtn').classList.toggle('on',selAg.size>0);
  }
  function der(c,s,gr){return {pf:s*WM-c,ro:c?s/c:0,po:c?s*WM/c:0,gpf:gr*WM-c,gro:c?gr/c:0,gpo:c?gr*WM/c:0};}
  function outg(c,cv,gt,hasG){return c>2000&&cv<100&&(!hasG||gt<100);}
