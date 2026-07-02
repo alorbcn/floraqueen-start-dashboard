@@ -118,7 +118,9 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
 .wbselbtn .ca{font-size:10px;flex:none;opacity:.8}
 .wbselbtn:hover{border-color:var(--forest);color:var(--forest)}
 .wbselbtn.on{border-color:var(--forest);background:var(--forest);color:#fff}.wbselbtn.on .ca{color:#fff;opacity:1}.wbselbtn.on:hover{color:#fff;border-color:var(--forest)}
-.wbdd{width:320px}
+.wbdd{width:460px}
+.wbspacer{flex:1 1 auto}
+.wbnav .actdd{left:auto;right:0}
 .wbdd .wbopt .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .wbsearch{width:100%;padding:7px 9px;border:1px solid var(--lineS);border-radius:8px;font:inherit;font-size:12.5px;margin-bottom:6px}
 .wbmore{font-size:10.5px;color:var(--muted);padding:6px 10px}
@@ -263,14 +265,15 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
     <div class="brand"><span class="logo">Max<span class="l">✿</span></span></div>
     <span class="hdiv"></span>
     <nav class="dashnav">
-      <a class="dlink wbtab" data-view="weekly" title="Week-by-week performance">Week by week</a>
-      <a class="dlink active" data-level="keyword" title="Keyword performance">Keywords</a>
-      <a class="dlink" data-level="campaign" title="Campaign performance">Campaigns</a>
-      <a class="dlink" data-level="adgroup" title="Ad-group performance">Ad groups</a>
-      <span class="dlink soon" title="Coming soon">PMax + Shopping<i>soon</i></span>
-      <span class="acttabwrap"><a class="dlink acttab" id="acttab">Action <span style="font-size:10px">▾</span></a><div class="actdd" id="actdd"><div class="actopt" data-lvl="campaign">Optimize campaigns</div><div class="actopt" data-lvl="adgroup">Optimize ad groups</div><div class="actopt" data-lvl="keyword">Optimize keywords</div></div></span>
+      <a class="dlink wbtab wbon" data-view="weekly" title="Reset to global — all accounts, all paid media">Week by week</a>
+      <div class="wbsel"><button class="wbselbtn" id="wb-acctbtn"><span class="lbltxt" id="wb-acctlabel">All accounts</span><span class="ca">▾</span></button><div class="wbdd" id="wb-dd"></div></div>
+      <div class="wbsel"><button class="wbselbtn" id="wb-campbtn"><span class="lbltxt" id="wb-camplabel">All campaigns</span><span class="ca">▾</span></button><div class="wbdd" id="wb-campdd"></div></div>
+      <div class="wbsel"><button class="wbselbtn" id="wb-agbtn"><span class="lbltxt" id="wb-aglabel">All ad groups</span><span class="ca">▾</span></button><div class="wbdd" id="wb-agdd"></div></div>
+      <div class="wbsel"><button class="wbselbtn" id="wb-kwbtn"><span class="lbltxt" id="wb-kwlabel">All keywords</span><span class="ca">▾</span></button><div class="wbdd" id="wb-kwdd"></div></div>
+      <div class="wbsel"><button class="wbselbtn" id="wb-pmaxbtn"><span class="lbltxt" id="wb-pmaxlabel">All PMax</span><span class="ca">▾</span></button><div class="wbdd" id="wb-pmaxdd"></div></div>
+      <div class="wbsel"><button class="wbselbtn" id="wb-shopbtn"><span class="lbltxt" id="wb-shoplabel">All Shopping</span><span class="ca">▾</span></button><div class="wbdd" id="wb-shopdd"></div></div>
     </nav></div>
-    <div class="badges"><button class="adminbtn hidden" id="adminbtn" title="Admin settings">⚙ Admin settings</button><span class="badge">● Live · read-only</span><span id="who"></span></div></header>
+    <div class="badges"><button class="adminbtn hidden" id="adminbtn" title="Admin settings">Admin</button><span class="badge">● Live · read-only</span><span id="who"></span></div></header>
   <div id="kwview">
   <nav class="nav">
     <div class="grp"><div class="acctzone">
@@ -308,17 +311,11 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
   </div>
   <div id="weeklyview" class="hidden">
     <div class="wbnav">
-      <div class="wbgrp"><span class="wblbl">Shopify</span>
-        <div class="wbsel"><button class="wbselbtn" id="wb-shipbtn"><span class="lbltxt" id="wb-shiplabel">All shipping</span><span class="ca">▾</span></button><div class="wbdd" id="wb-shipdd"></div></div>
-        <div class="wbsel"><button class="wbselbtn" id="wb-billbtn"><span class="lbltxt" id="wb-billlabel">All billing</span><span class="ca">▾</span></button><div class="wbdd" id="wb-billdd"></div></div>
-      </div>
-      <span class="wbdiv"></span>
-      <div class="wbgrp"><span class="wblbl">Google Ads</span>
-        <div class="wbsel"><button class="wbselbtn" id="wb-acctbtn"><span class="lbltxt" id="wb-acctlabel">All accounts</span><span class="ca">▾</span></button><div class="wbdd" id="wb-dd"></div></div>
-        <div class="wbsel"><button class="wbselbtn" id="wb-campbtn"><span class="lbltxt" id="wb-camplabel">All campaigns</span><span class="ca">▾</span></button><div class="wbdd" id="wb-campdd"></div></div>
-        <div class="wbsel"><button class="wbselbtn" id="wb-agbtn"><span class="lbltxt" id="wb-aglabel">All ad groups</span><span class="ca">▾</span></button><div class="wbdd" id="wb-agdd"></div></div>
-      </div>
-      <span class="wbhint" id="wb-hint"></span>
+      <span class="wbspacer"></span>
+      <span class="wblbl">Shopify</span>
+      <div class="wbsel"><button class="wbselbtn" id="wb-shipbtn"><span class="lbltxt" id="wb-shiplabel">All shipping</span><span class="ca">▾</span></button><div class="wbdd" id="wb-shipdd"></div></div>
+      <div class="wbsel"><button class="wbselbtn" id="wb-billbtn"><span class="lbltxt" id="wb-billlabel">All billing</span><span class="ca">▾</span></button><div class="wbdd" id="wb-billdd"></div></div>
+      <span class="acttabwrap"><a class="dlink acttab" id="acttab">Action <span style="font-size:10px">▾</span></a><div class="actdd" id="actdd"><div class="actopt" data-lvl="campaign">Optimize campaigns</div><div class="actopt" data-lvl="adgroup">Optimize ad groups</div><div class="actopt" data-lvl="keyword">Optimize keywords</div></div></span>
     </div>
     <table class="wbtable"><thead><tr><th class="l" rowspan="2">Week</th><th class="shopcol" rowspan="2">Shopify sales<div class="shsub">store total · net</div></th><th class="erscol" rowspan="2">Global ERS<div class="shsub">ad cost ÷ store sales</div></th><th class="grp2" colspan="2">Investment</th><th class="grp2" colspan="2">Sales</th><th class="grp2" colspan="2">Profit · est</th><th class="grp2" colspan="2">Real ROAS</th><th class="grp2" colspan="2">POAS · est</th><th class="grp2" colspan="2">Conversions</th></tr><tr><th class="sub grp2">GAds</th><th class="sub g4">GA4</th><th class="sub grp2">GAds</th><th class="sub g4">GA4</th><th class="sub grp2">GAds</th><th class="sub g4">GA4</th><th class="sub grp2">GAds</th><th class="sub g4">GA4</th><th class="sub grp2">GAds</th><th class="sub g4">GA4</th><th class="sub grp2">GAds</th><th class="sub g4">GA4</th></tr></thead><tbody id="wb-tbody"></tbody></table>
     <div class="wbfoot"><b>Sources:</b> Google Ads = weekly_metrics_account (all channels, per account); GA4 = google/cpc split by Google Ads account · margin 40% (profit estimate; cost basis = Google Ads) · EUR · Madrid. <b>Refresh:</b> Mon/Tue/Wed 08:00 (GA4 column one-time pull for now). Select accounts above to filter. <b>Max is read-only.</b></div>
@@ -431,9 +428,7 @@ async function fetchKwext(t){ const W=wcacheL[level]; if(W[t])return W[t];
 
 async function start(){
   document.getElementById("login").classList.add("hidden");document.getElementById("app").classList.remove("hidden");
-  document.getElementById("cards").innerHTML='<div id="loading" style="grid-column:1/-1">Loading live data…</div>';
-  try{ DATA=await fetchData(); document.getElementById("who").textContent=DATA.email; render(); }
-  catch(e){ if(e.message!=="auth")document.getElementById("cards").innerHTML='<div id="loading" style="grid-column:1/-1">Error: '+e.message+'</div>'; }
+  if(window.__weeklyBoot) window.__weeklyBoot();
 }
 const selected=()=> sel.size===0?DATA.accounts:DATA.accounts.filter(a=>sel.has(a.name));
 const selectedAll=()=> sel.size===0?(DATA.accountsAll||[]):(DATA.accountsAll||[]).filter(a=>sel.has(a.name));
@@ -936,16 +931,20 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
 })();
 /* ===== Week by week (isolated module, server-aggregated, account/campaign/adgroup filter) ===== */
 (function(){
- var WM=0.40, META=null, selAcc=new Set(), selCamp=new Set(), selAg=new Set(), selShip='', selBill='', curRows=[], loaded=false, srch={acc:'',camp:'',ag:''};
+ var WM=0.40, META=null, selAcc=new Set(), selCamp=new Set(), selAg=new Set(), selKw=new Set(), selPmax=new Set(), selShop=new Set(), selShip='', selBill='', kwList=[], curRows=[], loaded=false, srch={acc:'',camp:'',ag:'',kw:'',pmax:'',shop:''};
  var $=function(id){return document.getElementById(id);};
  var weur=function(n){return Math.round(n).toLocaleString('en-US')+' €';};
  var f2=function(n){return (Math.round(n*100)/100).toFixed(2);};
  var inum=function(n){return Math.round(n).toLocaleString('en-US');};
  var md=function(s){var d=String(s).split('-');return (+d[1])+'/'+(+d[2]);};
  var esc=function(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');};
- function levelOf(){if(selAg.size)return 'adgroup';if(selCamp.size)return 'campaign';if(selAcc.size)return 'account';return 'all';}
- function idsOf(){var l=levelOf();return l==='adgroup'?Array.from(selAg):l==='campaign'?Array.from(selCamp):l==='account'?Array.from(selAcc):[];}
- function campList(){return META.campaigns.filter(function(c){return !selAcc.size||selAcc.has(c.customer_id);});}
+ function levelOf(){if(selKw.size)return 'keyword';if(selAg.size)return 'adgroup';if(selCamp.size||selPmax.size||selShop.size)return 'campaign';if(selAcc.size)return 'account';return 'all';}
+ function idsOf(){var l=levelOf();if(l==='keyword')return Array.from(selKw);if(l==='adgroup')return Array.from(selAg);if(l==='campaign')return Array.from(new Set([].concat(Array.from(selCamp),Array.from(selPmax),Array.from(selShop))));if(l==='account')return Array.from(selAcc);return [];}
+ function campList(){return (META.campaignsSearch||[]).filter(function(c){return !selAcc.size||selAcc.has(c.customer_id);});}
+ function pmaxList(){return (META.campaignsPmax||[]).filter(function(c){return !selAcc.size||selAcc.has(c.customer_id);});}
+ function shopList(){return (META.campaignsShopping||[]).filter(function(c){return !selAcc.size||selAcc.has(c.customer_id);});}
+ function kwUpstream(){if(selAg.size)return {level:'adgroup',ids:Array.from(selAg)};if(selCamp.size)return {level:'campaign',ids:Array.from(selCamp)};if(selAcc.size)return {level:'account',ids:Array.from(selAcc)};return {level:'all',ids:[]};}
+ function fetchKwList(){var up=kwUpstream();fetch(FN+'?api=weekly&kw=1',{method:'POST',headers:{Authorization:'Bearer '+tok,'Content-Type':'application/json'},body:JSON.stringify(up)}).then(chk401).then(function(r){return r.json();}).then(function(j){kwList=j.keywords||[];renderSelectors();}).catch(function(){});}
  function agList(){if(selCamp.size)return META.adgroups.filter(function(a){return selCamp.has(a.campaign_id);});if(selAcc.size)return META.adgroups.filter(function(a){return selAcc.has(a.customer_id);});return META.adgroups;}
  function nameOf(arr,key,id){var f=arr.filter(function(x){return x[key]===id;})[0];return f?f.name:id;}
  function lab(set,all,arr,key,many){if(!set.size)return all;if(set.size===1)return nameOf(arr,key,Array.from(set)[0]);return set.size+' '+many;}
@@ -978,13 +977,17 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
  }
  function renderSelectors(){
    $('wb-acctlabel').textContent=lab(selAcc,'All accounts',META.accounts,'id','accounts');
-   $('wb-camplabel').textContent=lab(selCamp,'All campaigns',META.campaigns,'campaign_id','campaigns');
+   $('wb-camplabel').textContent=lab(selCamp,'All campaigns',META.campaignsSearch||[],'campaign_id','campaigns');
    $('wb-aglabel').textContent=lab(selAg,'All ad groups',META.adgroups,'ad_group_id','ad groups');
+   $('wb-kwlabel').textContent=selKw.size?(selKw.size===1?'1 keyword':selKw.size+' keywords'):'All keywords';
+   $('wb-pmaxlabel').textContent=lab(selPmax,'All PMax',META.campaignsPmax||[],'campaign_id','PMax');
+   $('wb-shoplabel').textContent=lab(selShop,'All Shopping',META.campaignsShopping||[],'campaign_id','Shopping');
    $('wb-dd').innerHTML=ddOptions(META.accounts,function(a){return a.id;},function(a){return a.name;},selAcc,'acc','All accounts');
-   $('wb-campdd').innerHTML=ddOptions(campList(),function(c){return c.campaign_id;},function(c){return c.account_name+' · '+c.name;},selCamp,'camp','All campaigns');
-   $('wb-agdd').innerHTML=ddOptions(agList(),function(a){return a.ad_group_id;},function(a){return a.account_name+' · '+nameOf(META.campaigns,'campaign_id',a.campaign_id)+' · '+a.name;},selAg,'ag','All ad groups');
-   var l=levelOf();$('wb-hint').textContent=l==='all'?'':('filtered · '+l+' level');
-   $('wb-shiplabel').textContent=selShip||'All shipping';
+   $('wb-campdd').innerHTML=ddOptions(campList(),function(c){return c.campaign_id;},function(c){return c.account_name+' · '+c.name;},selCamp,'camp','All Search campaigns');
+   $('wb-agdd').innerHTML=ddOptions(agList(),function(a){return a.ad_group_id;},function(a){return a.account_name+' · '+nameOf(META.campaigns||[],'campaign_id',a.campaign_id)+' · '+a.name;},selAg,'ag','All ad groups');
+   $('wb-kwdd').innerHTML=ddOptions(kwList,function(k){return k.kw_key;},function(k){return k.account_name+' · '+k.campaign_name+' · '+k.ad_group_name+' · '+k.keyword_text+' ('+k.match_type+')';},selKw,'kw','All keywords (top 100)');
+   $('wb-pmaxdd').innerHTML=ddOptions(pmaxList(),function(c){return c.campaign_id;},function(c){return c.account_name+' · '+c.name;},selPmax,'pmax','All PMax campaigns');
+   $('wb-shopdd').innerHTML=ddOptions(shopList(),function(c){return c.campaign_id;},function(c){return c.account_name+' · '+c.name;},selShop,'shop','All Shopping campaigns');   $('wb-shiplabel').textContent=selShip||'All shipping';
    $('wb-billlabel').textContent=selBill||'All billing';
    $('wb-shipdd').innerHTML=countryOptions(META.shipTop10,selShip,'ship','All shipping countries');
    $('wb-billdd').innerHTML=countryOptions(META.billTop10,selBill,'bill','All billing countries');
@@ -993,6 +996,9 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
    $('wb-acctbtn').classList.toggle('on',selAcc.size>0);
    $('wb-campbtn').classList.toggle('on',selCamp.size>0);
    $('wb-agbtn').classList.toggle('on',selAg.size>0);
+   $('wb-kwbtn').classList.toggle('on',selKw.size>0);
+   $('wb-pmaxbtn').classList.toggle('on',selPmax.size>0);
+   $('wb-shopbtn').classList.toggle('on',selShop.size>0);
  }
  function der(c,s,gr){return {pf:s*WM-c,ro:c?s/c:0,po:c?s*WM/c:0,gpf:gr*WM-c,gro:c?gr/c:0,gpo:c?gr*WM/c:0};}
  function outg(c,cv,gt,hasG){return c>2000&&cv<100&&(!hasG||gt<100);}
@@ -1024,11 +1030,14 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
      .then(chk401).then(function(r){return r.json();}).then(function(j){if(j.error){$('wb-tbody').innerHTML='<tr><td colspan="15" style="padding:20px;text-align:center">Error: '+j.error+'</td></tr>';return;}curRows=j.rows||[];render();})
      .catch(function(e){$('wb-tbody').innerHTML='<tr><td colspan="15" style="padding:20px;text-align:center">Error: '+e.message+'</td></tr>';});
  }
- function pruneAndRefresh(){
-   if(selAcc.size){Array.from(selCamp).forEach(function(cid){var c=META.campaigns.filter(function(x){return x.campaign_id===cid;})[0];if(!c||!selAcc.has(c.customer_id))selCamp.delete(cid);});}
-   Array.from(selAg).forEach(function(aid){var a=META.adgroups.filter(function(x){return x.ad_group_id===aid;})[0];if(!a){selAg.delete(aid);return;}if(selCamp.size&&!selCamp.has(a.campaign_id))selAg.delete(aid);else if(!selCamp.size&&selAcc.size&&!selAcc.has(a.customer_id))selAg.delete(aid);});
+ function pruneVsAcct(set,list){if(!selAcc.size)return;Array.from(set).forEach(function(cid){var c=(list||[]).filter(function(x){return x.campaign_id===cid;})[0];if(!c||!selAcc.has(c.customer_id))set.delete(cid);});}
+ function pruneAndRefresh(sub){
+   pruneVsAcct(selCamp,META.campaignsSearch);pruneVsAcct(selPmax,META.campaignsPmax);pruneVsAcct(selShop,META.campaignsShopping);
+   Array.from(selAg).forEach(function(aid){var a=(META.adgroups||[]).filter(function(x){return x.ad_group_id===aid;})[0];if(!a){selAg.delete(aid);return;}if(selCamp.size&&!selCamp.has(a.campaign_id))selAg.delete(aid);else if(!selCamp.size&&selAcc.size&&!selAcc.has(a.customer_id))selAg.delete(aid);});
+   if(sub==='acc'||sub==='camp'||sub==='ag')fetchKwList();
    renderSelectors();fetchSeries();
  }
+ function setFor(sub){return sub==='acc'?selAcc:sub==='camp'?selCamp:sub==='ag'?selAg:sub==='kw'?selKw:sub==='pmax'?selPmax:selShop;}
  function bindDD(btnId,ddId,sub){
    var btn=$(btnId),dd=$(ddId);
    btn.addEventListener('click',function(e){e.stopPropagation();var wasOpen=dd.classList.contains('open');document.querySelectorAll('.wbdd').forEach(function(x){x.classList.remove('open');});if(!wasOpen)dd.classList.add('open');});
@@ -1036,27 +1045,28 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
      e.stopPropagation();
      if(e.target.classList&&e.target.classList.contains('wbsearch'))return;
      var all=e.target.closest('[data-all]'),o=e.target.closest('[data-id]');
-     if(all){if(sub==='acc')selAcc.clear();else if(sub==='camp')selCamp.clear();else selAg.clear();pruneAndRefresh();}
-     else if(o){var id=o.getAttribute('data-id');var set=sub==='acc'?selAcc:sub==='camp'?selCamp:selAg;if(set.has(id))set.delete(id);else set.add(id);pruneAndRefresh();}
+     if(all){setFor(sub).clear();pruneAndRefresh(sub);}
+     else if(o){var id=o.getAttribute('data-id');var set=setFor(sub);if(set.has(id))set.delete(id);else set.add(id);pruneAndRefresh(sub);}
    });
    dd.addEventListener('input',function(e){if(e.target.classList&&e.target.classList.contains('wbsearch')){srch[sub]=e.target.value;renderSelectors();var ni=$(ddId).querySelector('.wbsearch');if(ni){ni.focus();ni.setSelectionRange(ni.value.length,ni.value.length);}$(ddId).classList.add('open');}});
  }
  var wbtab=document.querySelector('.dlink.wbtab');
- function showWeekly(){document.querySelectorAll('.dashnav .dlink').forEach(function(x){x.classList.remove('active');});wbtab.classList.add('wbon');$('kwview').classList.add('hidden');$('weeklyview').classList.remove('hidden');initWeekly();}
- function showKw(){wbtab.classList.remove('wbon');$('weeklyview').classList.add('hidden');$('kwview').classList.remove('hidden');document.querySelectorAll('.dashnav .dlink[data-level]').forEach(function(x){x.classList.toggle('active',x.getAttribute('data-level')===level);});}
+ function showWeeklyView(){$('kwview').classList.add('hidden');var av=$('actionview');if(av)av.classList.add('hidden');$('weeklyview').classList.remove('hidden');if(wbtab)wbtab.classList.add('wbon');}
+ function resetWeekly(){selAcc.clear();selCamp.clear();selAg.clear();selKw.clear();selPmax.clear();selShop.clear();selShip='';selBill='';srch={acc:'',camp:'',ag:'',kw:'',pmax:'',shop:''};showWeeklyView();if(!loaded){initWeekly();}else{fetchKwList();renderSelectors();fetchSeries();}}
+ window.__weeklyBoot=function(){showWeeklyView();if(!loaded)initWeekly();else resetWeekly();};
  function initWeekly(){
    if(loaded)return;loaded=true;
    $('wb-tbody').innerHTML='<tr><td colspan="15" style="padding:40px;text-align:center;color:#8a938e;font-style:italic">Loading…</td></tr>';
    fetch(FN+'?api=weekly&meta=1',{headers:{Authorization:'Bearer '+tok}}).then(chk401).then(function(r){return r.json();}).then(function(j){
      if(j.error){$('wb-tbody').innerHTML='<tr><td colspan="15" style="padding:20px;text-align:center">Error: '+j.error+'</td></tr>';loaded=false;return;}
-     META=j;renderSelectors();fetchSeries();
+     META=j;var who=$('who');if(who)who.textContent=j.email||'';var ab=$('adminbtn');if(ab)ab.classList.toggle('hidden',!j.isAdmin);fetchKwList();renderSelectors();fetchSeries();
    }).catch(function(e){$('wb-tbody').innerHTML='<tr><td colspan="15" style="padding:20px;text-align:center">Error: '+e.message+'</td></tr>';loaded=false;});
  }
  if(wbtab){
-   wbtab.addEventListener('click',showWeekly);
-   document.querySelectorAll('.dashnav .dlink[data-level]').forEach(function(t){t.addEventListener('click',showKw);});
+   wbtab.addEventListener('click',resetWeekly);
    document.addEventListener('click',function(){document.querySelectorAll('.wbdd').forEach(function(x){x.classList.remove('open');});});
    bindDD('wb-acctbtn','wb-dd','acc');bindDD('wb-campbtn','wb-campdd','camp');bindDD('wb-agbtn','wb-agdd','ag');
+   bindDD('wb-kwbtn','wb-kwdd','kw');bindDD('wb-pmaxbtn','wb-pmaxdd','pmax');bindDD('wb-shopbtn','wb-shopdd','shop');
    bindCountry('wb-shipbtn','wb-shipdd');bindCountry('wb-billbtn','wb-billdd');
  }
 })();
