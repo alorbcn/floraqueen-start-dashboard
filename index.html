@@ -224,6 +224,7 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
 .arload{padding:20px;color:var(--muted)}
 .arok{padding:18px 20px;color:var(--profit);font-weight:600;background:rgba(31,138,95,.06);border-radius:12px;margin-top:14px}
 .armgrain{margin-top:20px}.armcols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.artable th.sortable{cursor:pointer;user-select:none;white-space:nowrap}.artable th.sortable:hover{color:var(--forest)}.artable .sarr{font-size:9px;font-weight:700}
 .actopt:hover{background:rgba(184,69,107,.1);color:var(--rose)}
 .optbtn{font:inherit;font-size:11px;font-weight:700;padding:4px 9px;border-radius:7px;border:1px solid var(--rose);background:#fff;color:var(--rose);cursor:pointer;white-space:nowrap}
 .optbtn:hover{background:var(--rose);color:#fff}
@@ -345,7 +346,7 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
     </div>
     <div id="ar-roas" class="hidden">
       <div class="sec"><h2>ROAS below threshold</h2><span class="ctx" id="roas-ctx"></span><span class="rule"></span></div>
-      <div class="arbar"><span class="kwslbl">ROAS &lt;</span><input type="number" id="roas-x" class="arinput" value="2.5" step="0.1" min="0"><span class="kwslbl">in last</span><input type="number" id="roas-w" class="arinput" value="4" min="1" max="26"><span class="kwslbl">weeks</span><button class="gobtn" id="roas-go">Go</button></div>
+      <div class="arbar"><span class="kwslbl">ROAS from</span><input type="number" id="roas-min" class="arinput" value="0" step="0.1" min="0"><span class="kwslbl">to</span><input type="number" id="roas-max" class="arinput" value="2.5" step="0.1" min="0"><span class="kwslbl">in last</span><input type="number" id="roas-w" class="arinput" value="4" min="1" max="26"><span class="kwslbl">weeks</span><button class="gobtn" id="roas-go">Go</button></div>
       <div id="roas-out"></div>
     </div>
     <div id="ar-movers" class="hidden">
@@ -854,19 +855,30 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
   var arE=function(n){return Math.round(+n||0).toLocaleString('en-US')+' €';};
   var arX=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');};
   var arSeq=0;
+  var arTbls={}, arTid=0;
+  function arBody(tid){var t=arTbls[tid];if(!t.rows.length)return '<tr><td class="l" colspan="'+t.cols.length+'" style="padding:14px;color:var(--muted)">None.</td></tr>';return t.rows.map(t.cell).join('');}
   function arSection(title,cols,rows,cell){
-    var head='<tr>'+cols.map(function(c){return '<th'+(c.r?'':' class="l"')+'>'+c.h+'</th>';}).join('')+'</tr>';
-    var body=(rows&&rows.length)?rows.map(cell).join(''):'<tr><td class="l" colspan="'+cols.length+'" style="padding:14px;color:var(--muted)">None.</td></tr>';
-    return '<div class="arpanel">'+(title?'<div class="arh">'+title+'</div>':'')+'<table class="artable"><thead>'+head+'</thead><tbody>'+body+'</tbody></table></div>';
+    var tid='art'+(++arTid); arTbls[tid]={rows:rows||[],cell:cell,cols:cols,k:null,dir:1};
+    var head='<tr>'+cols.map(function(c){return '<th class="'+(c.r?'r':'l')+' sortable" data-tid="'+tid+'" data-k="'+c.k+'" data-t="'+(c.t||'s')+'">'+c.h+'<span class="sarr"></span></th>';}).join('')+'</tr>';
+    return '<div class="arpanel">'+(title?'<div class="arh">'+title+'</div>':'')+'<table class="artable" id="'+tid+'"><thead>'+head+'</thead><tbody>'+arBody(tid)+'</tbody></table></div>';
+  }
+  function arSort(tid,k,type){
+    var t=arTbls[tid]; if(!t)return;
+    if(t.k===k)t.dir=-t.dir; else {t.k=k; t.dir=(type==='n'?-1:1);}
+    t.rows.sort(function(a,b){var av=a[k],bv=b[k]; if(type==='n')return ((+av||0)-(+bv||0))*t.dir; av=String(av==null?'':av).toLowerCase(); bv=String(bv==null?'':bv).toLowerCase(); return (av<bv?-1:av>bv?1:0)*t.dir;});
+    var tbl=document.getElementById(tid); if(!tbl)return;
+    tbl.querySelector('tbody').innerHTML=arBody(tid);
+    tbl.querySelectorAll('th.sortable .sarr').forEach(function(x){x.textContent='';});
+    var a=tbl.querySelector('th[data-k="'+k+'"] .sarr'); if(a)a.textContent=t.dir>0?' ▲':' ▼';
   }
   function arErr(id,m){document.getElementById(id).innerHTML='<div class="arload" style="color:var(--cost)">Error: '+m+'</div>';}
   function loadRoas(){
-    var x=+document.getElementById('roas-x').value||2.5, w=Math.max(1,Math.min(26,Math.floor(+document.getElementById('roas-w').value||4)));
+    var mn=+document.getElementById('roas-min').value||0, mx=+document.getElementById('roas-max').value||2.5, w=Math.max(1,Math.min(26,Math.floor(+document.getElementById('roas-w').value||4)));
     var out=document.getElementById('roas-out'); out.innerHTML='<div class="arload">Loading…</div>'; var s=++arSeq;
-    fetch(FN+'?api=roas_under&roas='+x+'&weeks='+w,{headers:{Authorization:'Bearer '+tok}}).then(chk401).then(function(r){return r.json();}).then(function(j){
+    fetch(FN+'?api=roas_under&min='+mn+'&max='+mx+'&weeks='+w,{headers:{Authorization:'Bearer '+tok}}).then(chk401).then(function(r){return r.json();}).then(function(j){
       if(s!==arSeq)return; if(j.error){arErr('roas-out',j.error);return;}
-      document.getElementById('roas-ctx').textContent='ROAS < '+x+' · '+j.range[0]+' → '+j.range[1]+' · active only';
-      var C=[{h:'Name'},{h:'Account / Campaign'},{h:'Cost',r:1},{h:'Sales',r:1},{h:'ROAS',r:1}];
+      document.getElementById('roas-ctx').textContent='ROAS '+mn+'–'+mx+' · '+j.range[0]+' → '+j.range[1]+' · active only';
+      var C=[{h:'Name',k:'name',t:'s'},{h:'Account / Campaign',k:'parent',t:'s'},{h:'Cost',r:1,k:'cost',t:'n'},{h:'Sales',r:1,k:'sales',t:'n'},{h:'ROAS',r:1,k:'roas',t:'n'}];
       function cell(r){return '<tr><td class="l kwn">'+arX(r.name)+'</td><td class="l">'+arX(r.parent)+'</td><td class="r">'+arE(r.cost)+'</td><td class="r">'+arE(r.sales)+'</td><td class="r neg">'+(r.roas!=null?(+r.roas).toFixed(2):'—')+'×</td></tr>';}
       out.innerHTML=arSection('Campaigns ('+(j.campaigns||[]).length+')',C,j.campaigns,cell)+arSection('Ad groups ('+(j.adgroups||[]).length+')',C,j.adgroups,cell)+arSection('Keywords — top 100 by spend ('+(j.keywords||[]).length+')',C,j.keywords,cell);
     }).catch(function(e){arErr('roas-out',e.message);});
@@ -876,7 +888,7 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
     fetch(FN+'?api=movers',{headers:{Authorization:'Bearer '+tok}}).then(chk401).then(function(r){return r.json();}).then(function(j){
       if(s!==arSeq)return; if(j.error){arErr('movers-out',j.error);return;}
       document.getElementById('movers-ctx').textContent='Last week '+j.weekA[0]+'→'+j.weekA[1]+' vs previous '+j.weekB[0]+'→'+j.weekB[1]+' · profit Δ · active, spend ≥ €10';
-      var C=[{h:'Name'},{h:'Account'},{h:'Prev',r:1},{h:'Last',r:1},{h:'Δ Profit',r:1}];
+      var C=[{h:'Name',k:'name',t:'s'},{h:'Account',k:'parent',t:'s'},{h:'Prev',r:1,k:'pB',t:'n'},{h:'Last',r:1,k:'pA',t:'n'},{h:'Δ Profit',r:1,k:'delta',t:'n'}];
       function cell(r){return '<tr><td class="l kwn">'+arX(r.name)+'</td><td class="l">'+arX(r.parent)+'</td><td class="r">'+arE(r.pB)+'</td><td class="r">'+arE(r.pA)+'</td><td class="r '+(r.delta>=0?'pos':'neg')+'">'+(r.delta>=0?'+':'')+arE(r.delta)+'</td></tr>';}
       function grain(t,d){return '<div class="armgrain"><div class="arh">'+t+'</div><div class="armcols">'+arSection('▲ Gained',C,d&&d.gain,cell)+arSection('▼ Lost',C,d&&d.lose,cell)+'</div></div>';}
       out.innerHTML=grain('Campaigns',j.campaign)+grain('Ad groups',j.adgroup)+grain('Keywords',j.keyword);
@@ -890,7 +902,7 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
       document.getElementById('budget-ctx').textContent='avg daily spend ≥ 1.2× daily budget · '+j.range[0]+' → '+j.range[1]+' · active only';
       var rows=j.rows||[];
       if(!rows.length){out.innerHTML='<div class="arok">✓ No campaigns spending ≥20% over their daily budget in this window.</div>';return;}
-      var C=[{h:'Campaign'},{h:'Account'},{h:'Avg daily',r:1},{h:'Daily budget',r:1},{h:'% of budget',r:1},{h:'Total spend',r:1}];
+      var C=[{h:'Campaign',k:'name',t:'s'},{h:'Account',k:'parent',t:'s'},{h:'Avg daily',r:1,k:'avgDaily',t:'n'},{h:'Daily budget',r:1,k:'budget',t:'n'},{h:'% of budget',r:1,k:'ratio',t:'n'},{h:'Total spend',r:1,k:'spend',t:'n'}];
       function cell(r){return '<tr><td class="l kwn">'+arX(r.name)+'</td><td class="l">'+arX(r.parent)+'</td><td class="r">'+arE(r.avgDaily)+'</td><td class="r">'+arE(r.budget)+'</td><td class="r neg">'+(r.ratio!=null?Math.round(r.ratio*100):'—')+'%</td><td class="r">'+arE(r.spend)+'</td></tr>';}
       out.innerHTML=arSection('Over-budget campaigns ('+rows.length+')',C,rows,cell);
     }).catch(function(e){arErr('budget-out',e.message);});
@@ -901,7 +913,7 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
     fetch(FN+'?api=zero_conv&weeks='+w,{headers:{Authorization:'Bearer '+tok}}).then(chk401).then(function(r){return r.json();}).then(function(j){
       if(s!==arSeq)return; if(j.error){arErr('zero-out',j.error);return;}
       document.getElementById('zero-ctx').textContent=(j.total||0)+' active keywords with 0 conversions · '+j.range[0]+' → '+j.range[1]+((j.total||0)>(j.rows||[]).length?' · showing top '+(j.rows||[]).length+' by spend':'');
-      var C=[{h:'Keyword'},{h:'Match'},{h:'Account'},{h:'Campaign'},{h:'Ad group'},{h:'Cost',r:1},{h:'Clicks',r:1}];
+      var C=[{h:'Keyword',k:'kw',t:'s'},{h:'Match',k:'match',t:'s'},{h:'Account',k:'account',t:'s'},{h:'Campaign',k:'campaign',t:'s'},{h:'Ad group',k:'adgroup',t:'s'},{h:'Cost',r:1,k:'cost',t:'n'},{h:'Clicks',r:1,k:'clicks',t:'n'}];
       function cell(r){return '<tr><td class="l kwn">'+arX(r.kw)+'</td><td class="l">'+arX(r.match)+'</td><td class="l">'+arX(r.account)+'</td><td class="l">'+arX(r.campaign)+'</td><td class="l">'+arX(r.adgroup)+'</td><td class="r">'+arE(r.cost)+'</td><td class="r">'+(r.clicks||0)+'</td></tr>';}
       out.innerHTML=arSection('',C,j.rows,cell);
     }).catch(function(e){arErr('zero-out',e.message);});
@@ -909,6 +921,7 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
   var _arGo=document.getElementById('roas-go'); if(_arGo)_arGo.addEventListener('click',loadRoas);
   _arGo=document.getElementById('budget-go'); if(_arGo)_arGo.addEventListener('click',loadBudget);
   _arGo=document.getElementById('zero-go'); if(_arGo)_arGo.addEventListener('click',loadZero);
+  document.getElementById('actionview').addEventListener('click',function(e){var th=e.target.closest('.artable th.sortable');if(!th)return;arSort(th.getAttribute('data-tid'),th.getAttribute('data-k'),th.getAttribute('data-t'));});
   tab.onclick=function(e){e.stopPropagation();dd.classList.toggle("open");};
   document.addEventListener("click",function(){dd.classList.remove("open");});
   dd.addEventListener("click",function(e){e.stopPropagation();var o=e.target.closest("[data-lvl]");if(o){dd.classList.remove("open");showAction(o.getAttribute("data-lvl"));}});
