@@ -221,6 +221,7 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
 .artable td.l{text-align:left}
 .artable td.kwn{font-weight:600;color:#0C100D;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .artable .pos{color:var(--profit);font-weight:600}.artable .neg{color:var(--loss);font-weight:600}
+.artable tfoot td{padding:9px 10px;border-top:2px solid var(--lineS);background:var(--s2);font-size:12px;font-weight:700;text-align:right;font-variant-numeric:tabular-nums}.artable tfoot td.l{text-align:left;text-transform:uppercase;font-size:10px;letter-spacing:.04em;color:var(--soft)}
 .arload{padding:20px;color:var(--muted)}
 .arok{padding:18px 20px;color:var(--profit);font-weight:600;background:rgba(31,138,95,.06);border-radius:12px;margin-top:14px}
 .armgrain{margin-top:20px}.armcols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
@@ -360,7 +361,7 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
     </div>
     <div id="ar-zero" class="hidden">
       <div class="sec"><h2>Zero-conversion keywords</h2><span class="ctx" id="zero-ctx"></span><span class="rule"></span></div>
-      <div class="arbar"><span class="kwslbl">in last</span><input type="number" id="zero-w" class="arinput" value="4" min="1" max="26"><span class="kwslbl">weeks</span><button class="gobtn" id="zero-go">Go</button></div>
+      <div class="arbar"><span class="kwslbl">in last</span><input type="number" id="zero-w" class="arinput" value="4" min="1" max="26"><span class="kwslbl">weeks</span><button class="gobtn" id="zero-go">Go</button><button class="expbtn" id="zero-dl">⬇ Download CSV</button></div>
       <div id="zero-out"></div>
     </div>
     <div id="kwsheet" class="hidden">
@@ -857,10 +858,17 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
   var arSeq=0;
   var arTbls={}, arTid=0;
   function arBody(tid){var t=arTbls[tid];if(!t.rows.length)return '<tr><td class="l" colspan="'+t.cols.length+'" style="padding:14px;color:var(--muted)">None.</td></tr>';return t.rows.map(t.cell).join('');}
-  function arSection(title,cols,rows,cell){
+  function arSection(title,cols,rows,cell,foot){
     var tid='art'+(++arTid); arTbls[tid]={rows:rows||[],cell:cell,cols:cols,k:null,dir:1};
     var head='<tr>'+cols.map(function(c){return '<th class="'+(c.r?'r':'l')+' sortable" data-tid="'+tid+'" data-k="'+c.k+'" data-t="'+(c.t||'s')+'">'+c.h+'<span class="sarr"></span></th>';}).join('')+'</tr>';
-    return '<div class="arpanel">'+(title?'<div class="arh">'+title+'</div>':'')+'<table class="artable" id="'+tid+'"><thead>'+head+'</thead><tbody>'+arBody(tid)+'</tbody></table></div>';
+    return '<div class="arpanel">'+(title?'<div class="arh">'+title+'</div>':'')+'<table class="artable" id="'+tid+'"><thead>'+head+'</thead><tbody>'+arBody(tid)+'</tbody>'+(foot?'<tfoot>'+foot+'</tfoot>':'')+'</table></div>';
+  }
+  function csvDL(fn,headers,rows){
+    var NL=String.fromCharCode(10), CR=String.fromCharCode(13), EOL=CR+NL, BOM=String.fromCharCode(0xFEFF);
+    var q=function(v){v=String(v==null?'':v);return (v.indexOf('"')>=0||v.indexOf(',')>=0||v.indexOf(NL)>=0||v.indexOf(CR)>=0)?'"'+v.replace(/"/g,'""')+'"':v;};
+    var lines=[headers.map(q).join(',')]; rows.forEach(function(r){lines.push(r.map(q).join(','));});
+    var blob=new Blob([BOM+lines.join(EOL)],{type:'text/csv;charset=utf-8'});
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=fn; document.body.appendChild(a); a.click(); document.body.removeChild(a); setTimeout(function(){URL.revokeObjectURL(a.href);},1000);
   }
   function arSort(tid,k,type){
     var t=arTbls[tid]; if(!t)return;
@@ -916,12 +924,24 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
       document.getElementById('zero-ctx').textContent=(j.total||0)+' active keywords with 0 conversions · '+j.range[0]+' → '+j.range[1]+((j.total||0)>(j.rows||[]).length?' · showing top '+(j.rows||[]).length+' by spend':'');
       var C=[{h:'Keyword',k:'kw',t:'s'},{h:'Match',k:'match',t:'s'},{h:'Account',k:'account',t:'s'},{h:'Campaign',k:'campaign',t:'s'},{h:'Ad group',k:'adgroup',t:'s'},{h:'Cost',r:1,k:'cost',t:'n'},{h:'Clicks',r:1,k:'clicks',t:'n'}];
       function cell(r){return '<tr><td class="l kwn">'+arX(r.kw)+'</td><td class="l">'+arX(r.match)+'</td><td class="l">'+arX(r.account)+'</td><td class="l">'+arX(r.campaign)+'</td><td class="l">'+arX(r.adgroup)+'</td><td class="r">'+arE(r.cost)+'</td><td class="r">'+(r.clicks||0)+'</td></tr>';}
-      out.innerHTML=arSection('',C,j.rows,cell);
+      var foot='<tr><td class="l" colspan="5">TOTAL — all '+(j.total||0).toLocaleString('en-US')+' zero-conversion keywords</td><td class="r">'+arE(j.totalCost)+'</td><td class="r">'+(j.totalClicks||0).toLocaleString('en-US')+'</td></tr>';
+      out.innerHTML=arSection('',C,j.rows,cell,foot);
     }).catch(function(e){arErr('zero-out',e.message);});
+  }
+  function zeroDownload(){
+    var w=Math.max(1,Math.min(26,Math.floor(+document.getElementById('zero-w').value||4)));
+    var b=document.getElementById('zero-dl'); var old=b?b.textContent:''; if(b){b.textContent='…';b.disabled=true;}
+    fetch(FN+'?api=zero_conv&weeks='+w+'&all=1',{headers:{Authorization:'Bearer '+tok}}).then(chk401).then(function(r){return r.json();}).then(function(j){
+      if(b){b.textContent=old;b.disabled=false;}
+      if(j.error){alert('Download error: '+j.error);return;}
+      var rows=(j.rows||[]).map(function(r){return [r.kw,r.match,r.account,r.campaign,r.adgroup,r.cost,r.clicks];});
+      csvDL('zero-conversion-keywords_'+j.range[0]+'_'+j.range[1]+'.csv',['Keyword','Match','Account','Campaign','Ad group','Cost EUR','Clicks'],rows);
+    }).catch(function(e){if(b){b.textContent=old;b.disabled=false;}alert('Download error: '+e.message);});
   }
   var _arGo=document.getElementById('roas-go'); if(_arGo)_arGo.addEventListener('click',loadRoas);
   _arGo=document.getElementById('budget-go'); if(_arGo)_arGo.addEventListener('click',loadBudget);
   _arGo=document.getElementById('zero-go'); if(_arGo)_arGo.addEventListener('click',loadZero);
+  _arGo=document.getElementById('zero-dl'); if(_arGo)_arGo.addEventListener('click',zeroDownload);
   document.getElementById('actionview').addEventListener('click',function(e){var th=e.target.closest('.artable th.sortable');if(!th)return;arSort(th.getAttribute('data-tid'),th.getAttribute('data-k'),th.getAttribute('data-t'));});
   tab.onclick=function(e){e.stopPropagation();dd.classList.toggle("open");};
   document.addEventListener("click",function(){dd.classList.remove("open");});
