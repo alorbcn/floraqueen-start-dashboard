@@ -355,7 +355,7 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
     </div>
     <div id="ar-budget" class="hidden">
       <div class="sec"><h2>Budget limit</h2><span class="ctx" id="budget-ctx"></span><span class="rule"></span></div>
-      <div class="arbar"><span class="kwslbl">in last</span><input type="number" id="budget-w" class="arinput" value="2" min="1" max="26"><span class="kwslbl">weeks &middot; flag campaigns spending &ge; 20% over daily budget</span><button class="gobtn" id="budget-go">Go</button></div>
+      <div class="arbar"><span class="kwslbl">flag campaigns spending &ge;</span><input type="number" id="budget-pct" class="arinput" value="20" min="0" step="5"><span class="kwslbl">% over daily budget &middot; in last</span><input type="number" id="budget-w" class="arinput" value="2" min="1" max="26"><span class="kwslbl">weeks</span><button class="gobtn" id="budget-go">Go</button></div>
       <div id="budget-out"></div>
     </div>
     <div id="ar-zero" class="hidden">
@@ -896,12 +896,13 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
   }
   function loadBudget(){
     var w=Math.max(1,Math.min(26,Math.floor(+document.getElementById('budget-w').value||2)));
+    var _pv=parseFloat(document.getElementById('budget-pct').value); var pct=Math.max(0,isNaN(_pv)?20:_pv);
     var out=document.getElementById('budget-out'); out.innerHTML='<div class="arload">Loading…</div>'; var s=++arSeq;
-    fetch(FN+'?api=budget_over&weeks='+w,{headers:{Authorization:'Bearer '+tok}}).then(chk401).then(function(r){return r.json();}).then(function(j){
+    fetch(FN+'?api=budget_over&weeks='+w+'&pct='+pct,{headers:{Authorization:'Bearer '+tok}}).then(chk401).then(function(r){return r.json();}).then(function(j){
       if(s!==arSeq)return; if(j.error){arErr('budget-out',j.error);return;}
-      document.getElementById('budget-ctx').textContent='avg daily spend ≥ 1.2× daily budget · '+j.range[0]+' → '+j.range[1]+' · active only';
+      document.getElementById('budget-ctx').textContent='avg daily spend ≥ '+pct+'% over daily budget · '+j.range[0]+' → '+j.range[1]+' · active only';
       var rows=j.rows||[];
-      if(!rows.length){out.innerHTML='<div class="arok">✓ No campaigns spending ≥20% over their daily budget in this window.</div>';return;}
+      if(!rows.length){out.innerHTML='<div class="arok">✓ No campaigns spending ≥'+pct+'% over their daily budget in this window.</div>';return;}
       var C=[{h:'Campaign',k:'name',t:'s'},{h:'Account',k:'parent',t:'s'},{h:'Avg daily',r:1,k:'avgDaily',t:'n'},{h:'Daily budget',r:1,k:'budget',t:'n'},{h:'% of budget',r:1,k:'ratio',t:'n'},{h:'Total spend',r:1,k:'spend',t:'n'}];
       function cell(r){return '<tr><td class="l kwn">'+arX(r.name)+'</td><td class="l">'+arX(r.parent)+'</td><td class="r">'+arE(r.avgDaily)+'</td><td class="r">'+arE(r.budget)+'</td><td class="r neg">'+(r.ratio!=null?Math.round(r.ratio*100):'—')+'%</td><td class="r">'+arE(r.spend)+'</td></tr>';}
       out.innerHTML=arSection('Over-budget campaigns ('+rows.length+')',C,rows,cell);
