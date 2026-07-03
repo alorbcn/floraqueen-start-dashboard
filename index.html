@@ -275,6 +275,67 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
 .optrat{font-size:10.5px;color:var(--muted);max-width:280px;white-space:normal}
 .optapply{width:16px;height:16px;cursor:pointer}
 .optdonebar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px}
+/* ══ Insights ══ */
+#insightsview{max-width:1080px;margin:0 auto;padding:6px 20px 64px}
+.instab{color:var(--forest2);font-weight:700}
+.instab.active{background:var(--forest);color:#fff}
+.ins-top{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:18px 0 12px;border-bottom:1px solid var(--line)}
+.ins-h1{font-family:Fraunces,Georgia,serif;font-size:30px;font-weight:600;color:var(--ink);margin:0}
+.ins-sub{margin:4px 0 0;color:var(--muted);font-size:13px}
+.ins-topR{display:flex;align-items:center;gap:8px}
+.ins-perlbl{color:var(--soft);font-size:13px;font-weight:600}
+.ins-peracc{color:var(--muted);font-size:12px}
+.ins-per{font:inherit;font-size:14px;font-weight:600;color:var(--ink);border:1px solid var(--lineS);border-radius:9px;padding:7px 10px;background:#fff;cursor:pointer}
+.ins-status{color:var(--muted);font-size:13px;font-style:italic;padding:6px 0;min-height:8px}
+.ins-act{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--forest);margin:30px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--lineS)}
+.ins-mod{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--sh);padding:18px 20px;margin:14px 0}
+.ins-mh{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.ins-mh h3{font-family:Fraunces,Georgia,serif;font-size:20px;font-weight:600;color:var(--ink);margin:0}
+.ins-badge{font-size:11px;font-weight:800;color:#fff;background:var(--forest2);border-radius:6px;padding:2px 7px;letter-spacing:.04em}
+.ins-cbody{min-height:18px}
+.ins-todo{color:var(--muted);font-style:italic;font-size:13px;padding:6px 0}
+.ins-err{color:var(--cost);font-size:13px}
+.ins-say{font-size:15px;line-height:1.55;color:var(--ink);margin:0 0 12px}
+.ins-say b{font-weight:700}
+.ins-note{font-size:12.5px;color:var(--muted);margin:8px 0 0;font-style:italic}
+.ins-callout{display:inline-block;background:var(--s2);border-left:3px solid var(--forest);border-radius:8px;padding:9px 13px;font-size:14px;font-weight:600;color:var(--forest2);margin:0 0 14px}
+.ins-callout b{color:var(--forest);font-weight:800}
+.ins-hero{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.ins-heronum{font-family:Fraunces,Georgia,serif;font-size:46px;font-weight:600;line-height:1;color:var(--ink);font-variant-numeric:tabular-nums}
+.ins-herosub{color:var(--soft);font-size:14px}
+.ins-trend{font-size:14px;font-weight:700}
+.ins-up{color:var(--profit)}.ins-down{color:var(--cost)}.ins-flat{color:var(--muted)}
+.ins-kpis{display:flex;gap:26px;flex-wrap:wrap;margin-top:14px}
+.ins-kpi .k{font-size:12px;color:var(--muted);font-weight:600}
+.ins-kpi .v{font-size:19px;color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+.ins-chart{margin:6px 0 2px;overflow-x:auto}
+.ins-chart svg{max-width:100%;height:auto;display:block}
+.ins-legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:8px;font-size:12px;color:var(--soft)}
+.ins-legend i{display:inline-block;width:11px;height:11px;border-radius:2px;vertical-align:-1px;margin-right:5px}
+.ins-toggle{display:inline-flex;border:1px solid var(--lineS);border-radius:8px;overflow:hidden}
+.ins-toggle button{font:inherit;font-size:12px;font-weight:600;padding:5px 10px;border:0;background:#fff;color:var(--soft);cursor:pointer}
+.ins-toggle button.on{background:var(--forest);color:#fff}
+.ins-tbl{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px}
+.ins-tbl th,.ins-tbl td{padding:6px 8px;text-align:right;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+.ins-tbl th.l,.ins-tbl td.l{text-align:left}
+.ins-tbl th{color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.03em}
+.ins-details{margin-top:10px}
+.ins-details summary{cursor:pointer;color:var(--forest);font-size:13px;font-weight:600;list-style:none}
+.ins-details summary::-webkit-details-marker{display:none}
+.ins-details summary:before{content:"\25B8  "}
+.ins-details[open] summary:before{content:"\25BE  "}
+.ins-foot{color:var(--muted);font-size:12px;line-height:1.6;margin-top:32px;padding-top:14px;border-top:1px solid var(--line)}
+.ins-verdict{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.ins-vcol{background:var(--s2);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.ins-vh{margin:0 0 6px;font-size:13px;font-weight:800;letter-spacing:.02em}
+.ins-vh.good{color:var(--profit)}.ins-vh.bad{color:var(--loss)}.ins-vh.act{color:var(--forest)}
+.ins-vlist{list-style:none;margin:0;padding:0}
+.ins-vlist li{position:relative;padding:7px 0 7px 22px;font-size:13px;line-height:1.45;color:var(--ink);border-top:1px solid var(--line)}
+.ins-vlist li:first-child{border-top:0}
+.ins-vic{position:absolute;left:0;top:7px;font-weight:800}
+.ins-vlist.good .ins-vic{color:var(--profit)}.ins-vlist.bad .ins-vic{color:var(--loss)}.ins-vlist.act .ins-vic{color:var(--forest)}
+@media(max-width:820px){.ins-verdict{grid-template-columns:1fr}}
+@media(max-width:640px){.ins-heronum{font-size:36px}.ins-h1{font-size:24px}#insightsview{padding:6px 12px 48px}}
 </style></head>
 <body>
 <div id="login"><div class="lbox"><span class="logo" style="font-family:Fraunces;color:#16513b">Max<span style="color:#B8456B">✿</span></span>
@@ -288,6 +349,7 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
     <div class="hrow r1"><div class="brand"><span class="logo">Max<span class="l">✿</span></span></div><div class="badges"><button class="adminbtn hidden" id="adminbtn" title="Admin settings">Admin</button><span class="badge">● Live · read-only</span><span id="who"></span></div></div>
     <div class="hrow r2">
     <nav class="dashnav">
+      <a class="dlink instab" data-view="insights" title="Executive insights — the money story in plain language">✦ Insights</a>
       <a class="dlink wbtab wbon" data-view="weekly" title="Reset to global — all accounts, all paid media">Week by week</a>
       <div class="wbsel"><button class="wbselbtn" id="wb-acctbtn"><span class="lbltxt" id="wb-acctlabel">All accounts</span><span class="ca">▾</span></button><div class="wbdd" id="wb-dd"></div></div>
       <div class="wbsel"><button class="wbselbtn" id="wb-campbtn"><span class="lbltxt" id="wb-camplabel">All campaigns</span><span class="ca">▾</span></button><div class="wbdd" id="wb-campdd"></div></div>
@@ -423,6 +485,39 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
         <div id="invmsg" class="invmsg"></div>
         <table class="utable"><thead><tr><th>Email</th><th>Role</th><th>Status</th><th>Added</th><th></th></tr></thead><tbody id="ulist"></tbody></table>
       </div>
+    </div>
+  </div>
+  <!-- ══ INSIGHTS VIEW ══ -->
+  <div id="insightsview" class="hidden">
+    <div class="ins-top">
+      <div class="ins-topL"><h1 class="ins-h1">The money story</h1><p class="ins-sub" id="ins-rangelbl">Advertising profit, in plain language.</p></div>
+      <div class="ins-topR"><label class="ins-perlbl" for="ins-months">Show the last</label>
+        <select id="ins-months" class="ins-per">
+          <option value="1">1 month</option><option value="2">2 months</option><option value="3" selected>3 months</option>
+          <option value="4">4 months</option><option value="5">5 months</option><option value="6">6 months</option>
+          <option value="7">7 months</option><option value="8">8 months</option><option value="9">9 months</option>
+          <option value="10">10 months</option><option value="11">11 months</option><option value="12">12 months</option>
+        </select><span class="ins-peracc">accumulated</span></div>
+    </div>
+    <div class="ins-status" id="ins-status"></div>
+    <div id="ins-body">
+      <div class="ins-act">Act 1 · The headline</div>
+      <section class="ins-mod" id="ins-m1"><div class="ins-mh"><span class="ins-badge">M1</span><h3>The profit from advertising</h3></div><div class="ins-cbody" id="ins-m1-body"></div></section>
+      <section class="ins-mod" id="ins-m2"><div class="ins-mh"><span class="ins-badge">M2</span><h3>Where the money flows</h3></div><div class="ins-cbody" id="ins-m2-body"></div></section>
+      <section class="ins-mod" id="ins-m3"><div class="ins-mh"><span class="ins-badge">M3</span><h3>The story so far</h3></div><div class="ins-cbody" id="ins-m3-body"></div></section>
+      <div class="ins-act">Act 2 · Where the money goes</div>
+      <section class="ins-mod" id="ins-m4"><div class="ins-mh"><span class="ins-badge">M4</span><h3>Where your money went</h3></div><div class="ins-cbody" id="ins-m4-body"></div></section>
+      <section class="ins-mod" id="ins-m5"><div class="ins-mh"><span class="ins-badge">M5</span><h3>Brand vs. growth spending</h3></div><div class="ins-cbody" id="ins-m5-body"></div></section>
+      <div class="ins-act">Act 3 · Winners &amp; leaks</div>
+      <section class="ins-mod" id="ins-m6"><div class="ins-mh"><span class="ins-badge">M6</span><h3>Your champions</h3></div><div class="ins-cbody" id="ins-m6-body"></div></section>
+      <section class="ins-mod" id="ins-m7"><div class="ins-mh"><span class="ins-badge">M7</span><h3>The leaks</h3></div><div class="ins-cbody" id="ins-m7-body"></div></section>
+      <section class="ins-mod" id="ins-m8"><div class="ins-mh"><span class="ins-badge">M8</span><h3>Untapped opportunity</h3></div><div class="ins-cbody" id="ins-m8-body"></div></section>
+      <div class="ins-act">Act 4 · Patterns &amp; context</div>
+      <section class="ins-mod" id="ins-m9"><div class="ins-mh"><span class="ins-badge">M9</span><h3>Seasonality &amp; moments</h3></div><div class="ins-cbody" id="ins-m9-body"></div></section>
+      <section class="ins-mod" id="ins-m10"><div class="ins-mh"><span class="ins-badge">M10</span><h3>Efficiency over time</h3></div><div class="ins-cbody" id="ins-m10-body"></div></section>
+      <div class="ins-act">Act 5 · What to do</div>
+      <section class="ins-mod" id="ins-m11"><div class="ins-mh"><span class="ins-badge">M11</span><h3>Max's verdict</h3></div><div class="ins-cbody" id="ins-m11-body"></div></section>
+      <footer class="ins-foot"><b>Source:</b> Google Ads warehouse (campaign/keyword metrics) · advertising-attributed revenue &amp; conversions · <b>margin 40%</b> (profit = sales×0.40 − cost; estimate) · EUR · Europe/Madrid · <span id="ins-fresh"></span><br><b>Max is read-only.</b> Every € figure is computed from the warehouse — no estimates in the narrative unless labelled.</footer>
     </div>
   </div>
 </div>
@@ -841,6 +936,7 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
     tab.classList.add('on');
     document.getElementById("kwview").classList.add("hidden");
     var wv=document.getElementById("weeklyview");if(wv)wv.classList.add("hidden");
+    var iv=document.getElementById("insightsview");if(iv)iv.classList.add("hidden");
     document.getElementById("actionview").classList.remove("hidden");
     ['actgrid','kwsheet','ar-roas','ar-movers','ar-budget','ar-zero'].forEach(function(id){var e=document.getElementById(id);if(e)e.classList.add('hidden');});
     var sh=document.getElementById('act-sec'); if(sh&&sh.parentElement)sh.parentElement.classList.toggle('hidden',AR_NEW.indexOf(lvl)>=0);
@@ -1185,7 +1281,7 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
    dd.addEventListener('input',function(e){if(e.target.classList&&e.target.classList.contains('wbsearch')){srch[sub]=e.target.value;renderSelectors();var ni=$(ddId).querySelector('.wbsearch');if(ni){ni.focus();ni.setSelectionRange(ni.value.length,ni.value.length);}$(ddId).classList.add('open');}});
  }
  var wbtab=document.querySelector('.dlink.wbtab');
- function showWeeklyView(){$('kwview').classList.add('hidden');var av=$('actionview');if(av)av.classList.add('hidden');$('weeklyview').classList.remove('hidden');if(wbtab)wbtab.classList.add('wbon');}
+ function showWeeklyView(){$('kwview').classList.add('hidden');var av=$('actionview');if(av)av.classList.add('hidden');var iv=$('insightsview');if(iv)iv.classList.add('hidden');var it=document.querySelector('.dlink.instab');if(it)it.classList.remove('active');$('weeklyview').classList.remove('hidden');if(wbtab)wbtab.classList.add('wbon');}
  function resetWeekly(){selAcc.clear();selCamp.clear();selAg.clear();selKw.clear();selPmax.clear();selShop.clear();selShip='';selBill='';srch={acc:'',camp:'',ag:'',kw:'',pmax:'',shop:''};showWeeklyView();if(!loaded){initWeekly();}else{fetchKwList();renderSelectors();fetchSeries();}}
  window.__weeklyBoot=function(){showWeeklyView();if(!loaded)initWeekly();else resetWeekly();};
  function initWeekly(){
@@ -1203,6 +1299,316 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
    bindDD('wb-kwbtn','wb-kwdd','kw');bindDD('wb-pmaxbtn','wb-pmaxdd','pmax');bindDD('wb-shopbtn','wb-shopdd','shop');
    bindCountry('wb-shipbtn','wb-shipdd');bindCountry('wb-billbtn','wb-billdd');
  }
+})();
+
+/* ══ Insights view controller ══ */
+(function(){
+  var insTab=document.querySelector('.dlink[data-view="insights"]');
+  var view=document.getElementById('insightsview');
+  if(!insTab||!view) return;
+  var seq=0, cache={};
+  function E(id){return document.getElementById(id);}
+  function money(n){return eur(n||0);}                       // global eur() → "€1,234"
+  function eurc(n){return "€"+(Math.round((n||0)*100)/100).toFixed(2);}
+  function kpi(k,v){return '<div class="ins-kpi"><div class="k">'+k+'</div><div class="v">'+v+'</div></div>';}
+  function trendHTML(cur,prev){
+    if(prev==null) return '<span class="ins-trend ins-flat">no prior-period comparison</span>';
+    if(prev===0) return '<span class="ins-trend ins-flat">→ new vs prior period</span>';
+    var d=(cur-prev)/Math.abs(prev)*100;
+    var cls=d>0.5?'ins-up':(d<-0.5?'ins-down':'ins-flat');
+    var ar=d>0.5?'▲':(d<-0.5?'▼':'→');
+    return '<span class="ins-trend '+cls+'">'+ar+' '+(d>0?'+':'')+d.toFixed(0)+'% vs prior period</span>';
+  }
+  // renderer registry — modules registered progressively across milestones
+  var RENDER={};
+  window.__insRender=RENDER; window.__insHelp={E:E,money:money,eurc:eurc,kpi:kpi,trendHTML:trendHTML};
+
+  function renderAll(j){
+    E('ins-status').textContent='';
+    var R=j.report||{}; R._months=j.months; R._range=j.range; R._prev=j.prevRange; curR=R;
+    var rl=E('ins-rangelbl');
+    if(rl&&j.range){var pv=(R.prev==null)?' · no prior-period comparison':(' · vs '+j.prevRange[0]+' → '+j.prevRange[1]);
+      rl.textContent='Last '+j.months+' month'+(j.months>1?'s':'')+' · '+j.range[0]+' → '+j.range[1]+pv;}
+    var fr=E('ins-fresh'); if(fr&&j.range)fr.textContent='data through '+j.range[1];
+    for(var i=1;i<=11;i++){
+      var el=E('ins-m'+i+'-body'); if(!el)continue;
+      var fn=RENDER['m'+i];
+      try{ el.innerHTML=fn?fn(R):'<div class="ins-todo">Coming soon.</div>'; }
+      catch(e){ el.innerHTML='<div class="ins-err">'+(e&&e.message||e)+'</div>'; }
+    }
+  }
+  function loadInsights(m){
+    if(cache[m]){renderAll(cache[m]);return;}
+    E('ins-status').textContent='Loading…';
+    var s=++seq;
+    fetch(FN+'?api=insights&months='+m,{headers:{Authorization:'Bearer '+tok}}).then(chk401).then(function(r){return r.json();}).then(function(j){
+      if(s!==seq)return;
+      if(j.error){E('ins-status').textContent='Error: '+j.error;return;}
+      cache[m]=j; renderAll(j);
+    }).catch(function(e){E('ins-status').textContent='Error: '+(e&&e.message||e);});
+  }
+  function showInsightsView(){
+    ['kwview','weeklyview','actionview'].forEach(function(id){var e=E(id);if(e)e.classList.add('hidden');});
+    view.classList.remove('hidden');
+    document.querySelectorAll('.dashnav .dlink').forEach(function(x){x.classList.remove('active','wbon');});
+    insTab.classList.add('active');
+    if(typeof hideAction==='function'){try{hideAction();}catch(e){}}
+    loadInsights(parseInt(E('ins-months').value,10)||3);
+  }
+  window.__insightsBoot=showInsightsView;
+  insTab.addEventListener('click',showInsightsView);
+  var sel=E('ins-months'); if(sel)sel.addEventListener('change',function(){loadInsights(parseInt(this.value,10)||3);});
+
+  // ── M1 · The profit from advertising (hero) ──
+  RENDER.m1=function(R){
+    var t=R.totals||{}, p=R.prev;
+    var profit=t.profit_eur||0, cost=t.cost_eur||0, sales=t.sales_eur||0;
+    var roas=(t.roas!=null)?t.roas:(cost>0?sales/cost:0), poas=roas*0.4, per=cost>0?profit/cost:0;
+    var say='Over the last <b>'+R._months+' month'+(R._months>1?'s':'')+'</b>, advertising turned <b>'+money(cost)+'</b> of ad spend into <b>'+money(sales)+'</b> of sales — a net advertising profit of <b>'+money(profit)+'</b> after the 40% product margin.';
+    return '<div class="ins-hero"><span class="ins-heronum">'+money(profit)+'</span><span class="ins-herosub">net advertising profit</span>'+trendHTML(profit,p?p.profit_eur:null)+'</div>'
+      +'<p class="ins-say" style="margin-top:12px">'+say+'</p>'
+      +'<div class="ins-kpis">'+kpi('Ad spend',money(cost))+kpi('Revenue generated',money(sales))
+      +kpi('Return on ad spend',roas.toFixed(2)+'×')
+      +kpi('Profit on ad spend',poas.toFixed(2)+'× <span style="font-size:11px;color:var(--muted)">(breakeven 1.0)</span>')
+      +kpi('Every €1 returned',eurc(per)+' profit')+'</div>';
+  };
+
+  /* ── shared utilities ── */
+  var curR=null;
+  var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function monLabel(ym){var p=(ym||'').split('-');return p[1]?(MON[(+p[1])-1]+' '+p[0].slice(2)):ym;}
+  function eurK(n){var a=Math.abs(n||0);if(a>=1000)return '€'+(Math.round(n/100)/10)+'k';return '€'+Math.round(n||0);}
+  function say(h){return '<p class="ins-say">'+h+'</p>';}
+  function callout(h){return '<div class="ins-callout">'+h+'</div>';}
+  function legend2(a,ca,b,cb){return '<div class="ins-legend"><span><i style="background:'+ca+'"></i>'+a+'</span><span><i style="background:'+cb+'"></i>'+b+'</span></div>';}
+  var CMAP={'FQ_ES':'Spain','FQ_FR':'France','FQ_DE':'Germany','FQ_IT':'Italy','FQ_UK-COM':'United Kingdom','FQ_US_CA-COM':'US & Canada','FQ_ROW-COM':'Rest of World','FQ_ES LATAM':'Latin America','FQ_BR':'Brazil','FQ_PL':'Poland','FQ_RU':'Russia','FQ_TR':'Turkey','FQ_Foreign-COM':'Other international','FQ_CA':'Canada','FQ_Cities':'Cities'};
+  function humanCountry(a){return CMAP[a]||(a||'');}
+  function stripBrackets(s){s=s||'';var o='',d=0;for(var i=0;i<s.length;i++){var c=s.charAt(i);if(c==='[')d++;else if(c===']'){if(d>0)d--;}else if(d===0)o+=c;}return o;}
+  function humanCampaign(n){var s=stripBrackets(n).split(' ').filter(function(w){return w.length;}).join(' ');s=s.replace(/^[- ·]+/,'').replace(/[- ·]+$/,'');return s||n||'';}
+  function concentration(items,key){
+    var arr=items.slice().filter(function(d){return (+d[key])>0;}).sort(function(a,b){return (+b[key])-(+a[key]);});
+    var total=arr.reduce(function(s,d){return s+(+d[key]);},0), cum=0, rows=[];
+    for(var i=0;i<arr.length;i++){cum+=(+arr[i][key]);rows.push({item:arr[i],val:+arr[i][key],cumPct:total>0?cum/total*100:0});}
+    var vf=arr.length; for(var j=0;j<rows.length;j++){if(rows[j].cumPct>=80){vf=j+1;break;}}
+    return {rows:rows,total:total,n:arr.length,vitalFew:vf,topShare:function(k){var s=0;for(var x=0;x<k&&x<arr.length;x++)s+=(+arr[x][key]);return total>0?s/total*100:0;}};
+  }
+  /* ── SVG chart helpers (self-contained, no external lib) ── */
+  function svgWaterfall(steps){
+    var W=680,H=280,padT=26,padB=52,padL=8,padR=8,mx=0;
+    steps.forEach(function(s){if(s.value>mx)mx=s.value;}); if(mx<=0)mx=1;
+    var plotH=H-padT-padB,n=steps.length,gap=20,bw=(W-padL-padR-gap*(n-1))/n,y0=padT+plotH;
+    function Y(v){return padT+plotH-(v/mx*plotH);}
+    var run=0,svg='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" font-family="inherit">';
+    for(var i=0;i<n;i++){var s=steps[i],x=padL+i*(bw+gap),top,bot,fill,vtxt;
+      if(s.kind==='base'){run=s.value;top=Y(run);bot=y0;fill='var(--ink)';vtxt=eur(s.value);}
+      else if(s.kind==='neg'){bot=Y(run);run-=s.value;top=Y(run);fill=(s.ad?'var(--cost)':'var(--muted)');vtxt='−'+eur(s.value);}
+      else{top=Y(run);bot=y0;fill=(run>=0?'var(--profit)':'var(--loss)');vtxt=eur(run);}
+      var h=Math.max(1,bot-top);
+      svg+='<rect x="'+x.toFixed(1)+'" y="'+top.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+h.toFixed(1)+'" rx="3" fill="'+fill+'"/>';
+      svg+='<text x="'+(x+bw/2).toFixed(1)+'" y="'+(top-7).toFixed(1)+'" text-anchor="middle" font-size="12" font-weight="700" fill="var(--ink)">'+vtxt+'</text>';
+      svg+='<text x="'+(x+bw/2).toFixed(1)+'" y="'+(H-30).toFixed(1)+'" text-anchor="middle" font-size="11" fill="var(--soft)">'+s.label+'</text>';}
+    return svg+'</svg>';
+  }
+  function svgParetoV(rows,opts){
+    opts=opts||{};var accentN=opts.accentN||0;
+    var W=680,H=300,padT=18,padB=76,padL=8,padR=42;
+    var vals=rows.map(function(r){return +r.value;});
+    var maxV=Math.max.apply(null,vals.concat([0])),minV=Math.min.apply(null,vals.concat([0]));
+    if(maxV===0&&minV===0)maxV=1;var span=(maxV-minV)||1;
+    var plotH=H-padT-padB,plotW=W-padL-padR,n=rows.length,gap=n>1?Math.min(16,plotW/n*0.35):0,bw=(plotW-gap*(n-1))/n;
+    function Y(v){return padT+plotH-((v-minV)/span*plotH);}
+    var yBase=Y(0),sumPos=0;vals.forEach(function(v){if(v>0)sumPos+=v;});if(sumPos<=0)sumPos=1;
+    var svg='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" font-family="inherit">';
+    svg+='<line x1="'+padL+'" y1="'+yBase.toFixed(1)+'" x2="'+(W-padR)+'" y2="'+yBase.toFixed(1)+'" stroke="var(--lineS)"/>';
+    var cum=0,pts=[];
+    for(var i=0;i<n;i++){var v=vals[i],x=padL+i*(bw+gap),top=v>=0?Y(v):yBase,h=Math.max(1,Math.abs(Y(v)-yBase));
+      var fill=v<0?'var(--cost)':(i<accentN?'var(--forest)':'var(--muted)');
+      svg+='<rect x="'+x.toFixed(1)+'" y="'+top.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+h.toFixed(1)+'" rx="2.5" fill="'+fill+'"/>';
+      var lx=(x+bw/2),ly=yBase+15;
+      svg+='<text x="'+lx.toFixed(1)+'" y="'+ly.toFixed(1)+'" text-anchor="end" font-size="10.5" fill="var(--soft)" transform="rotate(-40 '+lx.toFixed(1)+' '+ly.toFixed(1)+')">'+(rows[i].name||'')+'</text>';
+      if(v>0)cum+=v;pts.push([lx,padT+plotH-(cum/sumPos*plotH)]);}
+    var d=pts.map(function(p,idx){return (idx?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1);}).join(' ');
+    svg+='<path d="'+d+'" fill="none" stroke="var(--forest2)" stroke-width="2"/>';
+    pts.forEach(function(p){svg+='<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="2.6" fill="var(--forest2)"/>';});
+    [0,50,100].forEach(function(t){var yy=padT+plotH-(t/100*plotH);svg+='<text x="'+(W-padR+6)+'" y="'+(yy+3).toFixed(1)+'" font-size="10" fill="var(--muted)">'+t+'%</text>';});
+    return svg+'</svg>';
+  }
+  function svgLine(cats,series){
+    var W=680,H=250,padT=16,padB=38,padL=52,padR=14;
+    var all=[];series.forEach(function(s){s.data.forEach(function(v){all.push(v);});});
+    var maxV=Math.max.apply(null,all.concat([0])),minV=Math.min.apply(null,all.concat([0]));
+    if(maxV===minV)maxV=minV+1;var span=(maxV-minV)||1,plotH=H-padT-padB,plotW=W-padL-padR;
+    function X(i){return padL+(cats.length<=1?plotW/2:plotW*i/(cats.length-1));}
+    function Y(v){return padT+plotH-((v-minV)/span*plotH);}
+    var svg='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" font-family="inherit">';
+    if(minV<0){var yz=Y(0);svg+='<line x1="'+padL+'" y1="'+yz.toFixed(1)+'" x2="'+(W-padR)+'" y2="'+yz.toFixed(1)+'" stroke="var(--line)" stroke-dasharray="3 3"/>';}
+    svg+='<text x="'+(padL-8)+'" y="'+(Y(maxV)+4).toFixed(1)+'" text-anchor="end" font-size="10" fill="var(--muted)">'+eurK(maxV)+'</text>';
+    svg+='<text x="'+(padL-8)+'" y="'+(Y(minV)+4).toFixed(1)+'" text-anchor="end" font-size="10" fill="var(--muted)">'+eurK(minV)+'</text>';
+    cats.forEach(function(c,i){svg+='<text x="'+X(i).toFixed(1)+'" y="'+(H-padB+16).toFixed(1)+'" text-anchor="middle" font-size="10.5" fill="var(--soft)">'+c+'</text>';});
+    series.forEach(function(s){var d=s.data.map(function(v,i){return (i?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1);}).join(' ');
+      svg+='<path d="'+d+'" fill="none" stroke="'+s.color+'" stroke-width="2.4"/>';
+      s.data.forEach(function(v,i){svg+='<circle cx="'+X(i).toFixed(1)+'" cy="'+Y(v).toFixed(1)+'" r="3" fill="'+s.color+'"/>';});});
+    return svg+'</svg>';
+  }
+  function stackBar(parts){var tot=parts.reduce(function(s,p){return s+Math.max(0,p.val);},0)||1;
+    var seg=parts.map(function(p){return '<div style="width:'+(Math.max(0,p.val)/tot*100).toFixed(1)+'%;background:'+p.color+'"></div>';}).join('');
+    return '<div style="display:flex;height:26px;border-radius:7px;overflow:hidden;border:1px solid var(--line)">'+seg+'</div>';}
+
+  /* ── layer toggles (delegated; no inline handlers) ── */
+  function setTog(mod,mode){var w=E(mod+'tog');if(!w)return;var bs=w.querySelectorAll('button');for(var i=0;i<bs.length;i++)bs[i].classList.toggle('on',bs[i].getAttribute('data-mode')===mode);}
+  function insLayer(mod,mode){
+    var R=curR;if(!R)return;
+    if(mod==='m3'){var m=R.monthly||[],cats=m.map(function(x){return monLabel(x.ym);}),ser=[];
+      if(mode!=='profit')ser.push({name:'spend',color:'var(--cost)',data:m.map(function(x){return x.cost_eur;})});
+      if(mode!=='spend')ser.push({name:'profit',color:'var(--profit)',data:m.map(function(x){return x.profit_eur;})});
+      E('m3chart').innerHTML=svgLine(cats,ser);setTog('m3',mode);}
+    if(mod==='m10'){var m=R.monthly||[],cats=m.map(function(x){return monLabel(x.ym);}),ser=[];
+      if(mode!=='ppo')ser.push({name:'cpa',color:'var(--cost)',data:m.map(function(x){return x.conversions>0?x.cost_eur/x.conversions:0;})});
+      if(mode!=='cpa')ser.push({name:'ppo',color:'var(--profit)',data:m.map(function(x){return x.conversions>0?x.profit_eur/x.conversions:0;})});
+      E('m10chart').innerHTML=svgLine(cats,ser);setTog('m10',mode);}
+  }
+  view.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-layer]');if(b){insLayer(b.getAttribute('data-layer'),b.getAttribute('data-mode'));}});
+
+  /* ── M2 · The money flow (waterfall) ── */
+  RENDER.m2=function(R){
+    var t=R.totals||{},sales=t.sales_eur||0,cost=t.cost_eur||0,gross=Math.round(sales*0.4),net=gross-cost,per=cost>0?net/cost:0;
+    var steps=[{label:'Revenue',kind:'base',value:sales},{label:'− Product cost',kind:'neg',value:Math.round(sales*0.6)},
+      {label:'= Gross profit',kind:'subtotal',value:gross},{label:'− Ad spend',kind:'neg',value:cost,ad:true},{label:'= Net ad profit',kind:'subtotal',value:net}];
+    return callout('Every <b>€1</b> spent on ads returned <b>'+eurc(per)+'</b> of profit.')
+      +'<div class="ins-chart">'+svgWaterfall(steps)+'</div>'
+      +say('Ads generated <b>'+money(sales)+'</b> in revenue. After the 40% product margin that is <b>'+money(gross)+'</b> of gross profit; taking out <b>'+money(cost)+'</b> of ad spend leaves <b>'+money(net)+'</b> of net advertising profit.');
+  };
+  /* ── M3 · The story so far (monthly, layerable) ── */
+  RENDER.m3=function(R){
+    var m=R.monthly||[];if(!m.length)return '<div class="ins-todo">No monthly data in range.</div>';
+    var cats=m.map(function(x){return monLabel(x.ym);});
+    var ser=[{name:'spend',color:'var(--cost)',data:m.map(function(x){return x.cost_eur;})},{name:'profit',color:'var(--profit)',data:m.map(function(x){return x.profit_eur;})}];
+    var best=m[0],worst=m[0];m.forEach(function(x){if(x.profit_eur>best.profit_eur)best=x;if(x.profit_eur<worst.profit_eur)worst=x;});
+    var last=m[m.length-1];
+    var story='Monthly profit peaked at <b>'+money(best.profit_eur)+'</b> in <b>'+monLabel(best.ym)+'</b>'+(worst!==best?(' and was weakest at <b>'+money(worst.profit_eur)+'</b> in <b>'+monLabel(worst.ym)+'</b>'):'')+'. The latest month ('+monLabel(last.ym)+') delivered <b>'+money(last.profit_eur)+'</b> on <b>'+money(last.cost_eur)+'</b> of spend.';
+    var tog='<div style="display:flex;justify-content:flex-end;margin-bottom:6px"><div class="ins-toggle" id="m3tog"><button class="on" data-layer="m3" data-mode="both">Both</button><button data-layer="m3" data-mode="profit">Profit</button><button data-layer="m3" data-mode="spend">Ad spend</button></div></div>';
+    return tog+'<div class="ins-chart" id="m3chart">'+svgLine(cats,ser)+'</div>'+legend2('Ad spend','var(--cost)','Profit','var(--profit)')+say(story);
+  };
+  /* ── M4 · Where your money went (markets Pareto) ── */
+  RENDER.m4=function(R){
+    var mk=(R.by_market||[]).map(function(m){return {name:humanCountry(m.account_name),cost:m.cost_eur,value:m.profit_eur,sales:m.sales_eur,conv:m.conversions};});
+    mk.sort(function(a,b){return b.value-a.value;});
+    if(!mk.length)return '<div class="ins-todo">No market data in range.</div>';
+    var conc=concentration(mk,'value');
+    var topPct=conc.topShare(conc.vitalFew);
+    var losers=mk.filter(function(x){return x.value<0;});
+    var loss=losers.reduce(function(s,x){return s+x.value;},0);
+    var co=callout('<b>'+conc.vitalFew+' of '+mk.length+'</b> markets generate <b>'+Math.round(topPct)+'%</b> of all advertising profit.');
+    var loseTxt=losers.length?(' '+losers.length+' market'+(losers.length>1?'s':'')+' lost money ('+money(-loss)+' combined, shown in red).'):'';
+    var rowsTbl=mk.map(function(x){var roas=x.cost>0?(x.sales/x.cost):0;return '<tr><td class="l">'+x.name+'</td><td>'+money(x.cost)+'</td><td>'+money(x.sales)+'</td><td style="color:'+(x.value<0?'var(--cost)':'var(--profit)')+'">'+money(x.value)+'</td><td>'+roas.toFixed(2)+'×</td></tr>';}).join('');
+    var dd='<details class="ins-details"><summary>All markets</summary><table class="ins-tbl"><thead><tr><th class="l">Market</th><th>Spend</th><th>Sales</th><th>Profit</th><th>ROAS</th></tr></thead><tbody>'+rowsTbl+'</tbody></table></details>';
+    return co+'<div class="ins-chart">'+svgParetoV(mk,{accentN:conc.vitalFew})+'</div>'+say('Profit is concentrated in a handful of markets.'+loseTxt)+dd;
+  };
+  /* ── M5 · Brand vs. growth spending ── */
+  RENDER.m5=function(R){
+    var bs=R.brand_split||{brand:{},growth:{}},b=bs.brand||{},g=bs.growth||{};
+    var bc=b.cost_eur||0,gc=g.cost_eur||0,tc=bc+gc||1;
+    var bp=b.profit_eur||0,gp=g.profit_eur||0;
+    var bRoas=bc>0?(b.sales_eur/bc):0,gRoas=gc>0?(g.sales_eur/gc):0;
+    var mult=gRoas>0?(bRoas/gRoas):0;
+    var pct=function(v){return Math.round(v/tc*100);};
+    var co=callout('Brand searches are <b>'+(mult>0?mult.toFixed(1)+'×':'much')+'</b> more efficient than growth — but growth is where new customers come from.');
+    var bars='<div style="margin:6px 0 2px"><div style="font-size:12px;color:var(--soft);font-weight:600;margin-bottom:4px">Ad spend — Brand '+pct(bc)+'% · Growth '+(100-pct(bc))+'%</div>'
+      +stackBar([{label:'Brand',val:bc,color:'var(--forest)'},{label:'Growth',val:gc,color:'var(--muted)'}])+'</div>'
+      +'<div style="margin:12px 0 2px"><div style="font-size:12px;color:var(--soft);font-weight:600;margin-bottom:4px">Profit — Brand '+money(bp)+' · Growth '+money(gp)+'</div>'
+      +stackBar([{label:'Brand',val:Math.max(0,bp),color:'var(--forest)'},{label:'Growth',val:Math.max(0,gp),color:'var(--muted)'}])+'</div>';
+    return co+bars+legend2('Brand (people already searching FloraQueen)','var(--forest)','Growth (winning new customers)','var(--muted)')
+      +say('<b>Brand</b> is people already looking for FloraQueen — cheap to win (ROAS <b>'+bRoas.toFixed(1)+'×</b>). <b>Growth</b> is everything working to win new customers (non-brand search, PMax, Shopping) at ROAS <b>'+gRoas.toFixed(1)+'×</b>. Brand took <b>'+pct(bc)+'%</b> of spend and returned <b>'+money(bp)+'</b> profit.');
+  };
+  /* ── M6 · Your champions ── */
+  RENDER.m6=function(R){
+    var allc=(R.by_campaign||[]);
+    var cs=allc.filter(function(c){return c.profit_eur>0;}).map(function(c){return {name:humanCampaign(c.campaign_name),acct:humanCountry(c.account_name),value:c.profit_eur,cost:c.cost_eur,sales:c.sales_eur};});
+    cs.sort(function(a,b){return b.value-a.value;});
+    if(!cs.length)return '<div class="ins-todo">No profitable campaigns in range.</div>';
+    var conc=concentration(cs,'value'),top=cs.slice(0,12);
+    var co=callout('<b>'+conc.vitalFew+'</b> of your '+allc.length+' campaigns ('+Math.round(conc.vitalFew/allc.length*100)+'% of them) generate <b>'+Math.round(conc.topShare(conc.vitalFew))+'%</b> of all profit.');
+    var chartRows=top.map(function(c){return {name:(c.name||'').slice(0,20),value:c.value};});
+    var tbl=top.map(function(c,i){return '<tr><td class="l">'+(i+1)+'. '+c.name+'</td><td class="l">'+c.acct+'</td><td>'+money(c.cost)+'</td><td style="color:var(--profit)">'+money(c.value)+'</td></tr>';}).join('');
+    var dd='<details class="ins-details"><summary>Top champions</summary><table class="ins-tbl"><thead><tr><th class="l">Campaign</th><th class="l">Market</th><th>Spend</th><th>Profit</th></tr></thead><tbody>'+tbl+'</tbody></table></details>';
+    return co+'<div class="ins-chart">'+svgParetoV(chartRows,{accentN:Math.min(conc.vitalFew,12)})+'</div>'+say('These campaigns are your profit engine — named by theme and market.')+dd;
+  };
+  /* ── M7 · The leaks ── */
+  RENDER.m7=function(R){
+    var lk=R.leaks||{},waste=lk.total_waste_eur||0,net=lk.net_loss_eur||0,zc=lk.zero_conv_eur||0,nc=lk.waste_campaigns||0;
+    var by=(lk.by_campaign||[]).map(function(c){return {name:humanCampaign(c.campaign_name),value:c.loss_eur,cost:c.cost_eur};});
+    var chart='',co;
+    if(by.length){var conc=concentration(by,'value'),top=by.slice(0,12);
+      co=callout('<b>'+Math.round(conc.topShare(conc.vitalFew))+'%</b> of wasted spend comes from just <b>'+conc.vitalFew+'</b> campaign'+(conc.vitalFew>1?'s':'')+'.');
+      chart='<div class="ins-chart">'+svgParetoV(top.map(function(c){return {name:(c.name||'').slice(0,20),value:c.value};}),{accentN:conc.vitalFew})+'</div>';
+    } else { co=callout('No campaigns ran below breakeven this period.'); }
+    var zcTxt=zc>0?(', including <b>'+money(zc)+'</b> on keywords with zero sales'):'';
+    var acct=say('<b>'+money(waste)+'</b> was spent on activity that returned less than it cost — a net drag of <b>'+money(net)+'</b> on profit'+zcTxt+'. '+nc+' campaign'+(nc!==1?'s':'')+' ran below breakeven.');
+    return co+chart+acct+'<p class="ins-note">Cannibalisation and brand-bleed are not yet measured in the warehouse, so they are excluded from this figure.</p>';
+  };
+  /* ── M8 · Untapped opportunity (estimate) ── */
+  RENDER.m8=function(R){
+    var op=R.opportunity||{},up=op.est_upside_eur||0,cnt=op.candidate_count||0,cand=op.candidates||[];
+    if(!cand.length)return callout('No obvious scale opportunities flagged this period.')+say('Your profitable campaigns are already capturing most of the demand available to them.');
+    var top=cand.slice(0,8),top5=cand.slice(0,5).reduce(function(s,c){return s+(c.est||0);},0);
+    var co=callout('Scaling the top <b>'+Math.min(5,cand.length)+'</b> opportunities could add roughly <b>'+money(top5)+'</b> more profit.');
+    var rows=top.map(function(c){return '<tr><td class="l">'+(humanCampaign(c.campaign_name)||'').slice(0,28)+'</td><td class="l">'+humanCountry(c.account_name)+'</td><td>'+c.roas+'×</td><td>'+c.is_lost_pct+'%</td><td style="color:var(--profit)">+'+money(c.est)+'</td></tr>';}).join('');
+    var tbl='<table class="ins-tbl"><thead><tr><th class="l">Campaign</th><th class="l">Market</th><th>ROAS</th><th>Demand missed</th><th>Est. upside</th></tr></thead><tbody>'+rows+'</tbody></table>';
+    return co+tbl+say('These are already-profitable campaigns losing auctions to budget or rank limits. Total estimated upside <b>'+money(up)+'</b> across '+cnt+' campaigns.')+'<p class="ins-note">Estimate — based on the share of impressions these campaigns are missing, not a guaranteed result.</p>';
+  };
+  /* ── M9 · Seasonality & moments (within-2026) ── */
+  var OCC=[{d:'2026-02-14',t:'Valentine'},{d:'2026-03-15',t:'Mothering Sunday · UK'},{d:'2026-04-23',t:'Sant Jordi · ES'},{d:'2026-05-03',t:'Mother Day · ES'},{d:'2026-05-10',t:'Mother Day · US/DE/IT'},{d:'2026-05-31',t:'Mother Day · FR'}];
+  function wkShort(d){var p=(d||'').split('-');return p[1]?(MON[(+p[1])-1]+' '+(+p[2])):d;}
+  function occInRange(rg){if(!rg)return [];return OCC.filter(function(o){return o.d>=rg[0]&&o.d<=rg[1];});}
+  RENDER.m9=function(R){
+    var wk=R.weekly||[];if(!wk.length)return '<div class="ins-todo">No weekly data in range.</div>';
+    var conc=concentration(wk.map(function(w){return {v:w.profit_eur};}),'v');
+    var cats=wk.map(function(w,i){return (i%3===0)?wkShort(w.wk_start):'';});
+    var ser=[{name:'profit',color:'var(--profit)',data:wk.map(function(w){return w.profit_eur;})}];
+    var occ=occInRange(R._range);
+    var occHtml=occ.length?('<div class="ins-legend" style="margin-top:10px">'+occ.map(function(o){return '<span>◆ <b>'+o.t+'</b> · '+wkShort(o.d)+'</span>';}).join('')+'</div>'):'';
+    var co=callout('<b>'+conc.vitalFew+'</b> of '+wk.length+' weeks produced <b>'+Math.round(conc.topShare(conc.vitalFew))+'%</b> of the period profit.');
+    return co+'<div class="ins-chart">'+svgLine(cats,ser)+'</div>'+occHtml+say('Flower demand is highly seasonal — a few gifting weeks carry the rest.')+'<p class="ins-note">Within-2026 only — there is no prior-year baseline yet, so no year-over-year comparison.</p>';
+  };
+  /* ── M10 · Efficiency over time (layerable) ── */
+  RENDER.m10=function(R){
+    var m=R.monthly||[];if(!m.length)return '<div class="ins-todo">No monthly data in range.</div>';
+    var cats=m.map(function(x){return monLabel(x.ym);});
+    var cpa=m.map(function(x){return x.conversions>0?x.cost_eur/x.conversions:0;});
+    var ppo=m.map(function(x){return x.conversions>0?x.profit_eur/x.conversions:0;});
+    var ser=[{name:'cpa',color:'var(--cost)',data:cpa},{name:'ppo',color:'var(--profit)',data:ppo}];
+    var f=cpa[0],l=cpa[cpa.length-1],dir=l<f?'improving':'rising';
+    var co=callout('Latest month: cost per order <b>'+eur(l)+'</b>, profit per order <b>'+eur(ppo[ppo.length-1])+'</b>.');
+    var tog='<div style="display:flex;justify-content:flex-end;margin-bottom:6px"><div class="ins-toggle" id="m10tog"><button class="on" data-layer="m10" data-mode="both">Both</button><button data-layer="m10" data-mode="ppo">Profit/order</button><button data-layer="m10" data-mode="cpa">Cost/order</button></div></div>';
+    return tog+co+'<div class="ins-chart" id="m10chart">'+svgLine(cats,ser)+'</div>'+legend2('Cost per order','var(--cost)','Profit per order','var(--profit)')+say('Are we getting better at turning ad money into profit? Cost per order went from <b>'+eur(f)+'</b> to <b>'+eur(l)+'</b> ('+dir+').');
+  };
+  /* ── M11 · Max's verdict (synthesised from computed stats, ranked by € impact) ── */
+  RENDER.m11=function(R){
+    var t=R.totals||{},p=R.prev,wins=[],concerns=[],actions=[];
+    var mk=(R.by_market||[]),bs=R.brand_split||{},lk=R.leaks||{},op=R.opportunity||{};
+    // wins
+    if((t.profit_eur||0)>0)wins.push({e:t.profit_eur,h:'Advertising is profitable — <b>'+money(t.profit_eur)+'</b> net profit at <b>'+(t.roas!=null?(t.roas*0.4).toFixed(2):'—')+'×</b> profit-on-ad-spend (breakeven 1.0).'});
+    var topM=mk.slice().sort(function(a,b){return b.profit_eur-a.profit_eur;})[0];
+    if(topM&&topM.profit_eur>0)wins.push({e:topM.profit_eur,h:'<b>'+humanCountry(topM.account_name)+'</b> is your strongest market at <b>'+money(topM.profit_eur)+'</b> profit.'});
+    if(bs.brand&&bs.brand.profit_eur>0){var br=bs.brand.cost_eur>0?bs.brand.sales_eur/bs.brand.cost_eur:0;wins.push({e:bs.brand.profit_eur,h:'Brand demand returns <b>'+money(bs.brand.profit_eur)+'</b> at <b>'+br.toFixed(1)+'×</b> ROAS — loyal, low-cost revenue.'});}
+    if(bs.growth&&bs.growth.profit_eur>0)wins.push({e:bs.growth.profit_eur,h:'Growth (new-customer) advertising is net positive at <b>'+money(bs.growth.profit_eur)+'</b> profit.'});
+    // concerns
+    var losers=mk.filter(function(x){return x.profit_eur<0;});
+    if(losers.length){var ll=losers.reduce(function(s,x){return s+x.profit_eur;},0);concerns.push({e:-ll,h:'<b>'+money(-ll)+'</b> lost across '+losers.length+' market'+(losers.length>1?'s':'')+' ('+losers.slice().sort(function(a,b){return a.profit_eur-b.profit_eur;}).map(function(x){return humanCountry(x.account_name);}).slice(0,3).join(', ')+').'});}
+    if((lk.total_waste_eur||0)>0)concerns.push({e:lk.total_waste_eur,h:'<b>'+money(lk.total_waste_eur)+'</b> spent below breakeven across '+(lk.waste_campaigns||0)+' campaigns.'});
+    if(p&&p.profit_eur!=null&&(t.profit_eur||0)<p.profit_eur){var drop=p.profit_eur-t.profit_eur;concerns.push({e:drop,h:'Profit is down <b>'+money(drop)+'</b> ('+Math.round((t.profit_eur-p.profit_eur)/Math.abs(p.profit_eur)*100)+'%) versus the prior period.'});}
+    // actions (biggest lever first)
+    if((op.est_upside_eur||0)>0){var c0=(op.candidates||[])[0];actions.push({e:op.est_upside_eur,h:'Scale your rank/budget-limited winners'+(c0?(', starting with <b>'+humanCampaign(c0.campaign_name)+'</b> ('+humanCountry(c0.account_name)+')'):'')+' — about <b>'+money(op.est_upside_eur)+'</b> of profit within reach.'});}
+    if((lk.net_loss_eur||0)>0){var c1=(lk.by_campaign||[])[0];actions.push({e:lk.net_loss_eur,h:'Fix or cut the '+(lk.waste_campaigns||0)+' below-breakeven campaigns'+(c1?(', worst is <b>'+humanCampaign(c1.campaign_name)+'</b>'):'')+' — recover up to <b>'+money(lk.net_loss_eur)+'</b>.'});}
+    if(losers.length){var w=losers.slice().sort(function(a,b){return a.profit_eur-b.profit_eur;})[0];actions.push({e:-w.profit_eur,h:'Review <b>'+humanCountry(w.account_name)+'</b> — it lost <b>'+money(-w.profit_eur)+'</b>. Cut, restructure, or lower targets.'});}
+    function top3(a){return a.sort(function(x,y){return y.e-x.e;}).slice(0,3);}
+    function li(items,cls,ic){return '<ul class="ins-vlist '+cls+'">'+(items.length?items.map(function(it){return '<li><span class="ins-vic">'+ic+'</span>'+it.h+'</li>';}).join(''):'<li style="color:var(--muted)">Nothing notable this period.</li>')+'</ul>';}
+    return '<div class="ins-verdict">'
+      +'<div class="ins-vcol"><h4 class="ins-vh good">Going well</h4>'+li(top3(wins),'good','✔')+'</div>'
+      +'<div class="ins-vcol"><h4 class="ins-vh bad">To watch</h4>'+li(top3(concerns),'bad','!')+'</div>'
+      +'<div class="ins-vcol"><h4 class="ins-vh act">Do next</h4>'+li(top3(actions),'act','→')+'</div>'
+      +'</div>'+say('Ranked by euro impact — the biggest levers first. Every figure is computed from the data above.');
+  };
 })();
 
 async function adminApi(action,body){const r=await fetch(FN+"?api=admin&action="+action,{method:body?"POST":"GET",headers:Object.assign({Authorization:"Bearer "+tok},body?{"Content-Type":"application/json"}:{}),body:body?JSON.stringify(body):undefined});const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||("HTTP "+r.status));return j;}
