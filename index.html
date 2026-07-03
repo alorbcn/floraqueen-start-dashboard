@@ -208,6 +208,22 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
 .kwbtable th{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
 .kwbtable td.r,.kwbtable th.r{text-align:right}
 .actopt{padding:9px 11px;border-radius:8px;font-size:13px;font-weight:600;color:var(--soft);cursor:pointer}
+.actsep{height:1px;background:var(--lineS);margin:5px 6px}
+.arbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:14px 0 4px}
+.arinput{width:70px;padding:7px 9px;border:1px solid var(--lineS);border-radius:8px;font:inherit;font-size:13px;text-align:center;color:var(--ink)}
+.gobtn{border:0;border-radius:9px;background:var(--forest);color:#fff;font:inherit;font-weight:600;font-size:13px;padding:8px 20px;cursor:pointer}.gobtn:hover{background:#14513a}
+.arpanel{margin-top:16px}
+.arh{font-family:Fraunces;font-weight:600;font-size:16px;margin:0 2px 6px}
+.artable{width:100%;border-collapse:collapse}
+.artable th{font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700;text-align:right;padding:8px 10px;background:var(--s2)}
+.artable th.l{text-align:left}
+.artable td{padding:7px 10px;border-top:1px solid var(--line);font-size:12px;font-variant-numeric:tabular-nums;text-align:right}
+.artable td.l{text-align:left}
+.artable td.kwn{font-weight:600;color:#0C100D;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.artable .pos{color:var(--profit);font-weight:600}.artable .neg{color:var(--loss);font-weight:600}
+.arload{padding:20px;color:var(--muted)}
+.arok{padding:18px 20px;color:var(--profit);font-weight:600;background:rgba(31,138,95,.06);border-radius:12px;margin-top:14px}
+.armgrain{margin-top:20px}.armcols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .actopt:hover{background:rgba(184,69,107,.1);color:var(--rose)}
 .optbtn{font:inherit;font-size:11px;font-weight:700;padding:4px 9px;border-radius:7px;border:1px solid var(--rose);background:#fff;color:var(--rose);cursor:pointer;white-space:nowrap}
 .optbtn:hover{background:var(--rose);color:#fff}
@@ -278,7 +294,7 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
       <div class="wbsel"><button class="wbselbtn" id="wb-pmaxbtn"><span class="lbltxt" id="wb-pmaxlabel">All PMax</span><span class="ca">▾</span></button><div class="wbdd" id="wb-pmaxdd"></div></div>
       <div class="wbsel"><button class="wbselbtn" id="wb-shopbtn"><span class="lbltxt" id="wb-shoplabel">All Shopping</span><span class="ca">▾</span></button><div class="wbdd" id="wb-shopdd"></div></div>
     </nav>
-    <div class="wbtools"><div class="wbsel"><button class="wbselbtn" id="wb-shipbtn"><span class="lbltxt" id="wb-shiplabel">All shipping</span><span class="ca">▾</span></button><div class="wbdd" id="wb-shipdd"></div></div><div class="wbsel"><button class="wbselbtn" id="wb-billbtn"><span class="lbltxt" id="wb-billlabel">All billing</span><span class="ca">▾</span></button><div class="wbdd" id="wb-billdd"></div></div><span class="acttabwrap"><a class="dlink acttab" id="acttab">Action <span style="font-size:10px">▾</span></a><div class="actdd" id="actdd"><div class="actopt" data-lvl="campaign">Optimize campaigns</div><div class="actopt" data-lvl="adgroup">Optimize ad groups</div><div class="actopt" data-lvl="keyword">Optimize keywords</div></div></span></div>
+    <div class="wbtools"><div class="wbsel"><button class="wbselbtn" id="wb-shipbtn"><span class="lbltxt" id="wb-shiplabel">All shipping</span><span class="ca">▾</span></button><div class="wbdd" id="wb-shipdd"></div></div><div class="wbsel"><button class="wbselbtn" id="wb-billbtn"><span class="lbltxt" id="wb-billlabel">All billing</span><span class="ca">▾</span></button><div class="wbdd" id="wb-billdd"></div></div><span class="acttabwrap"><a class="dlink acttab" id="acttab">Action <span style="font-size:10px">▾</span></a><div class="actdd" id="actdd"><div class="actopt" data-lvl="campaign">Optimize campaigns</div><div class="actopt" data-lvl="adgroup">Optimize ad groups</div><div class="actopt" data-lvl="keyword">Optimize keywords</div><div class="actsep"></div><div class="actopt" data-lvl="roas">ROAS &lt; …</div><div class="actopt" data-lvl="movers">Top to bottom</div><div class="actopt" data-lvl="budget">Budget limit</div><div class="actopt" data-lvl="zeroconv">Zero sales keywords</div></div></span></div>
     </div></header>
   <div id="kwview">
   <nav class="nav">
@@ -326,6 +342,25 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
         <table><thead><tr><th class="l">#</th><th class="l">Name</th><th class="l">Type</th><th>Cost</th><th>Sales</th><th>Profit</th><th></th></tr></thead><tbody id="act-best"></tbody></table></div>
       <div class="panel worst"><div class="ph"><div class="pt"><span class="dot"></span><span id="act-worsttitle">Worst 20</span></div></div>
         <table><thead><tr><th class="l">#</th><th class="l">Name</th><th class="l">Type</th><th>Cost</th><th>Sales</th><th>Profit</th><th></th></tr></thead><tbody id="act-worst"></tbody></table></div>
+    </div>
+    <div id="ar-roas" class="hidden">
+      <div class="sec"><h2>ROAS below threshold</h2><span class="ctx" id="roas-ctx"></span><span class="rule"></span></div>
+      <div class="arbar"><span class="kwslbl">ROAS &lt;</span><input type="number" id="roas-x" class="arinput" value="2.5" step="0.1" min="0"><span class="kwslbl">in last</span><input type="number" id="roas-w" class="arinput" value="4" min="1" max="26"><span class="kwslbl">weeks</span><button class="gobtn" id="roas-go">Go</button></div>
+      <div id="roas-out"></div>
+    </div>
+    <div id="ar-movers" class="hidden">
+      <div class="sec"><h2>Top to bottom &middot; profit movers</h2><span class="ctx" id="movers-ctx"></span><span class="rule"></span></div>
+      <div id="movers-out"></div>
+    </div>
+    <div id="ar-budget" class="hidden">
+      <div class="sec"><h2>Budget limit</h2><span class="ctx" id="budget-ctx"></span><span class="rule"></span></div>
+      <div class="arbar"><span class="kwslbl">in last</span><input type="number" id="budget-w" class="arinput" value="2" min="1" max="26"><span class="kwslbl">weeks &middot; flag campaigns spending &ge; 20% over daily budget</span><button class="gobtn" id="budget-go">Go</button></div>
+      <div id="budget-out"></div>
+    </div>
+    <div id="ar-zero" class="hidden">
+      <div class="sec"><h2>Zero-conversion keywords</h2><span class="ctx" id="zero-ctx"></span><span class="rule"></span></div>
+      <div class="arbar"><span class="kwslbl">in last</span><input type="number" id="zero-w" class="arinput" value="4" min="1" max="26"><span class="kwslbl">weeks</span><button class="gobtn" id="zero-go">Go</button></div>
+      <div id="zero-out"></div>
     </div>
     <div id="kwsheet" class="hidden">
       <div class="kwsbar">
@@ -797,6 +832,7 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
     sel.addEventListener("change",function(){show(this.value);});
     show("SCALE");
   })();
+  var AR_NEW=['roas','movers','budget','zeroconv'];
   function showAction(lvl){
     actLvl=lvl;
     document.querySelectorAll('.dashnav .dlink').forEach(function(x){x.classList.remove('active','wbon');});
@@ -804,12 +840,75 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
     document.getElementById("kwview").classList.add("hidden");
     var wv=document.getElementById("weeklyview");if(wv)wv.classList.add("hidden");
     document.getElementById("actionview").classList.remove("hidden");
-    var isKw=(lvl==="keyword");
-    document.getElementById("actgrid").classList.toggle("hidden",isKw);
-    document.getElementById("kwsheet").classList.toggle("hidden",!isKw);
-    if(isKw){ kwInit(); } else { loadList(lvl); }
+    ['actgrid','kwsheet','ar-roas','ar-movers','ar-budget','ar-zero'].forEach(function(id){var e=document.getElementById(id);if(e)e.classList.add('hidden');});
+    var sh=document.getElementById('act-sec'); if(sh&&sh.parentElement)sh.parentElement.classList.toggle('hidden',AR_NEW.indexOf(lvl)>=0);
+    if(lvl==="keyword"){document.getElementById("kwsheet").classList.remove("hidden");kwInit();}
+    else if(lvl==="campaign"||lvl==="adgroup"){document.getElementById("actgrid").classList.remove("hidden");loadList(lvl);}
+    else if(lvl==="roas"){document.getElementById("ar-roas").classList.remove("hidden");loadRoas();}
+    else if(lvl==="movers"){document.getElementById("ar-movers").classList.remove("hidden");loadMovers();}
+    else if(lvl==="budget"){document.getElementById("ar-budget").classList.remove("hidden");loadBudget();}
+    else if(lvl==="zeroconv"){document.getElementById("ar-zero").classList.remove("hidden");loadZero();}
   }
   function hideAction(){tab.classList.remove('on');document.getElementById("actionview").classList.add("hidden");}
+  // ── Action reports (advisory, read-only) ──
+  var arE=function(n){return Math.round(+n||0).toLocaleString('en-US')+' €';};
+  var arX=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');};
+  var arSeq=0;
+  function arSection(title,cols,rows,cell){
+    var head='<tr>'+cols.map(function(c){return '<th'+(c.r?'':' class="l"')+'>'+c.h+'</th>';}).join('')+'</tr>';
+    var body=(rows&&rows.length)?rows.map(cell).join(''):'<tr><td class="l" colspan="'+cols.length+'" style="padding:14px;color:var(--muted)">None.</td></tr>';
+    return '<div class="arpanel">'+(title?'<div class="arh">'+title+'</div>':'')+'<table class="artable"><thead>'+head+'</thead><tbody>'+body+'</tbody></table></div>';
+  }
+  function arErr(id,m){document.getElementById(id).innerHTML='<div class="arload" style="color:var(--cost)">Error: '+m+'</div>';}
+  function loadRoas(){
+    var x=+document.getElementById('roas-x').value||2.5, w=Math.max(1,Math.min(26,Math.floor(+document.getElementById('roas-w').value||4)));
+    var out=document.getElementById('roas-out'); out.innerHTML='<div class="arload">Loading…</div>'; var s=++arSeq;
+    fetch(FN+'?api=roas_under&roas='+x+'&weeks='+w,{headers:{Authorization:'Bearer '+tok}}).then(chk401).then(function(r){return r.json();}).then(function(j){
+      if(s!==arSeq)return; if(j.error){arErr('roas-out',j.error);return;}
+      document.getElementById('roas-ctx').textContent='ROAS < '+x+' · '+j.range[0]+' → '+j.range[1]+' · active only';
+      var C=[{h:'Name'},{h:'Account / Campaign'},{h:'Cost',r:1},{h:'Sales',r:1},{h:'ROAS',r:1}];
+      function cell(r){return '<tr><td class="l kwn">'+arX(r.name)+'</td><td class="l">'+arX(r.parent)+'</td><td class="r">'+arE(r.cost)+'</td><td class="r">'+arE(r.sales)+'</td><td class="r neg">'+(r.roas!=null?(+r.roas).toFixed(2):'—')+'×</td></tr>';}
+      out.innerHTML=arSection('Campaigns ('+(j.campaigns||[]).length+')',C,j.campaigns,cell)+arSection('Ad groups ('+(j.adgroups||[]).length+')',C,j.adgroups,cell)+arSection('Keywords — top 100 by spend ('+(j.keywords||[]).length+')',C,j.keywords,cell);
+    }).catch(function(e){arErr('roas-out',e.message);});
+  }
+  function loadMovers(){
+    var out=document.getElementById('movers-out'); out.innerHTML='<div class="arload">Loading…</div>'; var s=++arSeq;
+    fetch(FN+'?api=movers',{headers:{Authorization:'Bearer '+tok}}).then(chk401).then(function(r){return r.json();}).then(function(j){
+      if(s!==arSeq)return; if(j.error){arErr('movers-out',j.error);return;}
+      document.getElementById('movers-ctx').textContent='Last week '+j.weekA[0]+'→'+j.weekA[1]+' vs previous '+j.weekB[0]+'→'+j.weekB[1]+' · profit Δ · active, spend ≥ €10';
+      var C=[{h:'Name'},{h:'Account'},{h:'Prev',r:1},{h:'Last',r:1},{h:'Δ Profit',r:1}];
+      function cell(r){return '<tr><td class="l kwn">'+arX(r.name)+'</td><td class="l">'+arX(r.parent)+'</td><td class="r">'+arE(r.pB)+'</td><td class="r">'+arE(r.pA)+'</td><td class="r '+(r.delta>=0?'pos':'neg')+'">'+(r.delta>=0?'+':'')+arE(r.delta)+'</td></tr>';}
+      function grain(t,d){return '<div class="armgrain"><div class="arh">'+t+'</div><div class="armcols">'+arSection('▲ Gained',C,d&&d.gain,cell)+arSection('▼ Lost',C,d&&d.lose,cell)+'</div></div>';}
+      out.innerHTML=grain('Campaigns',j.campaign)+grain('Ad groups',j.adgroup)+grain('Keywords',j.keyword);
+    }).catch(function(e){arErr('movers-out',e.message);});
+  }
+  function loadBudget(){
+    var w=Math.max(1,Math.min(26,Math.floor(+document.getElementById('budget-w').value||2)));
+    var out=document.getElementById('budget-out'); out.innerHTML='<div class="arload">Loading…</div>'; var s=++arSeq;
+    fetch(FN+'?api=budget_over&weeks='+w,{headers:{Authorization:'Bearer '+tok}}).then(chk401).then(function(r){return r.json();}).then(function(j){
+      if(s!==arSeq)return; if(j.error){arErr('budget-out',j.error);return;}
+      document.getElementById('budget-ctx').textContent='avg daily spend ≥ 1.2× daily budget · '+j.range[0]+' → '+j.range[1]+' · active only';
+      var rows=j.rows||[];
+      if(!rows.length){out.innerHTML='<div class="arok">✓ No campaigns spending ≥20% over their daily budget in this window.</div>';return;}
+      var C=[{h:'Campaign'},{h:'Account'},{h:'Avg daily',r:1},{h:'Daily budget',r:1},{h:'% of budget',r:1},{h:'Total spend',r:1}];
+      function cell(r){return '<tr><td class="l kwn">'+arX(r.name)+'</td><td class="l">'+arX(r.parent)+'</td><td class="r">'+arE(r.avgDaily)+'</td><td class="r">'+arE(r.budget)+'</td><td class="r neg">'+(r.ratio!=null?Math.round(r.ratio*100):'—')+'%</td><td class="r">'+arE(r.spend)+'</td></tr>';}
+      out.innerHTML=arSection('Over-budget campaigns ('+rows.length+')',C,rows,cell);
+    }).catch(function(e){arErr('budget-out',e.message);});
+  }
+  function loadZero(){
+    var w=Math.max(1,Math.min(26,Math.floor(+document.getElementById('zero-w').value||4)));
+    var out=document.getElementById('zero-out'); out.innerHTML='<div class="arload">Loading…</div>'; var s=++arSeq;
+    fetch(FN+'?api=zero_conv&weeks='+w,{headers:{Authorization:'Bearer '+tok}}).then(chk401).then(function(r){return r.json();}).then(function(j){
+      if(s!==arSeq)return; if(j.error){arErr('zero-out',j.error);return;}
+      document.getElementById('zero-ctx').textContent=(j.total||0)+' active keywords with 0 conversions · '+j.range[0]+' → '+j.range[1]+((j.total||0)>(j.rows||[]).length?' · showing top '+(j.rows||[]).length+' by spend':'');
+      var C=[{h:'Keyword'},{h:'Match'},{h:'Account'},{h:'Campaign'},{h:'Ad group'},{h:'Cost',r:1},{h:'Clicks',r:1}];
+      function cell(r){return '<tr><td class="l kwn">'+arX(r.kw)+'</td><td class="l">'+arX(r.match)+'</td><td class="l">'+arX(r.account)+'</td><td class="l">'+arX(r.campaign)+'</td><td class="l">'+arX(r.adgroup)+'</td><td class="r">'+arE(r.cost)+'</td><td class="r">'+(r.clicks||0)+'</td></tr>';}
+      out.innerHTML=arSection('',C,j.rows,cell);
+    }).catch(function(e){arErr('zero-out',e.message);});
+  }
+  var _arGo=document.getElementById('roas-go'); if(_arGo)_arGo.addEventListener('click',loadRoas);
+  _arGo=document.getElementById('budget-go'); if(_arGo)_arGo.addEventListener('click',loadBudget);
+  _arGo=document.getElementById('zero-go'); if(_arGo)_arGo.addEventListener('click',loadZero);
   tab.onclick=function(e){e.stopPropagation();dd.classList.toggle("open");};
   document.addEventListener("click",function(){dd.classList.remove("open");});
   dd.addEventListener("click",function(e){e.stopPropagation();var o=e.target.closest("[data-lvl]");if(o){dd.classList.remove("open");showAction(o.getAttribute("data-lvl"));}});
