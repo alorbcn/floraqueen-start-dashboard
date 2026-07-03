@@ -6,7 +6,12 @@
 :root{--ink:#1A241F;--soft:#4A554E;--muted:#8C8B80;--line:#E6DFD3;--lineS:#D8CFBE;--s2:#FBF8F2;--forest:#1F6B4F;--forest2:#16513b;--rose:#B8456B;--sales:#0C100D;--cost:#C0392B;--profit:#1F8A5F;--loss:#D98324;--sh:0 1px 2px rgba(26,36,31,.04),0 8px 24px rgba(26,36,31,.06)}
 *{box-sizing:border-box;margin:0;padding:0}body{font-family:Archivo,system-ui,sans-serif;background:#fff;color:var(--ink);font-size:14px;line-height:1.45}
 .tnum{font-variant-numeric:tabular-nums}.wrap{max-width:1240px;margin:0 auto;padding:0 28px 64px}
-header.top{display:flex;align-items:center;justify-content:space-between;padding:24px 0 16px}
+header.top{padding:20px 0 14px}
+.hrow{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.hrow.r2{flex-wrap:wrap;margin-top:14px}
+.hrow.r2 .dashnav{flex:1 1 auto}
+.wbtools{display:flex;align-items:center;gap:10px;flex:0 0 auto}
+.wbtools .actdd{left:auto;right:0}
 .brand{display:flex;align-items:baseline;gap:13px}.logo{font-family:Fraunces;font-weight:600;font-size:29px;color:var(--forest2)}.logo .l{color:var(--rose)}
 .dash{font-family:Fraunces;font-style:italic;font-size:19px;color:var(--soft)}.sub{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);border-left:1px solid var(--lineS);padding-left:11px}
 .hwrap{display:flex;align-items:center;gap:16px;flex-wrap:wrap}.hdiv{width:1px;height:26px;background:var(--lineS)}
@@ -261,9 +266,9 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
   <button id="loginbtn">Sign in</button><div class="err" id="lerr"></div></div></div>
 
 <div class="wrap hidden" id="app">
-  <header class="top"><div class="hwrap">
-    <div class="brand"><span class="logo">Max<span class="l">✿</span></span></div>
-    <span class="hdiv"></span>
+  <header class="top">
+    <div class="hrow r1"><div class="brand"><span class="logo">Max<span class="l">✿</span></span></div><div class="badges"><button class="adminbtn hidden" id="adminbtn" title="Admin settings">Admin</button><span class="badge">● Live · read-only</span><span id="who"></span></div></div>
+    <div class="hrow r2">
     <nav class="dashnav">
       <a class="dlink wbtab wbon" data-view="weekly" title="Reset to global — all accounts, all paid media">Week by week</a>
       <div class="wbsel"><button class="wbselbtn" id="wb-acctbtn"><span class="lbltxt" id="wb-acctlabel">All accounts</span><span class="ca">▾</span></button><div class="wbdd" id="wb-dd"></div></div>
@@ -272,8 +277,9 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
       <div class="wbsel"><button class="wbselbtn" id="wb-kwbtn"><span class="lbltxt" id="wb-kwlabel">All keywords</span><span class="ca">▾</span></button><div class="wbdd" id="wb-kwdd"></div></div>
       <div class="wbsel"><button class="wbselbtn" id="wb-pmaxbtn"><span class="lbltxt" id="wb-pmaxlabel">All PMax</span><span class="ca">▾</span></button><div class="wbdd" id="wb-pmaxdd"></div></div>
       <div class="wbsel"><button class="wbselbtn" id="wb-shopbtn"><span class="lbltxt" id="wb-shoplabel">All Shopping</span><span class="ca">▾</span></button><div class="wbdd" id="wb-shopdd"></div></div>
-    </nav></div>
-    <div class="badges"><button class="adminbtn hidden" id="adminbtn" title="Admin settings">Admin</button><span class="badge">● Live · read-only</span><span id="who"></span></div></header>
+    </nav>
+    <div class="wbtools"><div class="wbsel"><button class="wbselbtn" id="wb-shipbtn"><span class="lbltxt" id="wb-shiplabel">All shipping</span><span class="ca">▾</span></button><div class="wbdd" id="wb-shipdd"></div></div><div class="wbsel"><button class="wbselbtn" id="wb-billbtn"><span class="lbltxt" id="wb-billlabel">All billing</span><span class="ca">▾</span></button><div class="wbdd" id="wb-billdd"></div></div><span class="acttabwrap"><a class="dlink acttab" id="acttab">Action <span style="font-size:10px">▾</span></a><div class="actdd" id="actdd"><div class="actopt" data-lvl="campaign">Optimize campaigns</div><div class="actopt" data-lvl="adgroup">Optimize ad groups</div><div class="actopt" data-lvl="keyword">Optimize keywords</div></div></span></div>
+    </div></header>
   <div id="kwview">
   <nav class="nav">
     <div class="grp"><div class="acctzone">
@@ -310,13 +316,6 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
   <footer><b>Source:</b> Google Ads warehouse — top totals from campaign_metrics (all campaign types, matches Max email); keyword detail from keyword_metrics · margin 40% (profit = estimate) · EUR · Europe/Madrid · <span id="freshness"></span><br><b>Max is read-only.</b> Data refreshes daily after the 06:00 import.</footer>
   </div>
   <div id="weeklyview" class="hidden">
-    <div class="wbnav">
-      <span class="wbspacer"></span>
-      <span class="wblbl">Shopify</span>
-      <div class="wbsel"><button class="wbselbtn" id="wb-shipbtn"><span class="lbltxt" id="wb-shiplabel">All shipping</span><span class="ca">▾</span></button><div class="wbdd" id="wb-shipdd"></div></div>
-      <div class="wbsel"><button class="wbselbtn" id="wb-billbtn"><span class="lbltxt" id="wb-billlabel">All billing</span><span class="ca">▾</span></button><div class="wbdd" id="wb-billdd"></div></div>
-      <span class="acttabwrap"><a class="dlink acttab" id="acttab">Action <span style="font-size:10px">▾</span></a><div class="actdd" id="actdd"><div class="actopt" data-lvl="campaign">Optimize campaigns</div><div class="actopt" data-lvl="adgroup">Optimize ad groups</div><div class="actopt" data-lvl="keyword">Optimize keywords</div></div></span>
-    </div>
     <table class="wbtable"><thead><tr><th class="l" rowspan="2">Week</th><th class="shopcol" rowspan="2">Shopify sales<div class="shsub">store total · net</div></th><th class="erscol" rowspan="2">Global ERS<div class="shsub">ad cost ÷ store sales</div></th><th class="grp2" colspan="2">Investment</th><th class="grp2" colspan="2">Sales</th><th class="grp2" colspan="2">Profit · est</th><th class="grp2" colspan="2">Real ROAS</th><th class="grp2" colspan="2">POAS · est</th><th class="grp2" colspan="2">Conversions</th></tr><tr><th class="sub grp2">GAds</th><th class="sub g4">GA4</th><th class="sub grp2">GAds</th><th class="sub g4">GA4</th><th class="sub grp2">GAds</th><th class="sub g4">GA4</th><th class="sub grp2">GAds</th><th class="sub g4">GA4</th><th class="sub grp2">GAds</th><th class="sub g4">GA4</th><th class="sub grp2">GAds</th><th class="sub g4">GA4</th></tr></thead><tbody id="wb-tbody"></tbody></table>
     <div class="wbfoot"><b>Sources:</b> Google Ads = weekly_metrics_account (all channels, per account); GA4 = google/cpc split by Google Ads account · margin 40% (profit estimate; cost basis = Google Ads) · EUR · Madrid. <b>Refresh:</b> Mon/Tue/Wed 08:00 (GA4 column one-time pull for now). Select accounts above to filter. <b>Max is read-only.</b></div>
   </div>
@@ -1031,9 +1030,11 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
      .catch(function(e){$('wb-tbody').innerHTML='<tr><td colspan="15" style="padding:20px;text-align:center">Error: '+e.message+'</td></tr>';});
  }
  function pruneVsAcct(set,list){if(!selAcc.size)return;Array.from(set).forEach(function(cid){var c=(list||[]).filter(function(x){return x.campaign_id===cid;})[0];if(!c||!selAcc.has(c.customer_id))set.delete(cid);});}
+ function maybeAutoCountry(){var map={'FQ_ES':'Spain','FQ_DE':'Germany','FQ_IT':'Italy','FQ_FR':'France'};if(selAcc.size===1){var id=Array.from(selAcc)[0];var a=(META.accounts||[]).filter(function(x){return x.id===id;})[0];var c=a?map[a.name]:null;if(c){selShip=c;selBill=c;}}}
  function pruneAndRefresh(sub){
    pruneVsAcct(selCamp,META.campaignsSearch);pruneVsAcct(selPmax,META.campaignsPmax);pruneVsAcct(selShop,META.campaignsShopping);
    Array.from(selAg).forEach(function(aid){var a=(META.adgroups||[]).filter(function(x){return x.ad_group_id===aid;})[0];if(!a){selAg.delete(aid);return;}if(selCamp.size&&!selCamp.has(a.campaign_id))selAg.delete(aid);else if(!selCamp.size&&selAcc.size&&!selAcc.has(a.customer_id))selAg.delete(aid);});
+   if(sub==='acc')maybeAutoCountry();
    if(sub==='acc'||sub==='camp'||sub==='ag')fetchKwList();
    renderSelectors();fetchSeries();
  }
