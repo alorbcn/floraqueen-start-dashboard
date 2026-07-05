@@ -336,6 +336,16 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
 .ins-vlist.good .ins-vic{color:var(--profit)}.ins-vlist.bad .ins-vic{color:var(--loss)}.ins-vlist.act .ins-vic{color:var(--forest)}
 @media(max-width:820px){.ins-verdict{grid-template-columns:1fr}}
 @media(max-width:640px){.ins-heronum{font-size:36px}.ins-h1{font-size:24px}#insightsview{padding:6px 12px 48px}}
+.vfilt{position:relative;display:inline-block;margin-left:6px}
+.vfbtn{font:inherit;font-size:10px;font-weight:700;line-height:1;border:1px solid var(--lineS);background:var(--s2);color:var(--soft);border-radius:6px;padding:3px 6px;cursor:pointer;vertical-align:middle;white-space:nowrap}
+.vfbtn.on{background:rgba(31,107,79,.12);border-color:var(--forest);color:var(--forest)}
+.vfmenu{position:fixed;z-index:9999;background:#fff;border:1px solid var(--lineS);border-radius:10px;box-shadow:var(--sh);padding:8px;min-width:196px;font-weight:400}
+.vfmenu.hidden{display:none}
+.vfmenu .vfh{display:flex;justify-content:space-between;align-items:center;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:2px 4px 6px}
+.vfmenu .vfclear{font:inherit;font-size:10px;color:var(--forest);background:none;border:0;cursor:pointer;font-weight:700}
+.vfmenu label{display:flex;align-items:center;gap:9px;padding:5px 6px;border-radius:7px;font-size:12.5px;color:var(--ink);cursor:pointer;text-transform:none;letter-spacing:0;font-weight:400}
+.vfmenu label:hover{background:var(--s2)}
+.vfmenu input{accent-color:var(--forest);width:14px;height:14px;margin:0}
 </style></head>
 <body>
 <div id="login"><div class="lbox"><span class="logo" style="font-family:Fraunces;color:#16513b">Max<span style="color:#B8456B">✿</span></span>
@@ -455,7 +465,7 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
           <th class="l">#</th><th class="l">Keyword</th><th class="l">Match</th>
           <th class="l sortable" data-sort="slot">Slot<span class="sarr"></span></th>
           <th class="r sortable" data-sort="cost">Cost<span class="sarr"></span></th><th class="r sortable" data-sort="sales">Sales<span class="sarr"></span></th><th class="r sortable" data-sort="poas">POAS<span class="sarr"></span></th><th class="r sortable" data-sort="is">IS%<span class="sarr"></span></th><th class="r sortable" data-sort="lostrank">Lost rank<span class="sarr"></span></th><th class="r sortable" data-sort="qs">QS<span class="sarr"></span></th>
-          <th class="l sortable" data-sort="verdict">Recommended<span class="sarr"></span></th><th class="l">Action</th><th></th>
+          <th class="l sortable" data-sort="verdict">Recommended<span class="sarr"></span><span class="vfilt"><button type="button" class="vfbtn" id="vfbtn" title="Filter by recommendation">All ▾</button><div class="vfmenu hidden" id="vfmenu"></div></span></th><th class="l">Action</th><th></th>
         </tr></thead><tbody id="kws-body"></tbody></table>
       </div>
     </div>
@@ -820,7 +830,7 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
     }).catch(function(e){document.getElementById("act-best").innerHTML='<tr><td class="l" colspan="7" style="padding:14px;color:var(--cost)">Error: '+e.message+'</td></tr>';});
   }
   /* ---- Scalable keyword-optimization sheet (active-only, one match type, worst-first, paginated) ---- */
-  var KW={match:"exact",sort:"profit",dir:"asc",offset:0,limit:20,total:0,rows:[],approved:{},seq:0};
+  var KW={match:"exact",sort:"profit",dir:"asc",offset:0,limit:20,total:0,rows:[],approved:{},verdicts:[],seq:0};
   function kwSortArrows(){var ths=document.querySelectorAll(".kwstable th.sortable");for(var i=0;i<ths.length;i++){var th=ths[i],sp=th.querySelector(".sarr");if(!sp)continue;if(th.getAttribute("data-sort")===KW.sort){sp.textContent=(KW.dir==="asc"?" ▲":" ▼");th.classList.add("on");}else{sp.textContent="";th.classList.remove("on");}}}
   function vpill(v){var m={SCALE:"scale",HOLD:"hold",CALIBRATE:"cal",PAUSE:"pause",PARK:"park",MINE:"mine",OBSERVE:"obs"};return '<span class="vp '+(m[v]||"hold")+'">'+v+'</span>';}
   function slotPill(s){if(!s)return '<span class="slotp none">–</span>';var m={Star:"star","Slot-1":"s1","Slot-2":"s2",loser:"loser"};return '<span class="slotp '+(m[s]||"none")+'">'+s+'</span>';}
@@ -849,7 +859,7 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
   }
   function kwRender(){
     var tb=document.getElementById("kws-body");
-    tb.innerHTML=KW.rows.length?KW.rows.map(kwRowHtml).join(''):'<tr><td colspan="14" style="padding:14px;color:var(--muted)">No active '+KW.match+' keywords with activity in this window.</td></tr>';
+    tb.innerHTML=KW.rows.length?KW.rows.map(kwRowHtml).join(''):'<tr><td colspan="14" style="padding:14px;color:var(--muted)">'+(KW.verdicts.length?'No active '+KW.match+' keywords match the selected recommendation'+(KW.verdicts.length>1?' tags':' tag')+'.':'No active '+KW.match+' keywords with activity in this window.')+'</td></tr>';
     var end=Math.min(KW.offset+KW.rows.length,KW.total);
     kwUpdateProg();
     document.getElementById("kws-prev").disabled=KW.offset<=0;
@@ -861,7 +871,7 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
   function kwLoad(){
     var seq=++KW.seq;
     var tb=document.getElementById("kws-body");tb.innerHTML='<tr><td colspan="14" style="padding:14px;color:var(--muted)">Loading…</td></tr>';
-    fetch(FN+"?api=optimize_batch&match="+KW.match+"&sort="+KW.sort+"&dir="+KW.dir+"&tf=30d&limit="+KW.limit+"&offset="+KW.offset,{headers:{Authorization:"Bearer "+tok}}).then(chk401).then(function(r){return r.json();}).then(function(j){
+    fetch(FN+"?api=optimize_batch&match="+KW.match+"&sort="+KW.sort+"&dir="+KW.dir+"&tf=30d&limit="+KW.limit+"&offset="+KW.offset+(KW.verdicts.length?"&verdicts="+encodeURIComponent(KW.verdicts.join(",")):""),{headers:{Authorization:"Bearer "+tok}}).then(chk401).then(function(r){return r.json();}).then(function(j){
       if(seq!==KW.seq)return;
       if(j.error){tb.innerHTML='<tr><td colspan="14" style="padding:14px;color:var(--cost)">Error: '+j.error+'</td></tr>';return;}
       KW.rows=j.rows||[];KW.total=j.total||0;if(j.bands)kwBands(j.bands);kwRender();
@@ -874,7 +884,9 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
     return {account:r.account,campaign:r.campaign,adgroup:r.adgroup,kw:r.kw,match:r.match,verdict:r.verdict,action:(sel?sel.value:r.verdict),poas:r.poas,cost:r.cost,sales:r.sales,is:r.is,lostRank:r.lostRank,qs:r.qs,why:r.why,cust:r.cust,criterionId:r.criterionId,adGroupId:r.adGroupId,slot:r.slot,conv:r.conv,targetTroas:r.targetTroas,suggestedCpc:r.suggestedCpc};
   }
   function kwExport(){
-    var keys=Object.keys(KW.approved);if(!keys.length){alert("Tick the keywords you approve, then export.");return;}
+    var keys=Object.keys(KW.approved);
+    if(KW.verdicts.length){keys=keys.filter(function(k){return KW.verdicts.indexOf(String(KW.approved[k].verdict||"").toUpperCase())>=0;});}
+    if(!keys.length){alert(KW.verdicts.length?"No approved keywords match the current recommendation filter. Tick rows within the filtered tags, or clear the filter.":"Tick the keywords you approve, then export.");return;}
     var btn=document.getElementById("kws-export");var old=btn.textContent;btn.textContent="Working…";btn.disabled=true;
     var items=keys.map(function(k){var r=KW.approved[k];return {key:k,kw:r.kw,match:r.match,verdict:r.verdict,action:r.action,cust:r.cust,criterionId:r.criterionId,adGroupId:r.adGroupId,cost:r.cost,sales:r.sales,poas:r.poas,is:r.is,lostRank:r.lostRank,qs:r.qs,slot:r.slot,conv:r.conv,targetTroas:r.targetTroas,suggestedCpc:r.suggestedCpc};});
     fetch(FN+"?api=optimize_work",{method:"POST",headers:{Authorization:"Bearer "+tok,"Content-Type":"application/json"},body:JSON.stringify({items:items})}).then(chk401).then(function(r){return r.json();}).then(function(j){
@@ -905,6 +917,24 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
     document.getElementById("kws-body").addEventListener("change",function(e){var tr=e.target.closest("tr");if(!tr)return;var key=tr.getAttribute("data-key");
       if(e.target.classList.contains("kwchk")){if(e.target.checked)KW.approved[key]=kwRowFor(key,tr);else delete KW.approved[key];kwUpdateProg();}
       else if(e.target.classList.contains("kwact")){if(KW.approved[key])KW.approved[key].action=e.target.value;}});
+  })();
+  /* ---- Recommendation-tag filter (multi-select dropdown on the Recommended column) ---- */
+  (function(){
+    var btn=document.getElementById("vfbtn"), menu=document.getElementById("vfmenu");
+    if(!btn||!menu)return;
+    var TAGS=["SCALE","HOLD","CALIBRATE","PAUSE","PARK","OBSERVE","MINE"];
+    menu.innerHTML='<div class="vfh"><span>Recommendation</span><button type="button" class="vfclear" id="vfclear">Clear</button></div>'
+      +TAGS.map(function(t){return '<label><input type="checkbox" class="vfck" value="'+t+'">'+vpill(t)+'</label>';}).join('');
+    function label(){var n=KW.verdicts.length;btn.textContent=(n?n+" tag"+(n>1?"s":""):"All")+" ▾";btn.classList.toggle("on",n>0);}
+    function place(){var r=btn.getBoundingClientRect();var w=Math.min(196,window.innerWidth-16);menu.style.left=Math.max(8,Math.min(r.left,window.innerWidth-w-8))+"px";menu.style.top=(r.bottom+4)+"px";}
+    function apply(){KW.verdicts=[];menu.querySelectorAll(".vfck").forEach(function(c){if(c.checked)KW.verdicts.push(c.value);});KW.offset=0;label();kwLoad();}
+    btn.addEventListener("click",function(e){e.stopPropagation();if(menu.classList.contains("hidden")){place();menu.classList.remove("hidden");}else{menu.classList.add("hidden");}});
+    menu.addEventListener("click",function(e){e.stopPropagation();});
+    menu.addEventListener("change",function(e){if(e.target.classList.contains("vfck"))apply();});
+    document.getElementById("vfclear").addEventListener("click",function(){menu.querySelectorAll(".vfck").forEach(function(c){c.checked=false;});apply();});
+    document.addEventListener("click",function(){if(!menu.classList.contains("hidden"))menu.classList.add("hidden");});
+    window.addEventListener("resize",function(){if(!menu.classList.contains("hidden"))place();});
+    label();
   })();
   (function(){
     var sel=document.getElementById("kwg-sel"), txt=document.getElementById("kwg-text");
