@@ -346,6 +346,9 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
 .vfmenu label{display:flex;align-items:center;gap:9px;padding:5px 6px;border-radius:7px;font-size:12.5px;color:var(--ink);cursor:pointer;text-transform:none;letter-spacing:0;font-weight:400}
 .vfmenu label:hover{background:var(--s2)}
 .vfmenu input{accent-color:var(--forest);width:14px;height:14px;margin:0}
+.acttbl th.sortable{cursor:pointer;user-select:none;white-space:nowrap}
+.acttbl th.sortable:hover{color:var(--forest)}
+.acttbl th.sortable.on{color:var(--forest)}
 </style></head>
 <body>
 <div id="login"><div class="lbox"><span class="logo" style="font-family:Fraunces;color:#16513b">Max<span style="color:#B8456B">✿</span></span>
@@ -413,9 +416,9 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
     <div class="sec"><h2 id="act-sec">Optimize</h2><span class="ctx" id="act-ctx"></span><span class="rule"></span></div>
     <div class="kw" id="actgrid">
       <div class="panel best"><div class="ph"><div class="pt"><span class="dot"></span><span id="act-besttitle">Best 20</span></div></div>
-        <table><thead><tr id="act-besthead"><th class="l">#</th><th class="l">Name</th><th class="l">Type</th><th>Cost</th><th>Sales</th><th>Profit</th><th></th></tr></thead><tbody id="act-best"></tbody></table></div>
+        <table class="acttbl"><thead><tr id="act-besthead"><th class="l">#</th><th class="l">Name</th><th class="l">Type</th><th>Cost</th><th>Sales</th><th>Profit</th><th></th></tr></thead><tbody id="act-best"></tbody></table></div>
       <div class="panel worst"><div class="ph"><div class="pt"><span class="dot"></span><span id="act-worsttitle">Worst 20</span></div></div>
-        <table><thead><tr id="act-worsthead"><th class="l">#</th><th class="l">Name</th><th class="l">Type</th><th>Cost</th><th>Sales</th><th>Profit</th><th></th></tr></thead><tbody id="act-worst"></tbody></table></div>
+        <table class="acttbl"><thead><tr id="act-worsthead"><th class="l">#</th><th class="l">Name</th><th class="l">Type</th><th>Cost</th><th>Sales</th><th>Profit</th><th></th></tr></thead><tbody id="act-worst"></tbody></table></div>
     </div>
     <div id="ar-roas" class="hidden">
       <div class="sec"><h2>ROAS below threshold</h2><span class="ctx" id="roas-ctx"></span><span class="rule"></span></div>
@@ -819,17 +822,41 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
     }
     return '<tr><td class="l rank">'+(i+1)+'</td><td class="l kwn" title="'+esc(name)+'">'+esc(name)+'</td><td class="l">'+typeCell(lvl,type)+'</td><td class="r">'+eur(c)+'</td><td class="r">'+eur(s)+'</td><td class="r '+(p>=0?'pos':'neg')+'">'+(p>=0?'+':'')+eur(p)+'</td>'+budCells+'<td class="r"><button class="optbtn" data-name="'+esc(name)+'" data-type="'+esc(type)+'" data-c="'+Math.round(c)+'" data-s="'+Math.round(s)+'">⚙ Optimize</button></td></tr>';
   }
+  var actS={lvl:null,rows:{best:[],worst:[]},sort:{best:{k:null,dir:1},worst:{k:null,dir:1}}};
   function actHeadHtml(lvl){
-    var h='<th class="l">#</th><th class="l">Name</th><th class="l">Type</th><th>Cost</th><th>Sales</th><th>Profit</th>';
-    if(lvl==="campaign")h+='<th>Daily budget</th><th>Avg daily spend</th><th>Spend / budget</th>';
-    return h+'<th></th>';
+    var cols=[{k:'name',h:'Name',l:1},{k:'type',h:'Type',l:1},{k:'cost',h:'Cost'},{k:'sales',h:'Sales'},{k:'profit',h:'Profit'}];
+    if(lvl==="campaign")cols=cols.concat([{k:'budget',h:'Daily budget'},{k:'avgspend',h:'Avg daily spend'},{k:'ratio',h:'Spend / budget'}]);
+    return '<th class="l">#</th>'+cols.map(function(c){return '<th class="'+(c.l?'l ':'')+'sortable" data-col="'+c.k+'">'+c.h+'<span class="sarr"></span></th>';}).join('')+'<th></th>';
+  }
+  function actVal(r,k){
+    switch(k){
+      case 'name': return String(r[0]==null?'':r[0]).toLowerCase();
+      case 'type': return String(r[1]==null?'':r[1]).toLowerCase();
+      case 'cost': return +r[2]||0;
+      case 'sales': return +r[3]||0;
+      case 'profit': return (+r[3]||0)*0.4-(+r[2]||0);
+      case 'budget': return +r[5]||0;
+      case 'avgspend': return (+r[2]||0)/30;
+      case 'ratio': return (+r[5]>0)?((+r[2]||0)/30)/(+r[5]):-1;
+      default: return 0;
+    }
+  }
+  function renderActBody(which){
+    var lvl=actS.lvl, st=actS.sort[which], rows=actS.rows[which].slice();
+    if(st.k){var strCol=(st.k==='name'||st.k==='type');
+      rows.sort(function(a,b){var av=actVal(a,st.k),bv=actVal(b,st.k);
+        if(strCol)return (av<bv?-1:av>bv?1:0)*st.dir; return ((+av)-(+bv))*st.dir;});}
+    document.getElementById(which==='best'?'act-best':'act-worst').innerHTML=rows.map(function(r,i){return rowHtml(lvl,r,i);}).join('')||'<tr><td colspan="10" style="padding:14px;color:var(--muted)">No data.</td></tr>';
+    var head=document.getElementById(which==='best'?'act-besthead':'act-worsthead');
+    if(head)head.querySelectorAll('th.sortable').forEach(function(th){var sp=th.querySelector('.sarr');var on=(th.getAttribute('data-col')===st.k);th.classList.toggle('on',on);if(sp)sp.textContent=on?(st.dir>0?' ▲':' ▼'):'';});
   }
   function fill(lvl,d){
+    actS.lvl=lvl; actS.rows.best=(d.best||[]).slice(); actS.rows.worst=(d.worst||[]).slice();
+    actS.sort.best={k:null,dir:1}; actS.sort.worst={k:null,dir:1};
     var hh=actHeadHtml(lvl);
     var bh=document.getElementById("act-besthead"); if(bh)bh.innerHTML=hh;
     var wh=document.getElementById("act-worsthead"); if(wh)wh.innerHTML=hh;
-    document.getElementById("act-best").innerHTML=(d.best||[]).map(function(r,i){return rowHtml(lvl,r,i);}).join('')||'<tr><td colspan="10" style="padding:14px;color:var(--muted)">No data.</td></tr>';
-    document.getElementById("act-worst").innerHTML=(d.worst||[]).map(function(r,i){return rowHtml(lvl,r,i);}).join('')||'<tr><td colspan="10" style="padding:14px;color:var(--muted)">No data.</td></tr>';
+    renderActBody('best'); renderActBody('worst');
   }
   function loadList(lvl){
     document.getElementById("act-besttitle").textContent="Best 20 "+ACTLV[lvl].n;
@@ -1105,6 +1132,7 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
     label();
   })();
   document.getElementById('actionview').addEventListener('click',function(e){var th=e.target.closest('.artable th.sortable');if(!th)return;arSort(th.getAttribute('data-tid'),th.getAttribute('data-k'),th.getAttribute('data-t'));});
+  document.getElementById('actionview').addEventListener('click',function(e){var th=e.target.closest('.acttbl th.sortable');if(!th)return;var tr=th.closest('tr');var which=(tr&&tr.id==='act-worsthead')?'worst':'best';var k=th.getAttribute('data-col');var st=actS.sort[which];if(st.k===k){st.dir=-st.dir;}else{st.k=k;st.dir=(k==='name'||k==='type')?1:-1;}renderActBody(which);});
   tab.onclick=function(e){e.stopPropagation();dd.classList.toggle("open");};
   document.addEventListener("click",function(){dd.classList.remove("open");});
   dd.addEventListener("click",function(e){e.stopPropagation();var o=e.target.closest("[data-lvl]");if(o){dd.classList.remove("open");showAction(o.getAttribute("data-lvl"));}});
