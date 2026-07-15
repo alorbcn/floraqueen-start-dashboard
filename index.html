@@ -220,9 +220,11 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
 .arfld .sfx{font-size:13px;color:var(--soft);white-space:nowrap}
 .arfld .arinput{border:0;background:var(--s2);width:56px;padding:6px 6px}
 .arfld .vfbtn{border:0;background:var(--s2)}
-.arsum{font-size:13px;color:var(--soft);margin:10px 2px 4px;line-height:1.6}
+.arsum{font-size:13px;color:var(--soft);margin:10px 2px 4px;line-height:1.9}
 .arsum b{color:var(--ink);font-weight:600}
 .arsum .nw{white-space:nowrap}
+.arsum .cut{display:inline-block;padding:2px 10px;margin-right:4px;border:1px solid var(--lineS);border-radius:999px;background:#fff;cursor:pointer;font-size:11.5px;font-weight:600;color:var(--forest);white-space:nowrap}
+.arsum .cut:hover{border-color:var(--forest);background:rgba(31,107,79,.06)}
 .artable tr.artot td{background:var(--s2);border-top:0;border-bottom:2px solid var(--lineS);font-size:12px;font-weight:700;font-variant-numeric:tabular-nums}
 .artable tr.artot td.l{text-transform:uppercase;font-size:10px;letter-spacing:.04em;color:var(--soft)}
 .artable tr.artot td .pctb{display:inline-block;margin-left:8px;padding:2px 8px;border-radius:999px;background:rgba(192,57,43,.1);color:#C0392B;font-size:10.5px;font-weight:700;letter-spacing:.02em;text-transform:none}
@@ -1113,7 +1115,10 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
     var out=document.getElementById('zero-out'); out.innerHTML='<div class="arload">Loading…</div>'; var s=++arSeq;
     fetch(FN+'?api=zero_conv&weeks='+w+'&minclicks='+mc+(ZM.length?'&matches='+encodeURIComponent(ZM.join(',')):''),{headers:{Authorization:'Bearer '+tok}}).then(chk401).then(function(r){return r.json();}).then(function(j){
       if(s!==arSeq)return; if(j.error){arErr('zero-out',j.error);return;}
-      document.getElementById('zero-ctx').innerHTML='<b>'+(j.total||0)+'</b> keywords with <b>0 conversions</b>'+(mc>0?' and more than <b>'+mc+'</b> clicks':'')+(ZM.length?' · '+arX(ZM.join(' / ')):'')+' · <span class="nw">'+arX(j.range[0])+' → '+arX(j.range[1])+'</span>'+((j.total||0)>(j.rows||[]).length?' · showing top '+(j.rows||[]).length+' by spend':'')+' · <span title="Only keywords whose keyword, ad group AND campaign are all currently ENABLED (as of the last daily sync).">fully active only ✓</span>';
+      var bandTxt='';
+      if(j.bands&&j.spend30>0){var bp=function(b){return b.n.toLocaleString('en-US')+' kw · '+arE(b.cost)+' ('+(100*b.cost/j.spend30).toFixed(1)+'%)';};
+        bandTxt='<br>quick cuts: <span class="cut" data-mc="10" title="Apply clicks > 10">&gt; 10 clicks: '+bp(j.bands.over10)+'</span> <span class="cut" data-mc="20" title="Apply clicks > 20">&gt; 20 clicks: '+bp(j.bands.over20)+'</span>';}
+      document.getElementById('zero-ctx').innerHTML='<b>'+(j.total||0)+'</b> keywords with <b>0 conversions</b> and '+(mc>0?'more than <b>'+mc+'</b> clicks':'<b>any clicks</b>')+(ZM.length?' · '+arX(ZM.join(' / ')):'')+' · <span class="nw">'+arX(j.range[0])+' → '+arX(j.range[1])+'</span>'+((j.total||0)>(j.rows||[]).length?' · showing top '+(j.rows||[]).length+' by spend':'')+' · <span title="Only keywords whose keyword, ad group AND campaign are all currently ENABLED (as of the last daily sync).">fully active only ✓</span>'+bandTxt;
       var C=[{h:'Keyword',k:'kw',t:'s'},{h:'Match',k:'match',t:'s'},{h:'Account',k:'account',t:'s'},{h:'Campaign',k:'campaign',t:'s'},{h:'Ad group',k:'adgroup',t:'s'},{h:'Cost',r:1,k:'cost',t:'n'},{h:'Clicks',r:1,k:'clicks',t:'n'}];
       function cell(r){return '<tr><td class="l kwn">'+arX(r.kw)+'</td><td class="l">'+arX(r.match)+'</td><td class="l">'+arX(r.account)+'</td><td class="l">'+arX(r.campaign)+'</td><td class="l">'+arX(r.adgroup)+'</td><td class="r">'+arE(r.cost)+'</td><td class="r">'+(r.clicks||0)+'</td></tr>';}
       var pct=(j.spend30>0)?(100*(j.totalCost||0)/j.spend30):null;
@@ -1136,6 +1141,7 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
   _arGo=document.getElementById('budget-go'); if(_arGo)_arGo.addEventListener('click',loadBudget);
   _arGo=document.getElementById('zero-go'); if(_arGo)_arGo.addEventListener('click',loadZero);
   _arGo=document.getElementById('zero-dl'); if(_arGo)_arGo.addEventListener('click',zeroDownload);
+  var _zctx=document.getElementById('zero-ctx'); if(_zctx)_zctx.addEventListener('click',function(e){var c=e.target.closest('.cut');if(!c)return;document.getElementById('zero-clk').value=c.getAttribute('data-mc');loadZero();});
   /* ---- Zero-conversion: match-type filter (multi-select dropdown, same logic as recommendation) ---- */
   (function(){
     var btn=document.getElementById('zmfbtn'), menu=document.getElementById('zmfmenu');
