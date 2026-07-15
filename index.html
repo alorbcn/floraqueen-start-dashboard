@@ -225,6 +225,7 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
 .arsum .nw{white-space:nowrap}
 .arsum .cut{display:inline-block;padding:2px 10px;margin-right:4px;border:1px solid var(--lineS);border-radius:999px;background:#fff;cursor:pointer;font-size:11.5px;font-weight:600;color:var(--forest);white-space:nowrap}
 .arsum .cut:hover{border-color:var(--forest);background:rgba(31,107,79,.06)}
+.arsum .cutnote{font-size:11px;color:var(--muted);white-space:nowrap}
 .artable tr.artot td{background:var(--s2);border-top:0;border-bottom:2px solid var(--lineS);font-size:12px;font-weight:700;font-variant-numeric:tabular-nums}
 .artable tr.artot td.l{text-transform:uppercase;font-size:10px;letter-spacing:.04em;color:var(--soft)}
 .artable tr.artot td .pctb{display:inline-block;margin-left:8px;padding:2px 8px;border-radius:999px;background:rgba(192,57,43,.1);color:#C0392B;font-size:10.5px;font-weight:700;letter-spacing:.02em;text-transform:none}
@@ -1117,13 +1118,12 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
       if(s!==arSeq)return; if(j.error){arErr('zero-out',j.error);return;}
       var bandTxt='';
       if(j.bands&&j.spend30>0){var bp=function(b){return b.n.toLocaleString('en-US')+' kw · '+arE(b.cost)+' ('+(100*b.cost/j.spend30).toFixed(1)+'%)';};
-        bandTxt='<br>quick cuts: <span class="cut" data-mc="10" title="Apply clicks > 10">&gt; 10 clicks: '+bp(j.bands.over10)+'</span> <span class="cut" data-mc="20" title="Apply clicks > 20">&gt; 20 clicks: '+bp(j.bands.over20)+'</span>';}
-      document.getElementById('zero-ctx').innerHTML='<b>'+(j.total||0)+'</b> keywords with <b>0 conversions</b> and '+(mc>0?'more than <b>'+mc+'</b> clicks':'<b>any clicks</b>')+(ZM.length?' · '+arX(ZM.join(' / ')):'')+' · <span class="nw">'+arX(j.range[0])+' → '+arX(j.range[1])+'</span>'+((j.total||0)>(j.rows||[]).length?' · showing top '+(j.rows||[]).length+' by spend':'')+' · <span title="Only keywords whose keyword, ad group AND campaign are all currently ENABLED (as of the last daily sync).">fully active only ✓</span>'+bandTxt;
+        bandTxt='<br>quick cuts: '+(j.bands.all?'<span class="cut" data-mc="0" title="Show all — any clicks">all clicks: '+bp(j.bands.all)+'</span> ':'')+'<span class="cut" data-mc="10" title="Apply clicks > 10">&gt; 10 clicks: '+bp(j.bands.over10)+'</span> <span class="cut" data-mc="20" title="Apply clicks > 20">&gt; 20 clicks: '+bp(j.bands.over20)+'</span> <span class="cutnote">% = share of all Google Ads spend · last 30 d ('+arE(j.spend30)+')</span>';}
+      var selCost=(j.spend30>0)?' · <b>'+arE(j.totalCost)+'</b> (<b>'+(100*(j.totalCost||0)/j.spend30).toFixed(1)+'%</b>)':' · <b>'+arE(j.totalCost)+'</b>';
+      document.getElementById('zero-ctx').innerHTML='<b>'+(j.total||0)+'</b> keywords with <b>0 conversions</b> and '+(mc>0?'more than <b>'+mc+'</b> clicks':'<b>any clicks</b>')+selCost+(ZM.length?' · '+arX(ZM.join(' / ')):'')+' · <span class="nw">'+arX(j.range[0])+' → '+arX(j.range[1])+'</span>'+((j.total||0)>(j.rows||[]).length?' · showing top '+(j.rows||[]).length+' by spend':'')+' · <span title="Only keywords whose keyword, ad group AND campaign are all currently ENABLED (as of the last daily sync).">fully active only ✓</span>'+bandTxt;
       var C=[{h:'Keyword',k:'kw',t:'s'},{h:'Match',k:'match',t:'s'},{h:'Account',k:'account',t:'s'},{h:'Campaign',k:'campaign',t:'s'},{h:'Ad group',k:'adgroup',t:'s'},{h:'Cost',r:1,k:'cost',t:'n'},{h:'Clicks',r:1,k:'clicks',t:'n'}];
       function cell(r){return '<tr><td class="l kwn">'+arX(r.kw)+'</td><td class="l">'+arX(r.match)+'</td><td class="l">'+arX(r.account)+'</td><td class="l">'+arX(r.campaign)+'</td><td class="l">'+arX(r.adgroup)+'</td><td class="r">'+arE(r.cost)+'</td><td class="r">'+(r.clicks||0)+'</td></tr>';}
-      var pct=(j.spend30>0)?(100*(j.totalCost||0)/j.spend30):null;
-      var top='<tr class="artot"><td class="l" colspan="5">TOTAL — all '+(j.total||0).toLocaleString('en-US')+' zero-conversion keywords'+(pct!=null?'<span class="pctb">'+pct.toFixed(1)+'% of all spend · last 30 d ('+arE(j.spend30)+')</span>':'')+'</td><td class="r">'+arE(j.totalCost)+'</td><td class="r">'+(j.totalClicks||0).toLocaleString('en-US')+'</td></tr>';
-      out.innerHTML=arSection('',C,j.rows,cell,null,top);
+      out.innerHTML=arSection('',C,j.rows,cell);
     }).catch(function(e){arErr('zero-out',e.message);});
   }
   function zeroDownload(){
