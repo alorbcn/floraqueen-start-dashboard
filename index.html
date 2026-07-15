@@ -215,6 +215,17 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
 .actsep{height:1px;background:var(--lineS);margin:5px 6px}
 .arbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:14px 0 4px}
 .arinput{width:70px;padding:7px 9px;border:1px solid var(--lineS);border-radius:8px;font:inherit;font-size:13px;text-align:center;color:var(--ink)}
+.arfld{display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--lineS);border-radius:10px;padding:5px 10px}
+.arfld .fl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);white-space:nowrap}
+.arfld .sfx{font-size:13px;color:var(--soft);white-space:nowrap}
+.arfld .arinput{border:0;background:var(--s2);width:56px;padding:6px 6px}
+.arfld .vfbtn{border:0;background:var(--s2)}
+.arsum{font-size:13px;color:var(--soft);margin:10px 2px 4px;line-height:1.6}
+.arsum b{color:var(--ink);font-weight:600}
+.arsum .nw{white-space:nowrap}
+.artable tr.artot td{background:var(--s2);border-top:0;border-bottom:2px solid var(--lineS);font-size:12px;font-weight:700;font-variant-numeric:tabular-nums}
+.artable tr.artot td.l{text-transform:uppercase;font-size:10px;letter-spacing:.04em;color:var(--soft)}
+.artable tr.artot td .pctb{display:inline-block;margin-left:8px;padding:2px 8px;border-radius:999px;background:rgba(192,57,43,.1);color:#C0392B;font-size:10.5px;font-weight:700;letter-spacing:.02em;text-transform:none}
 .gobtn{border:0;border-radius:9px;background:var(--forest);color:#fff;font:inherit;font-weight:600;font-size:13px;padding:8px 20px;cursor:pointer}.gobtn:hover{background:#14513a}
 .arpanel{margin-top:16px}
 .arh{font-family:Fraunces;font-weight:600;font-size:16px;margin:0 2px 6px}
@@ -439,8 +450,15 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
       <div id="budget-out"></div>
     </div>
     <div id="ar-zero" class="hidden">
-      <div class="sec"><h2>Zero-conversion keywords</h2><span class="ctx" id="zero-ctx"></span><span class="rule"></span></div>
-      <div class="arbar"><span class="kwslbl">in last</span><input type="number" id="zero-w" class="arinput" value="4" min="1" max="26"><span class="kwslbl">weeks &middot; with clicks above</span><input type="number" id="zero-clk" class="arinput" value="0" min="0" step="10"><span class="kwslbl">&middot; match</span><span class="vfilt"><button type="button" class="vfbtn" id="zmfbtn">All ▾</button><div class="vfmenu hidden" id="zmfmenu"></div></span><button class="gobtn" id="zero-go">Go</button><button class="expbtn" id="zero-dl">⬇ Download CSV</button></div>
+      <div class="sec"><h2>Zero-conversion keywords</h2><span class="rule"></span></div>
+      <div class="arbar">
+        <span class="arfld"><span class="fl">Period</span><span class="sfx">last</span><input type="number" id="zero-w" class="arinput" value="4" min="1" max="26"><span class="sfx">weeks</span></span>
+        <span class="arfld"><span class="fl">Min clicks</span><input type="number" id="zero-clk" class="arinput" value="0" min="0" step="10"></span>
+        <span class="arfld"><span class="fl">Match</span><span class="vfilt"><button type="button" class="vfbtn" id="zmfbtn">All ▾</button><div class="vfmenu hidden" id="zmfmenu"></div></span></span>
+        <button class="gobtn" id="zero-go">Apply</button>
+        <button class="expbtn" id="zero-dl">⬇ Download CSV</button>
+      </div>
+      <div class="arsum" id="zero-ctx"></div>
       <div id="zero-out"></div>
     </div>
     <div id="kwsheet" class="hidden">
@@ -1029,9 +1047,9 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
   var arX=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');};
   var arSeq=0;
   var arTbls={}, arTid=0;
-  function arBody(tid){var t=arTbls[tid];if(!t.rows.length)return '<tr><td class="l" colspan="'+t.cols.length+'" style="padding:14px;color:var(--muted)">None.</td></tr>';return t.rows.map(t.cell).join('');}
-  function arSection(title,cols,rows,cell,foot){
-    var tid='art'+(++arTid); arTbls[tid]={rows:rows||[],cell:cell,cols:cols,k:null,dir:1};
+  function arBody(tid){var t=arTbls[tid];var top=t.top||'';if(!t.rows.length)return top+'<tr><td class="l" colspan="'+t.cols.length+'" style="padding:14px;color:var(--muted)">None.</td></tr>';return top+t.rows.map(t.cell).join('');}
+  function arSection(title,cols,rows,cell,foot,top){
+    var tid='art'+(++arTid); arTbls[tid]={rows:rows||[],cell:cell,cols:cols,k:null,dir:1,top:top||''};
     var head='<tr>'+cols.map(function(c){return '<th class="'+(c.r?'r':'l')+' sortable" data-tid="'+tid+'" data-k="'+c.k+'" data-t="'+(c.t||'s')+'">'+c.h+'<span class="sarr"></span></th>';}).join('')+'</tr>';
     return '<div class="arpanel">'+(title?'<div class="arh">'+title+'</div>':'')+'<table class="artable" id="'+tid+'"><thead>'+head+'</thead><tbody>'+arBody(tid)+'</tbody>'+(foot?'<tfoot>'+foot+'</tfoot>':'')+'</table></div>';
   }
@@ -1095,11 +1113,12 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
     var out=document.getElementById('zero-out'); out.innerHTML='<div class="arload">Loading…</div>'; var s=++arSeq;
     fetch(FN+'?api=zero_conv&weeks='+w+'&minclicks='+mc+(ZM.length?'&matches='+encodeURIComponent(ZM.join(',')):''),{headers:{Authorization:'Bearer '+tok}}).then(chk401).then(function(r){return r.json();}).then(function(j){
       if(s!==arSeq)return; if(j.error){arErr('zero-out',j.error);return;}
-      document.getElementById('zero-ctx').textContent=(j.total||0)+' active keywords with 0 conversions'+(mc>0?' and more than '+mc+' clicks':'')+(ZM.length?' · '+ZM.join(' / '):'')+' · '+j.range[0]+' → '+j.range[1]+((j.total||0)>(j.rows||[]).length?' · showing top '+(j.rows||[]).length+' by spend':'');
+      document.getElementById('zero-ctx').innerHTML='<b>'+(j.total||0)+'</b> keywords with <b>0 conversions</b>'+(mc>0?' and more than <b>'+mc+'</b> clicks':'')+(ZM.length?' · '+arX(ZM.join(' / ')):'')+' · <span class="nw">'+arX(j.range[0])+' → '+arX(j.range[1])+'</span>'+((j.total||0)>(j.rows||[]).length?' · showing top '+(j.rows||[]).length+' by spend':'')+' · <span title="Only keywords whose keyword, ad group AND campaign are all currently ENABLED (as of the last daily sync).">fully active only ✓</span>';
       var C=[{h:'Keyword',k:'kw',t:'s'},{h:'Match',k:'match',t:'s'},{h:'Account',k:'account',t:'s'},{h:'Campaign',k:'campaign',t:'s'},{h:'Ad group',k:'adgroup',t:'s'},{h:'Cost',r:1,k:'cost',t:'n'},{h:'Clicks',r:1,k:'clicks',t:'n'}];
       function cell(r){return '<tr><td class="l kwn">'+arX(r.kw)+'</td><td class="l">'+arX(r.match)+'</td><td class="l">'+arX(r.account)+'</td><td class="l">'+arX(r.campaign)+'</td><td class="l">'+arX(r.adgroup)+'</td><td class="r">'+arE(r.cost)+'</td><td class="r">'+(r.clicks||0)+'</td></tr>';}
-      var foot='<tr><td class="l" colspan="5">TOTAL — all '+(j.total||0).toLocaleString('en-US')+' zero-conversion keywords</td><td class="r">'+arE(j.totalCost)+'</td><td class="r">'+(j.totalClicks||0).toLocaleString('en-US')+'</td></tr>';
-      out.innerHTML=arSection('',C,j.rows,cell,foot);
+      var pct=(j.spend30>0)?(100*(j.totalCost||0)/j.spend30):null;
+      var top='<tr class="artot"><td class="l" colspan="5">TOTAL — all '+(j.total||0).toLocaleString('en-US')+' zero-conversion keywords'+(pct!=null?'<span class="pctb">'+pct.toFixed(1)+'% of all spend · last 30 d ('+arE(j.spend30)+')</span>':'')+'</td><td class="r">'+arE(j.totalCost)+'</td><td class="r">'+(j.totalClicks||0).toLocaleString('en-US')+'</td></tr>';
+      out.innerHTML=arSection('',C,j.rows,cell,null,top);
     }).catch(function(e){arErr('zero-out',e.message);});
   }
   function zeroDownload(){
