@@ -255,6 +255,8 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
 .arsum .cutgrp .cut.danger.on .cl{color:var(--cost)}
 .artable tr.agkeep td{background:var(--s2);font-size:11.5px;color:var(--soft);padding:5px 12px 7px;border-bottom:1px solid var(--line)}
 .artable tr.agkeep td b{color:var(--ink)}
+.artable tr.agtot td{border-top:2px solid var(--lineS);background:#fff;font-weight:600;padding:9px 12px}
+.artable tr.agtot2 td{font-size:12px}
 .artable tr.artot td{background:var(--s2);border-top:0;border-bottom:2px solid var(--lineS);font-size:12px;font-weight:700;font-variant-numeric:tabular-nums}
 .artable tr.artot td.l{text-transform:uppercase;font-size:10px;letter-spacing:.04em;color:var(--soft)}
 .artable tr.artot td .pctb{display:inline-block;margin-left:8px;padding:2px 8px;border-radius:999px;background:rgba(192,57,43,.1);color:#C0392B;font-size:10.5px;font-weight:700;letter-spacing:.02em;text-transform:none}
@@ -1254,8 +1256,25 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
               +'<td class="r">→ <b style="color:'+(kProfit>=0?'var(--profit)':'var(--cost)')+'">'+(kProfit>=0?'+':'−')+arE(Math.abs(kProfit))+'</b></td>'
               +'<td></td>';}
           return main+'<tr class="agkeep">'+sub+'</tr>';};
+        var agFoot='', agN=(j.adgroups||[]).length, agTitleN=''+agN;
+        if(j.agTotals&&j.agTotals.cost>0){
+          var T=j.agTotals; agTitleN=(T.nAg>agN?'top '+agN+' of '+T.nAg.toLocaleString('en-US'):''+agN);
+          var tpB=T.cost>0?0.4*T.sales/T.cost:0, tpA=T.keepCost>0?0.4*T.keepSales/T.keepCost:null;
+          var tprB=Math.round(0.4*T.sales-T.cost), tprA=Math.round(0.4*T.keepSales-T.keepCost);
+          var tcol=(tpA==null?'var(--muted)':(tpA>=1.24?'var(--profit)':(tpA>=1?'var(--loss)':'var(--cost)')));
+          var tsh=T.nkw>0?Math.round(100*T.nbad/T.nkw):0;
+          agFoot='<tr class="agtot"><td colspan="3" class="l">Total — all '+T.nAg.toLocaleString('en-US')+' qualifying ad groups</td>'
+            +'<td class="r"><b>'+tsh+'%</b> ('+T.nbad.toLocaleString('en-US')+'/'+T.nkw.toLocaleString('en-US')+')</td>'
+            +'<td class="r">'+arE(T.cost)+'</td><td class="r">'+arE(T.sales)+'</td><td class="r">'+tpB.toFixed(2)+'</td>'
+            +'<td class="r" style="color:'+(tprB>=0?'var(--profit)':'var(--cost)')+';font-weight:600">'+(tprB>=0?'+':'−')+arE(Math.abs(tprB))+'</td><td></td></tr>'
+            +'<tr class="agkeep agtot2"><td colspan="3" class="l">↳ if ALL proposed pauses are implemented · frees <b>'+arE(T.cost-T.keepCost)+'</b> in window</td>'
+            +'<td class="r">keeps <b>'+T.keepN.toLocaleString('en-US')+'</b>/'+T.nkw.toLocaleString('en-US')+'</td>'
+            +'<td class="r">→ <b>'+arE(T.keepCost)+'</b></td><td class="r">→ <b>'+arE(T.keepSales)+'</b></td>'
+            +'<td class="r">→ <b style="color:'+tcol+'">'+(tpA!=null?tpA.toFixed(2):'—')+'</b></td>'
+            +'<td class="r">→ <b style="color:'+(tprA>=0?'var(--profit)':'var(--cost)')+'">'+(tprA>=0?'+':'−')+arE(Math.abs(tprA))+'</b></td><td></td></tr>';
+        }
         html+=arSection('Campaigns to adjust ('+(j.campaigns||[]).length+') — ≥50% of ENABLED spending keywords under POAS 0.65 · check POAS + Profit: green = trim the tail (tROAS), red = bleeding (budget too)',CC,j.campaigns||[],ccell)
-             +arSection('Ad groups to adjust ('+(j.adgroups||[]).length+') — ≥50% of ENABLED spending keywords under POAS 0.65 · sub-line simulates pausing them',CA,j.adgroups||[],acell);
+             +arSection('Ad groups to adjust ('+agTitleN+') — ≥50% of ENABLED spending keywords under POAS 0.65 · sub-line simulates pausing them · totals cover ALL qualifying ad groups',CA,j.adgroups||[],acell,agFoot);
       }
       out.innerHTML=html;
     }).catch(function(e){arErr('losing-out',e.message);});
