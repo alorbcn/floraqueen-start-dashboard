@@ -1229,11 +1229,17 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
         var CA=[{h:'Ad group',k:'adgroup',t:'s'},{h:'Campaign',k:'campaign',t:'s'},{h:'Account',k:'account',t:'s'},{h:'Kw &lt; 0.65',r:1,k:'share',t:'n'},{h:'Cost',r:1,k:'cost',t:'n'},{h:'Sales',r:1,k:'sales',t:'n'},{h:'POAS',r:1,k:'poas',t:'n'},{h:'Profit',r:1,k:'profit',t:'n'},{h:'Own tROAS',r:1,k:'troas',t:'n'}];
         var acell=function(r){
           var main='<tr><td class="l kwn">'+arX(r.adgroup)+'</td><td class="l">'+arX(r.campaign)+'</td><td class="l">'+arX(r.account)+'</td><td class="r"><b>'+r.share+'%</b> ('+r.nbad+'/'+r.nkw+')</td><td class="r">'+arE(r.cost)+'</td><td class="r">'+arE(r.sales)+'</td><td class="r">'+(r.poas!=null?(+r.poas).toFixed(2):'—')+'</td>'+pcell(r.profit)+'<td class="r"'+(r.troas==null?' title="No own target — inherits campaign / portfolio tROAS"':'')+'>'+trs(r.troas)+'</td></tr>';
-          var sim;
-          if(!r.keepN){sim='every spending keyword here is under POAS 0.65 — pausing them all empties the ad group ('+arE(r.cost)+' spend freed)';}
+          var sub;
+          if(!r.keepN){sub='<td colspan="9" class="l">↳ if POAS &lt; 0.65 keywords are paused: every spending keyword here is under 0.65 — pausing them all empties the ad group ('+arE(r.cost)+' spend freed)</td>';}
           else{var kProfit=Math.round(0.4*(r.keepSales||0)-(r.keepCost||0));var kp=r.keepPoas;var kcol=(kp>=1.24?'var(--profit)':(kp>=1?'var(--loss)':'var(--cost)'));
-            sim='keeps <b>'+r.keepN+'</b> of '+r.nkw+' kw · cost '+arE(r.cost)+' → <b>'+arE(r.keepCost)+'</b> · sales '+arE(r.sales)+' → <b>'+arE(r.keepSales)+'</b> · POAS '+(r.poas!=null?(+r.poas).toFixed(2):'—')+' → <b style="color:'+kcol+'">'+(kp!=null?(+kp).toFixed(2):'—')+'</b> · profit '+(kProfit>=0?'+':'−')+arE(Math.abs(kProfit))+' · frees '+arE((r.cost||0)-(r.keepCost||0))+' in window';}
-          return main+'<tr class="agkeep"><td colspan="9" class="l">↳ if POAS &lt; 0.65 keywords are paused: '+sim+'</td></tr>';};
+            sub='<td colspan="3" class="l">↳ if POAS &lt; 0.65 keywords are paused · frees <b>'+arE((r.cost||0)-(r.keepCost||0))+'</b> in window</td>'
+              +'<td class="r">keeps <b>'+r.keepN+'</b>/'+r.nkw+'</td>'
+              +'<td class="r">→ <b>'+arE(r.keepCost)+'</b></td>'
+              +'<td class="r">→ <b>'+arE(r.keepSales)+'</b></td>'
+              +'<td class="r">→ <b style="color:'+kcol+'">'+(kp!=null?(+kp).toFixed(2):'—')+'</b></td>'
+              +'<td class="r">→ <b style="color:'+(kProfit>=0?'var(--profit)':'var(--cost)')+'">'+(kProfit>=0?'+':'−')+arE(Math.abs(kProfit))+'</b></td>'
+              +'<td></td>';}
+          return main+'<tr class="agkeep">'+sub+'</tr>';};
         html+=arSection('Campaigns to adjust ('+(j.campaigns||[]).length+') — ≥50% of ENABLED spending keywords under POAS 0.65 · check POAS + Profit: green = trim the tail (tROAS), red = bleeding (budget too)',CC,j.campaigns||[],ccell)
              +arSection('Ad groups to adjust ('+(j.adgroups||[]).length+') — ≥50% of ENABLED spending keywords under POAS 0.65 · sub-line simulates pausing them',CA,j.adgroups||[],acell);
       }
