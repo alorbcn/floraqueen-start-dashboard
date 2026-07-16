@@ -226,6 +226,28 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
 .arsum .cut{display:inline-block;padding:2px 10px;margin-right:4px;border:1px solid var(--lineS);border-radius:999px;background:#fff;cursor:pointer;font-size:11.5px;font-weight:600;color:var(--forest);white-space:nowrap}
 .arsum .cut:hover{border-color:var(--forest);background:rgba(31,107,79,.06)}
 .arsum .cutnote{font-size:11px;color:var(--muted);white-space:nowrap}
+.arsum .cut.on{background:var(--forest);border-color:var(--forest);color:#fff}
+.arsum .cut.on:hover{background:var(--forest2);border-color:var(--forest2)}
+.lkgrid{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 10px}
+.lkpi{background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--sh);padding:10px 16px 11px;min-width:128px}
+.lkpi .k{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700;white-space:nowrap;line-height:1.4}
+.lkpi .v{font-size:20px;font-weight:700;margin-top:3px;font-variant-numeric:tabular-nums;color:var(--ink);white-space:nowrap;line-height:1.3}
+.lkpi .v.sm{font-size:13.5px;font-weight:600;margin-top:8px}
+.lkpi .v.neg{color:var(--cost)}
+.lkpi .pctb{display:inline-block;font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:999px;background:rgba(192,57,43,.08);color:var(--cost);margin-left:7px;vertical-align:3px}
+.lkpi .s{font-size:11px;color:var(--muted);margin-top:2px;white-space:nowrap;line-height:1.5}
+.cutrow{display:flex;gap:12px;flex-wrap:wrap;margin:0 0 12px}
+.cutgrp{background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--sh);padding:9px 14px 11px}
+.cutgrp .cgh{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700;line-height:1.4;margin-bottom:7px}
+.cutgrp .cgn{font-size:10.5px;color:var(--muted);text-transform:none;letter-spacing:0;font-weight:500;margin-left:8px}
+.cutgrp .cgchips{display:flex;gap:6px;flex-wrap:wrap}
+.cutgrp .cut{display:inline-flex;flex-direction:column;align-items:center;gap:1px;padding:7px 13px;border-radius:11px;line-height:1.35}
+.cutgrp .cut .cl{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.cutgrp .cut .cd{font-size:12.5px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.cutgrp .cut .cp{font-size:10.5px;font-weight:600;color:var(--cost)}
+.arsum .cutgrp .cut.on{background:rgba(31,107,79,.09);color:inherit;border-color:var(--forest);box-shadow:inset 0 0 0 1px var(--forest)}
+.arsum .cutgrp .cut.on:hover{background:rgba(31,107,79,.14);border-color:var(--forest)}
+.arsum .cutgrp .cut.on .cl{color:var(--forest)}
 .artable tr.artot td{background:var(--s2);border-top:0;border-bottom:2px solid var(--lineS);font-size:12px;font-weight:700;font-variant-numeric:tabular-nums}
 .artable tr.artot td.l{text-transform:uppercase;font-size:10px;letter-spacing:.04em;color:var(--soft)}
 .artable tr.artot td .pctb{display:inline-block;margin-left:8px;padding:2px 8px;border-radius:999px;background:rgba(192,57,43,.1);color:#C0392B;font-size:10.5px;font-weight:700;letter-spacing:.02em;text-transform:none}
@@ -1159,21 +1181,36 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
     var pq=(LPB.lo!=null?'&poaslo='+LPB.lo:'')+(LPB.hi!=null?'&poashi='+LPB.hi:'');
     fetch(FN+'?api=top_losing&weeks='+w+'&minclicks='+mc+pq+(LM.length?'&matches='+encodeURIComponent(LM.join(',')):''),{headers:{Authorization:'Bearer '+tok}}).then(chk401).then(function(r){return r.json();}).then(function(j){
       if(s!==arSeq)return; if(j.error){arErr('losing-out',j.error);return;}
-      var bandTxt='';
-      if(j.bands&&j.spend30>0){var bp=function(b){return b.n.toLocaleString('en-US')+' kw · '+arE(b.loss)+' lost ('+(100*b.loss/j.spend30).toFixed(1)+'%)';};
-        bandTxt='<br>quick cuts: '+(j.bands.all?'<span class="cut" data-mc="0" title="Show all — any clicks">all clicks: '+bp(j.bands.all)+'</span> ':'')+'<span class="cut" data-mc="10" title="Apply clicks > 10">&gt; 10 clicks: '+bp(j.bands.over10)+'</span> <span class="cut" data-mc="20" title="Apply clicks > 20">&gt; 20 clicks: '+bp(j.bands.over20)+'</span> <span class="cutnote">% = loss as share of all Google Ads spend · last 30 d ('+arE(j.spend30)+')</span>';
-        if(j.poasBands){var pb=j.poasBands, on=function(lo,hi){return LPB.lo===lo&&LPB.hi===hi;}, pc=function(lo,hi,lbl,b,tip){return '<span class="cut'+(on(lo,hi)?' on':'')+'" data-plo="'+(lo==null?'':lo)+'" data-phi="'+(hi==null?'':hi)+'" title="'+tip+'"'+(on(lo,hi)?' style="font-weight:700;text-decoration:underline"':'')+'>'+lbl+': '+bp(b)+'</span>';};
-          bandTxt+='<br>POAS cuts: <span class="cut'+(on(null,null)?'':'')+'" data-plo="" data-phi="" title="Clear POAS filter — show all losing keywords">all POAS</span> '
-            +pc(0,0.4,'0–0.4',pb.b1,'Converting but far from break-even (POAS under 0.4) — click to filter')+' '
-            +pc(0.4,0.8,'0.4–0.8',pb.b2,'Converting, mid-range (POAS 0.4–0.8) — click to filter')+' '
-            +pc(0.8,1,'0.8–1',pb.b3,'Almost break-even (POAS 0.8–1) — click to filter')
-            +' <span class="cutnote">POAS 0 (no sales) lives in the Zero sales keywords report</span>';}}
-      var selLoss=(j.spend30>0)?' · losing <b>'+arE(j.totalLoss)+'</b> (<b>'+(100*(j.totalLoss||0)/j.spend30).toFixed(1)+'%</b>)':' · losing <b>'+arE(j.totalLoss)+'</b>';
-      var poasTxt=(LPB.lo!=null||LPB.hi!=null)?' · POAS <b>'+(LPB.lo!=null?LPB.lo:'0')+'–'+(LPB.hi!=null?LPB.hi:'1')+'</b>':'';
-      document.getElementById('losing-ctx').innerHTML='<b>'+(j.total||0)+'</b> keywords losing money at <b>40% margin</b> (profit = 40% × sales − cost &lt; 0) with '+(mc>0?'more than <b>'+mc+'</b> clicks':'<b>any clicks</b>')+poasTxt+selLoss+' · cost '+arE(j.totalCost)+' vs sales '+arE(j.totalSales)+(LM.length?' · '+arX(LM.join(' / ')):'')+' · <span class="nw">'+arX(j.range[0])+' → '+arX(j.range[1])+'</span>'+((j.total||0)>(j.rows||[]).length?' · showing top '+(j.rows||[]).length+' by loss':'')+' · <span title="Only keywords whose keyword, ad group AND campaign are all currently ENABLED (as of the last daily sync).">fully active only ✓</span>'+bandTxt;
+      var sp30=j.spend30||0;
+      var chip=function(attrs,isOn,lbl,b,tip){return '<span class="cut'+(isOn?' on':'')+'" '+attrs+' title="'+tip+'"><span class="cl">'+lbl+'</span><span class="cd">'+b.n.toLocaleString('en-US')+' kw · '+arE(b.loss)+'</span>'+(sp30>0?'<span class="cp">'+(100*b.loss/sp30).toFixed(1)+'% of spend</span>':'')+'</span>';};
+      var cuts='';
+      if(j.bands){
+        cuts+='<div class="cutgrp"><div class="cgh">Cut by clicks<span class="cgn">€ lost · % of 30-d spend</span></div><div class="cgchips">'
+          +(j.bands.all?chip('data-mc="0"',mc===0,'any clicks',j.bands.all,'Show all — any clicks'):'')
+          +chip('data-mc="10"',mc===10,'&gt; 10 clicks',j.bands.over10,'Apply clicks > 10')
+          +chip('data-mc="20"',mc===20,'&gt; 20 clicks',j.bands.over20,'Apply clicks > 20')
+          +'</div></div>';}
+      if(j.poasBands){var pb=j.poasBands, on=function(lo,hi){return LPB.lo===lo&&LPB.hi===hi;};
+        cuts+='<div class="cutgrp"><div class="cgh">Cut by POAS<span class="cgn">POAS 0 (no sales) → Zero sales report</span></div><div class="cgchips">'
+          +'<span class="cut'+(on(null,null)?' on':'')+'" data-plo="" data-phi="" title="Clear POAS filter — show all losing keywords"><span class="cl">all POAS</span><span class="cd">no filter</span></span>'
+          +chip('data-plo="0" data-phi="0.4"',on(0,0.4),'0–0.4',pb.b1,'Converting but far from break-even (POAS under 0.4) — click to filter')
+          +chip('data-plo="0.4" data-phi="0.8"',on(0.4,0.8),'0.4–0.8',pb.b2,'Converting, mid-range (POAS 0.4–0.8) — click to filter')
+          +chip('data-plo="0.8" data-phi="1"',on(0.8,1),'0.8–1',pb.b3,'Almost break-even (POAS 0.8–1) — click to filter')
+          +'</div></div>';}
+      var fsub=(mc>0?'&gt; '+mc+' clicks':'any clicks')
+        +((LPB.lo!=null||LPB.hi!=null)?' · POAS '+(LPB.lo!=null?LPB.lo:'0')+'–'+(LPB.hi!=null?LPB.hi:'1'):'')
+        +(LM.length?' · '+arX(LM.join(' / ')):' · all match types');
+      var kpis='<div class="lkgrid">'
+        +'<div class="lkpi" title="Losing = profit-negative at 40% margin: 40% × sales − cost &lt; 0. Only keywords whose keyword, ad group AND campaign are all currently ENABLED."><div class="k">Losing keywords</div><div class="v">'+(j.total||0).toLocaleString('en-US')+'</div><div class="s">'+fsub+'</div></div>'
+        +'<div class="lkpi"><div class="k">Total loss</div><div class="v neg">'+arE(j.totalLoss)+(sp30>0?'<span class="pctb">'+(100*(j.totalLoss||0)/sp30).toFixed(1)+'%</span>':'')+'</div><div class="s">'+(sp30>0?'of '+arE(sp30)+' all-spend · last 30 d':'profit = 40% × sales − cost')+'</div></div>'
+        +'<div class="lkpi"><div class="k">Cost</div><div class="v">'+arE(j.totalCost)+'</div><div class="s">this selection · in window</div></div>'
+        +'<div class="lkpi"><div class="k">Sales</div><div class="v">'+arE(j.totalSales)+'</div><div class="s">→ '+arE(0.4*(j.totalSales||0))+' at 40% margin</div></div>'
+        +'<div class="lkpi"><div class="k">Window</div><div class="v sm">'+arX(j.range[0])+' → '+arX(j.range[1])+'</div><div class="s"><span title="Only keywords whose keyword, ad group AND campaign are all currently ENABLED (as of the last daily sync).">fully active only ✓</span></div></div>'
+        +'</div>';
+      document.getElementById('losing-ctx').innerHTML=kpis+(cuts?'<div class="cutrow">'+cuts+'</div>':'');
       var C=[{h:'Keyword',k:'kw',t:'s'},{h:'Match',k:'match',t:'s'},{h:'Account',k:'account',t:'s'},{h:'Campaign',k:'campaign',t:'s'},{h:'Ad group',k:'adgroup',t:'s'},{h:'Cost',r:1,k:'cost',t:'n'},{h:'Sales',r:1,k:'sales',t:'n'},{h:'Conv',r:1,k:'conv',t:'n'},{h:'Clicks',r:1,k:'clicks',t:'n'},{h:'POAS',r:1,k:'poas',t:'n'},{h:'Loss',r:1,k:'loss',t:'n'}];
       function cell(r){return '<tr><td class="l kwn">'+arX(r.kw)+'</td><td class="l">'+arX(r.match)+'</td><td class="l">'+arX(r.account)+'</td><td class="l">'+arX(r.campaign)+'</td><td class="l">'+arX(r.adgroup)+'</td><td class="r">'+arE(r.cost)+'</td><td class="r">'+arE(r.sales)+'</td><td class="r">'+(r.conv||0)+'</td><td class="r">'+(r.clicks||0)+'</td><td class="r">'+(r.poas!=null?r.poas.toFixed(2):'—')+'</td><td class="r neg">'+arE(r.loss)+'</td></tr>';}
-      out.innerHTML=arSection('',C,j.rows,cell);
+      out.innerHTML=arSection(((j.total||0)>(j.rows||[]).length?'Top '+(j.rows||[]).length.toLocaleString('en-US')+' of '+(j.total||0).toLocaleString('en-US')+' · ranked by loss':'Ranked by loss'),C,j.rows,cell);
     }).catch(function(e){arErr('losing-out',e.message);});
   }
   function losingDownload(){
