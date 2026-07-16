@@ -1219,6 +1219,20 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
       var C=[{h:'Keyword',k:'kw',t:'s'},{h:'Match',k:'match',t:'s'},{h:'Account',k:'account',t:'s'},{h:'Campaign',k:'campaign',t:'s'},{h:'Ad group',k:'adgroup',t:'s'},{h:'Cost',r:1,k:'cost',t:'n'},{h:'Sales',r:1,k:'sales',t:'n'},{h:'Conv',r:1,k:'conv',t:'n'},{h:'Clicks',r:1,k:'clicks',t:'n'},{h:'POAS',r:1,k:'poas',t:'n'},{h:'Loss',r:1,k:'loss',t:'n'}];
       function cell(r){return '<tr><td class="l kwn">'+arX(r.kw)+'</td><td class="l">'+arX(r.match)+'</td><td class="l">'+arX(r.account)+'</td><td class="l">'+arX(r.campaign)+'</td><td class="l">'+arX(r.adgroup)+'</td><td class="r">'+arE(r.cost)+'</td><td class="r">'+arE(r.sales)+'</td><td class="r">'+(r.conv||0)+'</td><td class="r">'+(r.clicks||0)+'</td><td class="r">'+(r.poas!=null?r.poas.toFixed(2):'—')+'</td><td class="r neg">'+arE(r.loss)+'</td></tr>';}
       var html=arSection(((j.total||0)>(j.rows||[]).length?'Top '+(j.rows||[]).length.toLocaleString('en-US')+' of '+(j.total||0).toLocaleString('en-US')+' · ranked by loss':'Ranked by loss'),C,j.rows,cell);
+      if(LTH&&j.whatif&&j.whatif.cost>0&&j.whatif.keepCost>0){
+        var w=j.whatif;
+        var pB=0.4*w.sales/w.cost, pA=0.4*w.keepSales/w.keepCost;
+        var prB=Math.round(0.4*w.sales-w.cost), prA=Math.round(0.4*w.keepSales-w.keepCost);
+        var pct=function(part,whole){return whole>0?(100*part/whole).toFixed(1)+'%':'—';};
+        var sgn=function(v){return (v>=0?'+':'−')+arE(Math.abs(v));};
+        var wtile=function(k,v,s,col){return '<div class="lkpi"><div class="k">'+k+'</div><div class="v"'+(col?' style="color:'+col+'"':'')+'>'+v+'</div><div class="s">'+s+'</div></div>';};
+        html+='<div class="arpanel"><div class="arh">What-if — pause ALL '+w.nPause.toLocaleString('en-US')+' keywords under POAS 0.65 (of '+w.nAll.toLocaleString('en-US')+' ENABLED spending keywords in this window)</div><div style="padding:2px 14px 4px"><div class="lkgrid">'
+          +wtile('Cost',arE(w.keepCost),'from '+arE(w.cost)+' · frees '+arE(w.cost-w.keepCost)+' ('+pct(w.cost-w.keepCost,w.cost)+')')
+          +wtile('Sales',arE(w.keepSales),'from '+arE(w.sales)+' · −'+arE(w.sales-w.keepSales)+' (−'+pct(w.sales-w.keepSales,w.sales)+')')
+          +wtile('POAS',pA.toFixed(2),'from '+pB.toFixed(2),(pA>=1.24?'var(--profit)':(pA>=1?'var(--loss)':'var(--cost)')))
+          +wtile('Profit',sgn(prA),'from '+sgn(prB)+' · '+sgn(prA-prB),(prA>=0?'var(--profit)':'var(--cost)'))
+          +'</div><div class="s" style="font-size:11px;color:var(--muted);margin:-2px 2px 8px">Static simulation on keyword-driven performance: assumes the freed spend is not re-spent and remaining keywords are unaffected. Profit = 40% × sales − cost.</div></div></div>';
+      }
       if(LTH&&j.campaigns){
         (j.campaigns||[]).forEach(function(r){r.profit=-(+r.loss||0);});
         (j.adgroups||[]).forEach(function(r){r.profit=-(+r.loss||0);});
