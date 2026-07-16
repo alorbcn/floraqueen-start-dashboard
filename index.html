@@ -248,6 +248,11 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);font-si
 .arsum .cutgrp .cut.on{background:rgba(31,107,79,.09);color:inherit;border-color:var(--forest);box-shadow:inset 0 0 0 1px var(--forest)}
 .arsum .cutgrp .cut.on:hover{background:rgba(31,107,79,.14);border-color:var(--forest)}
 .arsum .cutgrp .cut.on .cl{color:var(--forest)}
+.arsum .cutgrp .cut.danger{border-color:rgba(192,57,43,.5);background:rgba(192,57,43,.05)}
+.arsum .cutgrp .cut.danger .cl{color:var(--cost)}
+.arsum .cutgrp .cut.danger:hover{border-color:var(--cost);background:rgba(192,57,43,.1)}
+.arsum .cutgrp .cut.danger.on{background:rgba(192,57,43,.12);border-color:var(--cost);box-shadow:inset 0 0 0 1px var(--cost)}
+.arsum .cutgrp .cut.danger.on .cl{color:var(--cost)}
 .artable tr.artot td{background:var(--s2);border-top:0;border-bottom:2px solid var(--lineS);font-size:12px;font-weight:700;font-variant-numeric:tabular-nums}
 .artable tr.artot td.l{text-transform:uppercase;font-size:10px;letter-spacing:.04em;color:var(--soft)}
 .artable tr.artot td .pctb{display:inline-block;margin-left:8px;padding:2px 8px;border-radius:999px;background:rgba(192,57,43,.1);color:#C0392B;font-size:10.5px;font-weight:700;letter-spacing:.02em;text-transform:none}
@@ -1173,16 +1178,16 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
     }).catch(function(e){if(b){b.textContent=old;b.disabled=false;}alert('Download error: '+e.message);});
   }
   /* ---- Top losing keywords (same framework as zero-conv; population = profit-negative at 40% margin) ---- */
-  var LM=[], LPB={lo:null,hi:null};
+  var LM=[], LPB={lo:null,hi:null}, LTH=false;
   function loadLosing(){
     var w=Math.max(1,Math.min(26,Math.floor(+document.getElementById('losing-w').value||4)));
     var mc=Math.max(0,Math.floor(+document.getElementById('losing-clk').value||0));
     var out=document.getElementById('losing-out'); out.innerHTML='<div class="arload">Loading…</div>'; var s=++arSeq;
-    var pq=(LPB.lo!=null?'&poaslo='+LPB.lo:'')+(LPB.hi!=null?'&poashi='+LPB.hi:'');
+    var pq=(LPB.lo!=null?'&poaslo='+LPB.lo:'')+(LPB.hi!=null?'&poashi='+LPB.hi:'')+(LTH?'&thr=1':'');
     fetch(FN+'?api=top_losing&weeks='+w+'&minclicks='+mc+pq+(LM.length?'&matches='+encodeURIComponent(LM.join(',')):''),{headers:{Authorization:'Bearer '+tok}}).then(chk401).then(function(r){return r.json();}).then(function(j){
       if(s!==arSeq)return; if(j.error){arErr('losing-out',j.error);return;}
       var sp30=j.spend30||0;
-      var chip=function(attrs,isOn,lbl,b,tip){return '<span class="cut'+(isOn?' on':'')+'" '+attrs+' title="'+tip+'"><span class="cl">'+lbl+'</span><span class="cd">'+b.n.toLocaleString('en-US')+' kw · '+arE(b.loss)+'</span>'+(sp30>0?'<span class="cp">'+(100*b.loss/sp30).toFixed(1)+'% of spend</span>':'')+'</span>';};
+      var chip=function(attrs,isOn,lbl,b,tip,xcls){return '<span class="cut'+(xcls?' '+xcls:'')+(isOn?' on':'')+'" '+attrs+' title="'+tip+'"><span class="cl">'+lbl+'</span><span class="cd">'+b.n.toLocaleString('en-US')+' kw · '+arE(b.loss)+'</span>'+(sp30>0?'<span class="cp">'+(100*b.loss/sp30).toFixed(1)+'% of spend</span>':'')+'</span>';};
       var cuts='';
       if(j.bands){
         cuts+='<div class="cutgrp"><div class="cgh">Cut by clicks<span class="cgn">€ lost · % of 30-d spend</span></div><div class="cgchips">'
@@ -1190,15 +1195,16 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
           +chip('data-mc="10"',mc===10,'&gt; 10 clicks',j.bands.over10,'Apply clicks > 10')
           +chip('data-mc="20"',mc===20,'&gt; 20 clicks',j.bands.over20,'Apply clicks > 20')
           +'</div></div>';}
-      if(j.poasBands){var pb=j.poasBands, on=function(lo,hi){return LPB.lo===lo&&LPB.hi===hi;};
+      if(j.poasBands){var pb=j.poasBands, on=function(lo,hi){return !LTH&&LPB.lo===lo&&LPB.hi===hi;};
         cuts+='<div class="cutgrp"><div class="cgh">Cut by POAS<span class="cgn">POAS 0 (no sales) → Zero sales report</span></div><div class="cgchips">'
           +'<span class="cut'+(on(null,null)?' on':'')+'" data-plo="" data-phi="" title="Clear POAS filter — show all losing keywords"><span class="cl">all POAS</span><span class="cd">no filter</span></span>'
           +chip('data-plo="0" data-phi="0.4"',on(0,0.4),'0–0.4',pb.b1,'Converting but far from break-even (POAS under 0.4) — click to filter')
           +chip('data-plo="0.4" data-phi="0.8"',on(0.4,0.8),'0.4–0.8',pb.b2,'Converting, mid-range (POAS 0.4–0.8) — click to filter')
           +chip('data-plo="0.8" data-phi="1"',on(0.8,1),'0.8–1',pb.b3,'Almost break-even (POAS 0.8–1) — click to filter')
+          +(pb.lt065?chip('data-thr="1"',LTH,'POAS &lt; 0.65',pb.lt065,'Filter keywords under POAS 0.65 (incl. no-sales) AND list campaigns / ad groups where ≥50% of spending keywords are under 0.65 — budget + tROAS adjustment candidates','danger'):'')
           +'</div></div>';}
       var fsub=(mc>0?'&gt; '+mc+' clicks':'any clicks')
-        +((LPB.lo!=null||LPB.hi!=null)?' · POAS '+(LPB.lo!=null?LPB.lo:'0')+'–'+(LPB.hi!=null?LPB.hi:'1'):'')
+        +(LTH?' · POAS &lt; 0.65':((LPB.lo!=null||LPB.hi!=null)?' · POAS '+(LPB.lo!=null?LPB.lo:'0')+'–'+(LPB.hi!=null?LPB.hi:'1'):''))
         +(LM.length?' · '+arX(LM.join(' / ')):' · all match types');
       var kpis='<div class="lkgrid">'
         +'<div class="lkpi" title="Losing = profit-negative at 40% margin: 40% × sales − cost &lt; 0. Only keywords whose keyword, ad group AND campaign are all currently ENABLED."><div class="k">Losing keywords</div><div class="v">'+(j.total||0).toLocaleString('en-US')+'</div><div class="s">'+fsub+'</div></div>'
@@ -1210,7 +1216,19 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
       document.getElementById('losing-ctx').innerHTML=kpis+(cuts?'<div class="cutrow">'+cuts+'</div>':'');
       var C=[{h:'Keyword',k:'kw',t:'s'},{h:'Match',k:'match',t:'s'},{h:'Account',k:'account',t:'s'},{h:'Campaign',k:'campaign',t:'s'},{h:'Ad group',k:'adgroup',t:'s'},{h:'Cost',r:1,k:'cost',t:'n'},{h:'Sales',r:1,k:'sales',t:'n'},{h:'Conv',r:1,k:'conv',t:'n'},{h:'Clicks',r:1,k:'clicks',t:'n'},{h:'POAS',r:1,k:'poas',t:'n'},{h:'Loss',r:1,k:'loss',t:'n'}];
       function cell(r){return '<tr><td class="l kwn">'+arX(r.kw)+'</td><td class="l">'+arX(r.match)+'</td><td class="l">'+arX(r.account)+'</td><td class="l">'+arX(r.campaign)+'</td><td class="l">'+arX(r.adgroup)+'</td><td class="r">'+arE(r.cost)+'</td><td class="r">'+arE(r.sales)+'</td><td class="r">'+(r.conv||0)+'</td><td class="r">'+(r.clicks||0)+'</td><td class="r">'+(r.poas!=null?r.poas.toFixed(2):'—')+'</td><td class="r neg">'+arE(r.loss)+'</td></tr>';}
-      out.innerHTML=arSection(((j.total||0)>(j.rows||[]).length?'Top '+(j.rows||[]).length.toLocaleString('en-US')+' of '+(j.total||0).toLocaleString('en-US')+' · ranked by loss':'Ranked by loss'),C,j.rows,cell);
+      var html=arSection(((j.total||0)>(j.rows||[]).length?'Top '+(j.rows||[]).length.toLocaleString('en-US')+' of '+(j.total||0).toLocaleString('en-US')+' · ranked by loss':'Ranked by loss'),C,j.rows,cell);
+      if(LTH&&j.campaigns){
+        (j.campaigns||[]).forEach(function(r){r.profit=-(+r.loss||0);});
+        (j.adgroups||[]).forEach(function(r){r.profit=-(+r.loss||0);});
+        var pcell=function(v){return '<td class="r" style="color:'+(v>=0?'var(--profit)':'var(--cost)')+';font-weight:600">'+(v>=0?'+':'−')+arE(Math.abs(v))+'</td>';};
+        var CC=[{h:'Campaign',k:'campaign',t:'s'},{h:'Account',k:'account',t:'s'},{h:'Kw &lt; 0.65',r:1,k:'share',t:'n'},{h:'Cost',r:1,k:'cost',t:'n'},{h:'Sales',r:1,k:'sales',t:'n'},{h:'POAS',r:1,k:'poas',t:'n'},{h:'Profit',r:1,k:'profit',t:'n'},{h:'Daily budget',r:1,k:'budget',t:'n'}];
+        var ccell=function(r){return '<tr><td class="l kwn">'+arX(r.campaign)+'</td><td class="l">'+arX(r.account)+'</td><td class="r"><b>'+r.share+'%</b> ('+r.nbad+'/'+r.nkw+')</td><td class="r">'+arE(r.cost)+'</td><td class="r">'+arE(r.sales)+'</td><td class="r">'+(r.poas!=null?(+r.poas).toFixed(2):'—')+'</td>'+pcell(r.profit)+'<td class="r">'+(r.budget!=null?arE(r.budget):'—')+'</td></tr>';};
+        var CA=[{h:'Ad group',k:'adgroup',t:'s'},{h:'Campaign',k:'campaign',t:'s'},{h:'Account',k:'account',t:'s'},{h:'Kw &lt; 0.65',r:1,k:'share',t:'n'},{h:'Cost',r:1,k:'cost',t:'n'},{h:'Sales',r:1,k:'sales',t:'n'},{h:'POAS',r:1,k:'poas',t:'n'},{h:'Profit',r:1,k:'profit',t:'n'}];
+        var acell=function(r){return '<tr><td class="l kwn">'+arX(r.adgroup)+'</td><td class="l">'+arX(r.campaign)+'</td><td class="l">'+arX(r.account)+'</td><td class="r"><b>'+r.share+'%</b> ('+r.nbad+'/'+r.nkw+')</td><td class="r">'+arE(r.cost)+'</td><td class="r">'+arE(r.sales)+'</td><td class="r">'+(r.poas!=null?(+r.poas).toFixed(2):'—')+'</td>'+pcell(r.profit)+'</tr>';};
+        html+=arSection('Campaigns to adjust ('+(j.campaigns||[]).length+') — ≥50% of spending keywords under POAS 0.65 · check POAS + Profit: green = trim the tail (tROAS), red = bleeding (budget too)',CC,j.campaigns||[],ccell)
+             +arSection('Ad groups to adjust ('+(j.adgroups||[]).length+') — ≥50% of spending keywords under POAS 0.65',CA,j.adgroups||[],acell);
+      }
+      out.innerHTML=html;
     }).catch(function(e){arErr('losing-out',e.message);});
   }
   function losingDownload(){
@@ -1233,7 +1251,8 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
   _arGo=document.getElementById('losing-go'); if(_arGo)_arGo.addEventListener('click',loadLosing);
   _arGo=document.getElementById('losing-dl'); if(_arGo)_arGo.addEventListener('click',losingDownload);
   var _lctx=document.getElementById('losing-ctx'); if(_lctx)_lctx.addEventListener('click',function(e){var c=e.target.closest('.cut');if(!c)return;
-    if(c.hasAttribute('data-plo')){var lo=c.getAttribute('data-plo'),hi=c.getAttribute('data-phi');LPB.lo=(lo===''?null:+lo);LPB.hi=(hi===''?null:+hi);}
+    if(c.hasAttribute('data-thr')){LTH=true;LPB={lo:null,hi:0.65};}
+    else if(c.hasAttribute('data-plo')){LTH=false;var lo=c.getAttribute('data-plo'),hi=c.getAttribute('data-phi');LPB.lo=(lo===''?null:+lo);LPB.hi=(hi===''?null:+hi);}
     else{document.getElementById('losing-clk').value=c.getAttribute('data-mc');}
     loadLosing();});
   /* ---- Top losing: match-type filter (multi-select dropdown, same logic as zero-conv) ---- */
