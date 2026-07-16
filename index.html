@@ -1151,18 +1151,26 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
     }).catch(function(e){if(b){b.textContent=old;b.disabled=false;}alert('Download error: '+e.message);});
   }
   /* ---- Top losing keywords (same framework as zero-conv; population = profit-negative at 40% margin) ---- */
-  var LM=[];
+  var LM=[], LPB={lo:null,hi:null};
   function loadLosing(){
     var w=Math.max(1,Math.min(26,Math.floor(+document.getElementById('losing-w').value||4)));
     var mc=Math.max(0,Math.floor(+document.getElementById('losing-clk').value||0));
     var out=document.getElementById('losing-out'); out.innerHTML='<div class="arload">Loading…</div>'; var s=++arSeq;
-    fetch(FN+'?api=top_losing&weeks='+w+'&minclicks='+mc+(LM.length?'&matches='+encodeURIComponent(LM.join(',')):''),{headers:{Authorization:'Bearer '+tok}}).then(chk401).then(function(r){return r.json();}).then(function(j){
+    var pq=(LPB.lo!=null?'&poaslo='+LPB.lo:'')+(LPB.hi!=null?'&poashi='+LPB.hi:'');
+    fetch(FN+'?api=top_losing&weeks='+w+'&minclicks='+mc+pq+(LM.length?'&matches='+encodeURIComponent(LM.join(',')):''),{headers:{Authorization:'Bearer '+tok}}).then(chk401).then(function(r){return r.json();}).then(function(j){
       if(s!==arSeq)return; if(j.error){arErr('losing-out',j.error);return;}
       var bandTxt='';
       if(j.bands&&j.spend30>0){var bp=function(b){return b.n.toLocaleString('en-US')+' kw · '+arE(b.loss)+' lost ('+(100*b.loss/j.spend30).toFixed(1)+'%)';};
-        bandTxt='<br>quick cuts: '+(j.bands.all?'<span class="cut" data-mc="0" title="Show all — any clicks">all clicks: '+bp(j.bands.all)+'</span> ':'')+'<span class="cut" data-mc="10" title="Apply clicks > 10">&gt; 10 clicks: '+bp(j.bands.over10)+'</span> <span class="cut" data-mc="20" title="Apply clicks > 20">&gt; 20 clicks: '+bp(j.bands.over20)+'</span> <span class="cutnote">% = loss as share of all Google Ads spend · last 30 d ('+arE(j.spend30)+')</span>';}
+        bandTxt='<br>quick cuts: '+(j.bands.all?'<span class="cut" data-mc="0" title="Show all — any clicks">all clicks: '+bp(j.bands.all)+'</span> ':'')+'<span class="cut" data-mc="10" title="Apply clicks > 10">&gt; 10 clicks: '+bp(j.bands.over10)+'</span> <span class="cut" data-mc="20" title="Apply clicks > 20">&gt; 20 clicks: '+bp(j.bands.over20)+'</span> <span class="cutnote">% = loss as share of all Google Ads spend · last 30 d ('+arE(j.spend30)+')</span>';
+        if(j.poasBands){var pb=j.poasBands, on=function(lo,hi){return LPB.lo===lo&&LPB.hi===hi;}, pc=function(lo,hi,lbl,b,tip){return '<span class="cut'+(on(lo,hi)?' on':'')+'" data-plo="'+(lo==null?'':lo)+'" data-phi="'+(hi==null?'':hi)+'" title="'+tip+'"'+(on(lo,hi)?' style="font-weight:700;text-decoration:underline"':'')+'>'+lbl+': '+bp(b)+'</span>';};
+          bandTxt+='<br>POAS cuts: <span class="cut'+(on(null,null)?'':'')+'" data-plo="" data-phi="" title="Clear POAS filter — show all losing keywords">all POAS</span> '
+            +pc(0,0.4,'0–0.4',pb.b1,'Converting but far from break-even (POAS under 0.4) — click to filter')+' '
+            +pc(0.4,0.8,'0.4–0.8',pb.b2,'Converting, mid-range (POAS 0.4–0.8) — click to filter')+' '
+            +pc(0.8,1,'0.8–1',pb.b3,'Almost break-even (POAS 0.8–1) — click to filter')
+            +' <span class="cutnote">POAS 0 (no sales) lives in the Zero sales keywords report</span>';}}
       var selLoss=(j.spend30>0)?' · losing <b>'+arE(j.totalLoss)+'</b> (<b>'+(100*(j.totalLoss||0)/j.spend30).toFixed(1)+'%</b>)':' · losing <b>'+arE(j.totalLoss)+'</b>';
-      document.getElementById('losing-ctx').innerHTML='<b>'+(j.total||0)+'</b> keywords losing money at <b>40% margin</b> (profit = 40% × sales − cost &lt; 0) with '+(mc>0?'more than <b>'+mc+'</b> clicks':'<b>any clicks</b>')+selLoss+' · cost '+arE(j.totalCost)+' vs sales '+arE(j.totalSales)+(LM.length?' · '+arX(LM.join(' / ')):'')+' · <span class="nw">'+arX(j.range[0])+' → '+arX(j.range[1])+'</span>'+((j.total||0)>(j.rows||[]).length?' · showing top '+(j.rows||[]).length+' by loss':'')+' · <span title="Only keywords whose keyword, ad group AND campaign are all currently ENABLED (as of the last daily sync).">fully active only ✓</span>'+bandTxt;
+      var poasTxt=(LPB.lo!=null||LPB.hi!=null)?' · POAS <b>'+(LPB.lo!=null?LPB.lo:'0')+'–'+(LPB.hi!=null?LPB.hi:'1')+'</b>':'';
+      document.getElementById('losing-ctx').innerHTML='<b>'+(j.total||0)+'</b> keywords losing money at <b>40% margin</b> (profit = 40% × sales − cost &lt; 0) with '+(mc>0?'more than <b>'+mc+'</b> clicks':'<b>any clicks</b>')+poasTxt+selLoss+' · cost '+arE(j.totalCost)+' vs sales '+arE(j.totalSales)+(LM.length?' · '+arX(LM.join(' / ')):'')+' · <span class="nw">'+arX(j.range[0])+' → '+arX(j.range[1])+'</span>'+((j.total||0)>(j.rows||[]).length?' · showing top '+(j.rows||[]).length+' by loss':'')+' · <span title="Only keywords whose keyword, ad group AND campaign are all currently ENABLED (as of the last daily sync).">fully active only ✓</span>'+bandTxt;
       var C=[{h:'Keyword',k:'kw',t:'s'},{h:'Match',k:'match',t:'s'},{h:'Account',k:'account',t:'s'},{h:'Campaign',k:'campaign',t:'s'},{h:'Ad group',k:'adgroup',t:'s'},{h:'Cost',r:1,k:'cost',t:'n'},{h:'Sales',r:1,k:'sales',t:'n'},{h:'Conv',r:1,k:'conv',t:'n'},{h:'Clicks',r:1,k:'clicks',t:'n'},{h:'POAS',r:1,k:'poas',t:'n'},{h:'Loss',r:1,k:'loss',t:'n'}];
       function cell(r){return '<tr><td class="l kwn">'+arX(r.kw)+'</td><td class="l">'+arX(r.match)+'</td><td class="l">'+arX(r.account)+'</td><td class="l">'+arX(r.campaign)+'</td><td class="l">'+arX(r.adgroup)+'</td><td class="r">'+arE(r.cost)+'</td><td class="r">'+arE(r.sales)+'</td><td class="r">'+(r.conv||0)+'</td><td class="r">'+(r.clicks||0)+'</td><td class="r">'+(r.poas!=null?r.poas.toFixed(2):'—')+'</td><td class="r neg">'+arE(r.loss)+'</td></tr>';}
       out.innerHTML=arSection('',C,j.rows,cell);
@@ -1172,7 +1180,8 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
     var w=Math.max(1,Math.min(26,Math.floor(+document.getElementById('losing-w').value||4)));
     var mc=Math.max(0,Math.floor(+document.getElementById('losing-clk').value||0));
     var b=document.getElementById('losing-dl'); var old=b?b.textContent:''; if(b){b.textContent='…';b.disabled=true;}
-    fetch(FN+'?api=top_losing&weeks='+w+'&all=1&minclicks='+mc+(LM.length?'&matches='+encodeURIComponent(LM.join(',')):''),{headers:{Authorization:'Bearer '+tok}}).then(chk401).then(function(r){return r.json();}).then(function(j){
+    var pq=(LPB.lo!=null?'&poaslo='+LPB.lo:'')+(LPB.hi!=null?'&poashi='+LPB.hi:'');
+    fetch(FN+'?api=top_losing&weeks='+w+'&all=1&minclicks='+mc+pq+(LM.length?'&matches='+encodeURIComponent(LM.join(',')):''),{headers:{Authorization:'Bearer '+tok}}).then(chk401).then(function(r){return r.json();}).then(function(j){
       if(b){b.textContent=old;b.disabled=false;}
       if(j.error){alert('Download error: '+j.error);return;}
       var rows=(j.rows||[]).map(function(r){return [r.kw,r.match,r.account,r.campaign,r.adgroup,r.cost,r.sales,r.conv,r.clicks,r.poas,r.loss];});
@@ -1186,7 +1195,10 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
   var _zctx=document.getElementById('zero-ctx'); if(_zctx)_zctx.addEventListener('click',function(e){var c=e.target.closest('.cut');if(!c)return;document.getElementById('zero-clk').value=c.getAttribute('data-mc');loadZero();});
   _arGo=document.getElementById('losing-go'); if(_arGo)_arGo.addEventListener('click',loadLosing);
   _arGo=document.getElementById('losing-dl'); if(_arGo)_arGo.addEventListener('click',losingDownload);
-  var _lctx=document.getElementById('losing-ctx'); if(_lctx)_lctx.addEventListener('click',function(e){var c=e.target.closest('.cut');if(!c)return;document.getElementById('losing-clk').value=c.getAttribute('data-mc');loadLosing();});
+  var _lctx=document.getElementById('losing-ctx'); if(_lctx)_lctx.addEventListener('click',function(e){var c=e.target.closest('.cut');if(!c)return;
+    if(c.hasAttribute('data-plo')){var lo=c.getAttribute('data-plo'),hi=c.getAttribute('data-phi');LPB.lo=(lo===''?null:+lo);LPB.hi=(hi===''?null:+hi);}
+    else{document.getElementById('losing-clk').value=c.getAttribute('data-mc');}
+    loadLosing();});
   /* ---- Top losing: match-type filter (multi-select dropdown, same logic as zero-conv) ---- */
   (function(){
     var btn=document.getElementById('lmfbtn'), menu=document.getElementById('lmfmenu');
