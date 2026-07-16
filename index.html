@@ -1242,11 +1242,12 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
         var trs=function(v){return v!=null?Math.round(v*100)+'%':'—';};
         var CC=[{h:'Campaign',k:'campaign',t:'s'},{h:'Account',k:'account',t:'s'},{h:'Kw &lt; 0.65',r:1,k:'share',t:'n'},{h:'Cost',r:1,k:'cost',t:'n'},{h:'Sales',r:1,k:'sales',t:'n'},{h:'POAS',r:1,k:'poas',t:'n'},{h:'Profit',r:1,k:'profit',t:'n'},{h:'Daily budget',r:1,k:'budget',t:'n'},{h:'Target ROAS',r:1,k:'troas',t:'n'}];
         var ccell=function(r){return '<tr><td class="l kwn">'+arX(r.campaign)+'</td><td class="l">'+arX(r.account)+'</td><td class="r"><b>'+r.share+'%</b> ('+r.nbad+'/'+r.nkw+')</td><td class="r">'+arE(r.cost)+'</td><td class="r">'+arE(r.sales)+'</td><td class="r">'+(r.poas!=null?(+r.poas).toFixed(2):'—')+'</td>'+pcell(r.profit)+'<td class="r">'+(r.budget!=null?arE(r.budget):'—')+'</td><td class="r"'+(r.btype?' title="'+arX(r.btype)+'"':'')+'>'+trs(r.troas)+'</td></tr>';};
-        var CA=[{h:'Ad group',k:'adgroup',t:'s'},{h:'Campaign',k:'campaign',t:'s'},{h:'Account',k:'account',t:'s'},{h:'Kw &lt; 0.65',r:1,k:'share',t:'n'},{h:'Cost',r:1,k:'cost',t:'n'},{h:'Sales',r:1,k:'sales',t:'n'},{h:'POAS',r:1,k:'poas',t:'n'},{h:'Profit',r:1,k:'profit',t:'n'},{h:'Own tROAS',r:1,k:'troas',t:'n'}];
+        var CA=[{h:'Ad group',k:'adgroup',t:'s'},{h:'Campaign',k:'campaign',t:'s'},{h:'Account',k:'account',t:'s'},{h:'Kw &lt; 0.65',r:1,k:'share',t:'n'},{h:'Cost',r:1,k:'cost',t:'n'},{h:'Sales',r:1,k:'sales',t:'n'},{h:'POAS',r:1,k:'poas',t:'n'},{h:'Profit',r:1,k:'profit',t:'n'},{h:'Δ profit potential',r:1,k:'uplift',t:'n'},{h:'Own tROAS',r:1,k:'troas',t:'n'}];
+        var ucell=function(v){return '<td class="r" style="color:var(--profit);font-weight:700"'+(v!=null?' title="Profit gained when the POAS<0.65 keywords in this ad group are paused (current profit → simulated profit)"':'')+'>'+(v!=null?'+'+arE(v):'—')+'</td>';};
         var acell=function(r){
-          var main='<tr><td class="l kwn">'+arX(r.adgroup)+'</td><td class="l">'+arX(r.campaign)+'</td><td class="l">'+arX(r.account)+'</td><td class="r"><b>'+r.share+'%</b> ('+r.nbad+'/'+r.nkw+')</td><td class="r">'+arE(r.cost)+'</td><td class="r">'+arE(r.sales)+'</td><td class="r">'+(r.poas!=null?(+r.poas).toFixed(2):'—')+'</td>'+pcell(r.profit)+'<td class="r"'+(r.troas==null?' title="No own target — inherits campaign / portfolio tROAS"':'')+'>'+trs(r.troas)+'</td></tr>';
+          var main='<tr><td class="l kwn">'+arX(r.adgroup)+'</td><td class="l">'+arX(r.campaign)+'</td><td class="l">'+arX(r.account)+'</td><td class="r"><b>'+r.share+'%</b> ('+r.nbad+'/'+r.nkw+')</td><td class="r">'+arE(r.cost)+'</td><td class="r">'+arE(r.sales)+'</td><td class="r">'+(r.poas!=null?(+r.poas).toFixed(2):'—')+'</td>'+pcell(r.profit)+ucell(r.uplift)+'<td class="r"'+(r.troas==null?' title="No own target — inherits campaign / portfolio tROAS"':'')+'>'+trs(r.troas)+'</td></tr>';
           var sub;
-          if(!r.keepN){sub='<td colspan="9" class="l">↳ if POAS &lt; 0.65 keywords are paused: every spending keyword here is under 0.65 — pausing them all empties the ad group ('+arE(r.cost)+' spend freed)</td>';}
+          if(!r.keepN){sub='<td colspan="10" class="l">↳ if POAS &lt; 0.65 keywords are paused: every spending keyword here is under 0.65 — pausing them all empties the ad group ('+arE(r.cost)+' spend freed)</td>';}
           else{var kProfit=Math.round(0.4*(r.keepSales||0)-(r.keepCost||0));var kp=r.keepPoas;var kcol=(kp>=1.24?'var(--profit)':(kp>=1?'var(--loss)':'var(--cost)'));
             sub='<td colspan="3" class="l">↳ if POAS &lt; 0.65 keywords are paused · frees <b>'+arE((r.cost||0)-(r.keepCost||0))+'</b> in window</td>'
               +'<td class="r">keeps <b>'+r.keepN+'</b>/'+r.nkw+'</td>'
@@ -1254,7 +1255,7 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
               +'<td class="r">→ <b>'+arE(r.keepSales)+'</b></td>'
               +'<td class="r">→ <b style="color:'+kcol+'">'+(kp!=null?(+kp).toFixed(2):'—')+'</b></td>'
               +'<td class="r">→ <b style="color:'+(kProfit>=0?'var(--profit)':'var(--cost)')+'">'+(kProfit>=0?'+':'−')+arE(Math.abs(kProfit))+'</b></td>'
-              +'<td></td>';}
+              +'<td></td><td></td>';}
           return main+'<tr class="agkeep">'+sub+'</tr>';};
         var agFoot='', agN=(j.adgroups||[]).length, agTitleN=''+agN;
         if(j.agTotals&&j.agTotals.cost>0){
@@ -1263,18 +1264,20 @@ document.getElementById("kwdetail").addEventListener("click",e=>{if(e.target.id=
           var tprB=Math.round(0.4*T.sales-T.cost), tprA=Math.round(0.4*T.keepSales-T.keepCost);
           var tcol=(tpA==null?'var(--muted)':(tpA>=1.24?'var(--profit)':(tpA>=1?'var(--loss)':'var(--cost)')));
           var tsh=T.nkw>0?Math.round(100*T.nbad/T.nkw):0;
+          var tUplift=Math.round(((T.cost-T.keepCost)-0.4*(T.sales-T.keepSales)));
           agFoot='<tr class="agtot"><td colspan="3" class="l">Total — all '+T.nAg.toLocaleString('en-US')+' qualifying ad groups</td>'
             +'<td class="r"><b>'+tsh+'%</b> ('+T.nbad.toLocaleString('en-US')+'/'+T.nkw.toLocaleString('en-US')+')</td>'
             +'<td class="r">'+arE(T.cost)+'</td><td class="r">'+arE(T.sales)+'</td><td class="r">'+tpB.toFixed(2)+'</td>'
-            +'<td class="r" style="color:'+(tprB>=0?'var(--profit)':'var(--cost)')+';font-weight:600">'+(tprB>=0?'+':'−')+arE(Math.abs(tprB))+'</td><td></td></tr>'
+            +'<td class="r" style="color:'+(tprB>=0?'var(--profit)':'var(--cost)')+';font-weight:600">'+(tprB>=0?'+':'−')+arE(Math.abs(tprB))+'</td>'
+            +ucell(tUplift)+'<td></td></tr>'
             +'<tr class="agkeep agtot2"><td colspan="3" class="l">↳ if ALL proposed pauses are implemented · frees <b>'+arE(T.cost-T.keepCost)+'</b> in window</td>'
             +'<td class="r">keeps <b>'+T.keepN.toLocaleString('en-US')+'</b>/'+T.nkw.toLocaleString('en-US')+'</td>'
             +'<td class="r">→ <b>'+arE(T.keepCost)+'</b></td><td class="r">→ <b>'+arE(T.keepSales)+'</b></td>'
             +'<td class="r">→ <b style="color:'+tcol+'">'+(tpA!=null?tpA.toFixed(2):'—')+'</b></td>'
-            +'<td class="r">→ <b style="color:'+(tprA>=0?'var(--profit)':'var(--cost)')+'">'+(tprA>=0?'+':'−')+arE(Math.abs(tprA))+'</b></td><td></td></tr>';
+            +'<td class="r">→ <b style="color:'+(tprA>=0?'var(--profit)':'var(--cost)')+'">'+(tprA>=0?'+':'−')+arE(Math.abs(tprA))+'</b></td><td></td><td></td></tr>';
         }
         html+=arSection('Campaigns to adjust ('+(j.campaigns||[]).length+') — ≥50% of ENABLED spending keywords under POAS 0.65 · check POAS + Profit: green = trim the tail (tROAS), red = bleeding (budget too)',CC,j.campaigns||[],ccell)
-             +arSection('Ad groups to adjust ('+agTitleN+') — ≥50% of ENABLED spending keywords under POAS 0.65 · sub-line simulates pausing them · totals cover ALL qualifying ad groups',CA,j.adgroups||[],acell,agFoot);
+             +arSection('Ad groups to adjust ('+agTitleN+') — ≥50% of ENABLED spending keywords under POAS 0.65 · ranked by Δ profit potential (profit gained if its <0.65 keywords are paused) · click any column to re-sort · totals cover ALL qualifying ad groups',CA,j.adgroups||[],acell,agFoot);
       }
       out.innerHTML=html;
     }).catch(function(e){arErr('losing-out',e.message);});
